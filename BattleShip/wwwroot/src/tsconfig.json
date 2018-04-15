@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "jsx": "react",
+        "jsxFactory": "h",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "target": "ES6",
+        "noEmitOnError": false,
+        "importHelpers": true,
+        "noImplicitAny": true
+    },
+    "compileOnSave": false,
+    "exclude": ["node_modules"]
+}
