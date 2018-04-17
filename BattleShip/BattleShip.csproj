@@ -6,4 +6,10 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.0-preview1-final" />
   </ItemGroup>
+  <Target Name="yarn" AfterTargets="_GenerateRestoreProjectSpec">
+    <Exec Command="yarn" WorkingDirectory="wwwroot"/>
+  </Target>
+  <Target Name="fuse build" AfterTargets="CoreCompile">
+    <Exec Command="node fuse dev" WorkingDirectory="wwwroot"/>
+  </Target>
 </Project>

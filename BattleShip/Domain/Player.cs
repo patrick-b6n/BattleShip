@@ -1,4 +1,5 @@
 ﻿using System;
+using Newtonsoft.Json;
 
 namespace BattleShip.Domain
 {
@@ -12,6 +13,7 @@ namespace BattleShip.Domain
 
         public string Id { get; }
 
+        [JsonIgnore]
         public Lobby Lobby { get; private set; }
 
         public string Name { get; private set; }
@@ -21,9 +23,10 @@ namespace BattleShip.Domain
             Name = name;
         }
 
-        public void Joined(Lobby lobby)
+        public void Join(Lobby lobby)
         {
             Lobby = lobby;
+            Lobby.Join(this);
         }
 
         public Lobby LeaveLobby()

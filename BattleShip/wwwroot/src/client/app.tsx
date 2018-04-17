@@ -14,7 +14,7 @@ const actions = {
     init: () => (state: State, actions: any) => {
         initGameHub(state, actions);
     },
-    changePlayerName: (value: string) => (state: State, actions: any) => {
+    onSetPlayerName: (value: string) => (state: State, actions: any) => {
         gamehub.setPlayerName(state.playerName);
     },
     playerNameInput: (value: string) => (state: State, actions: any) => {
@@ -25,6 +25,9 @@ const actions = {
     },
     setPlayers: (value: Player[]) => (state: State, actions: any) => {
         return { playersInLobby: value };
+    },
+    onCreateLobby: () => (state: State, actions: any) => {
+        gamehub.enterLobby("00000000-0000-0000-0000-000000000000");
     }
 };
 
@@ -38,7 +41,7 @@ const view = (state: State, actions: any) => (
             <SetNameComponent
                 playerName={state.playerName}
                 onPlayerNameInput={actions.playerNameInput}
-                onSetPlayerNameClick={actions.changePlayerName}
+                onSetPlayerNameClick={actions.onSetPlayerName}
             />
         </div>
         <div
@@ -46,19 +49,44 @@ const view = (state: State, actions: any) => (
                 paddingBottom: "1rem"
             }}
         >
-            <span>{state.lobbyId}</span>
+            <div>
+                <span>Current lobby: </span> <span>{state.lobbyId}</span>
+            </div>
+            <div>
+                <span>Share your lobby: </span>{" "}
+                <a href={buildLobbyUrl(state.lobbyId)}>
+                    {buildLobbyUrl(state.lobbyId)}
+                </a>
+            </div>
+            <div>
+                <button onclick={() => actions.onCreateLobby()}>
+                    Create custom lobby
+                </button>
+            </div>
         </div>
         <div>
-            Spieler:
+            <span>Spieler:</span>
             <PlayerList players={state.playersInLobby} />
         </div>
     </div>
 );
 
+function buildLobbyUrl(id: string): string {
+    return window.location.host + "?lobby=" + id;
+}
+
 function initGameHub(s: State, a: any) {
     gamehub.start().then(function() {
         gamehub.setPlayerName(state.playerName);
-        gamehub.enterLobby("F93B7255-6B78-42B0-A16B-AB80B9F57DD5");
+
+        const params = new URLSearchParams(location.search.slice(1));
+        const lobbyId = params.get("lobby");
+
+        if (lobbyId) {
+            gamehub.enterLobby(lobbyId);
+        } else {
+            gamehub.enterLobby("F93B7255-6B78-42B0-A16B-AB80B9F57DD5");
+        }
     });
 
     gamehub.on(GameHub.Commands.EnterLobby, function(message) {

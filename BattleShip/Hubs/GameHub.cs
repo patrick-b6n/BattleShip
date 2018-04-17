@@ -37,19 +37,36 @@ namespace BattleShip.Hubs
 
         public async Task EnterLobby(EnterLobbyModel model)
         {
+            // leave current lobby
+            if (CurrentPlayer.Lobby != null)
+            {
+                await LeaveLobby();
+            }
+
+            // get/create new lobby
             var lobby = _lobbyManager.Get(model.Id);
             if (lobby == null)
             {
                 lobby = new Lobby(Guid.NewGuid());
                 _lobbyManager.Add(lobby);
             }
-            else
-            {
-                lobby.Join(CurrentPlayer);
-            }
 
-            await Groups.AddAsync(Context.ConnectionId, lobby.Id.ToString());
+            // join new lobby
+            CurrentPlayer.Join(lobby);
+            await Groups.AddAsync(Context.ConnectionId, lobby.IdStr);
+
             await LobbyChanged(lobby);
+        }
+
+        private async Task LeaveLobby()
+        {
+            var oldLobby = CurrentPlayer.LeaveLobby();
+            await Groups.RemoveAsync(Context.ConnectionId, oldLobby.IdStr);
+
+            if (oldLobby.IsEmpty && oldLobby != _lobbyManager.DefaultLobby)
+            {
+                _lobbyManager.Remove(oldLobby);
+            }
         }
 
         public async Task SetPlayerName(SetPlayerNameModel model)
@@ -66,7 +83,7 @@ namespace BattleShip.Hubs
                 var model = new EnterLobbyAnswerModel()
                 {
                     Id = lobby.Id,
-                    Players = lobby.List().Select(x => new PlayerModel { Id = x.Id, Name = x.Name })
+                    Players = lobby.Players.Select(x => new PlayerModel { Id = x.Id, Name = x.Name })
                 };
 
                 await Clients.Group(lobby.Id.ToString()).SendAsync("EnterLobby", model);

@@ -6,7 +6,8 @@ export class GameHub {
 
     public static Commands = {
         SetPlayerName: "SetPlayerName",
-        EnterLobby: "EnterLobby"
+        EnterLobby: "EnterLobby",
+        CreateLobby: "CreateLobby"
     };
 
     private constructor() {

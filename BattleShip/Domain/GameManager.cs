@@ -13,6 +13,8 @@ namespace BattleShip.Domain
             _games = new Dictionary<Guid, Game>();
         }
 
+        public IEnumerable<Game> All => _games.Values;
+
         public void Add(Game game)
         {
             _games.Add(game.Id, game);

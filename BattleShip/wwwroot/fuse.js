@@ -27,6 +27,13 @@ task("default", async context => {
     await fuse.run();
 });
 
+task("dev", async context => {
+    const fuse = context.getConfig();
+    fuse.bundle("app").instructions("> index.ts");
+
+    await fuse.run();
+});
+
 task("prod", async context => {
     context.isProduction = true;
     const fuse = context.getConfig();

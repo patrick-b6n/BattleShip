@@ -12,14 +12,11 @@ namespace BattleShip.Domain
             _players = new Dictionary<string, Player>();
         }
 
+        public IEnumerable<Player> All => _players.Values;
+
         public void Add(Player player)
         {
             _players.Add(player.Id, player);
-        }
-
-        public IEnumerable<Player> GetAll()
-        {
-            return _players.Values;
         }
 
         public Player Get(string id)

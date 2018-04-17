@@ -16,25 +16,20 @@ namespace BattleShip.Domain
 
         public Guid Id { get; }
 
+        public string IdStr => Id.ToString();
+
+        public IEnumerable<Player> Players => _players;
+
+        public bool IsEmpty => _players.Count == 0;
+
         public void Join(Player player)
         {
             _players.Add(player);
-            player.Joined(this);
         }
 
         public void Leave(Player player)
         {
             _players.Remove(player);
-        }
-
-        public IEnumerable<Player> List()
-        {
-            return _players;
-        }
-
-        public bool IsEmpty()
-        {
-            return _players.Count == 0;
         }
     }
 }
