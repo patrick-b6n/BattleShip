@@ -7,6 +7,11 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace BattleShip.Hubs
 {
+    public class Commands
+    {
+        public static string Connected = "Connected";
+    }
+
     public class GameHub : Hub
     {
         private readonly GameManager _gameManager;
@@ -26,12 +31,14 @@ namespace BattleShip.Hubs
 
         public override async Task OnConnectedAsync()
         {
-            _playerManager.Add(new Player(Context.ConnectionId));
+            var player = new Player(Context.ConnectionId);
+            _playerManager.Add(player);
+            await Clients.Caller.SendAsync(Commands.Connected, new ConnectedModel { Player = player });
         }
 
         public override async Task OnDisconnectedAsync(Exception ex)
         {
-            await LobbyChanged(CurrentPlayer.LeaveLobby());
+            await LeaveLobby();
             _playerManager.Remove(CurrentPlayer);
         }
 
@@ -54,14 +61,21 @@ namespace BattleShip.Hubs
             // join new lobby
             CurrentPlayer.Join(lobby);
             await Groups.AddAsync(Context.ConnectionId, lobby.IdStr);
+            await Clients.OthersInGroup(lobby.IdStr).SendAsync("PlayerJoined", CurrentPlayer);
 
             await LobbyChanged(lobby);
+        }
+
+        public async Task ChallengePlayer(ChallengePlayerModel model)
+        {
+            await Clients.Client(model.Player.Id).SendAsync("ChallengeRequest", new ChallengePlayerModel { Player = _playerManager.Get(Context.ConnectionId) });
         }
 
         private async Task LeaveLobby()
         {
             var oldLobby = CurrentPlayer.LeaveLobby();
             await Groups.RemoveAsync(Context.ConnectionId, oldLobby.IdStr);
+            await Clients.Group(oldLobby.IdStr).SendAsync("PlayerLeft", CurrentPlayer);
 
             if (oldLobby.IsEmpty && oldLobby != _lobbyManager.DefaultLobby)
             {
@@ -80,15 +94,20 @@ namespace BattleShip.Hubs
         {
             if (lobby != null)
             {
-                var model = new EnterLobbyAnswerModel()
+                var model = new EnterLobbyAnswerModel
                 {
                     Id = lobby.Id,
                     Players = lobby.Players.Select(x => new PlayerModel { Id = x.Id, Name = x.Name })
                 };
 
-                await Clients.Group(lobby.Id.ToString()).SendAsync("EnterLobby", model);
+                await Clients.Caller.SendAsync("EnterLobby", model);
             }
         }
+    }
+
+    public class ChallengePlayerModel
+    {
+        public Player Player { get; set; }
     }
 
     public class SetPlayerNameModel
@@ -105,6 +124,11 @@ namespace BattleShip.Hubs
     {
         public Guid Id { get; set; }
         public IEnumerable<PlayerModel> Players { get; set; }
+    }
+
+    public class ConnectedModel
+    {
+        public Player Player { get; set; }
     }
 
     public class PlayerModel
