@@ -1,5 +1,5 @@
 import * as signalr from "@aspnet/signalr";
-import { ChallengePlayerModel, Player } from "./models";
+import { ChallengePlayerModel, PlayerModel as Player, StartGameModel } from "./models";
 
 export class GameHub {
 
@@ -14,7 +14,9 @@ export class GameHub {
         PlayerJoined: "PlayerJoined",
         PlayerLeft: "PlayerLeft",
         ChallengePlayer: "challengePlayer",
-        ChallengeRequest: "challengeRequest"
+        ChallengeRequest: "challengeRequest",
+        StartGame: "StartGame",
+        GameStarted: "GameStarted"
     };
 
     private constructor() {
@@ -45,6 +47,13 @@ export class GameHub {
             player: player
         };
         this.connection.send(GameHub.Commands.ChallengePlayer, model);
+    }
+
+    public startGame(player: Player): any {
+        const model: StartGameModel = {
+            player: player
+        };
+        this.connection.send(GameHub.Commands.StartGame, model);
     }
 
     public start(): Promise<void> {

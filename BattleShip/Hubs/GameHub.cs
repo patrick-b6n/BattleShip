@@ -18,6 +18,8 @@ namespace BattleShip.Hubs
         private readonly PlayerManager _playerManager;
         private readonly LobbyManager _lobbyManager;
 
+        private Player CurrentPlayer => _playerManager.Get(Context.ConnectionId);
+
         public GameHub(GameManager gameManager,
                        PlayerManager playerManager,
                        LobbyManager lobbyManager)
@@ -27,13 +29,10 @@ namespace BattleShip.Hubs
             _lobbyManager = lobbyManager;
         }
 
-        public Player CurrentPlayer => _playerManager.Get(Context.ConnectionId);
-
         public override async Task OnConnectedAsync()
         {
-            var player = new Player(Context.ConnectionId);
-            _playerManager.Add(player);
-            await Clients.Caller.SendAsync(Commands.Connected, new ConnectedModel { Player = player });
+            var player = _playerManager.Create(Context.ConnectionId);
+            await Clients.Caller.SendAsync(Commands.Connected, new ConnectedModel { Player = PlayerModel.Map(player) });
         }
 
         public override async Task OnDisconnectedAsync(Exception ex)
@@ -51,12 +50,7 @@ namespace BattleShip.Hubs
             }
 
             // get/create new lobby
-            var lobby = _lobbyManager.Get(model.Id);
-            if (lobby == null)
-            {
-                lobby = new Lobby(Guid.NewGuid());
-                _lobbyManager.Add(lobby);
-            }
+            var lobby = _lobbyManager.Get(model.Id) ?? _lobbyManager.CreateLobby();
 
             // join new lobby
             CurrentPlayer.Join(lobby);
@@ -66,9 +60,24 @@ namespace BattleShip.Hubs
             await LobbyChanged(lobby);
         }
 
+        public async Task StartGame(StartGameModel model)
+        {
+            // TODO Check if already ingame
+            var opponent = _playerManager.Get(model.Player.Id);
+
+            var game = _gameManager.NewGame(CurrentPlayer, opponent);
+            CurrentPlayer.Join(game);
+            opponent.Join(game);
+
+            await Groups.AddAsync(CurrentPlayer.Id, game.Id.ToString());
+            await Groups.AddAsync(opponent.Id, game.Id.ToString());
+
+            await Clients.Group(game.Id.ToString()).SendAsync("GameStarted", new GameStartedModel { Game = GameModel.Map(game) });
+        }
+
         public async Task ChallengePlayer(ChallengePlayerModel model)
         {
-            await Clients.Client(model.Player.Id).SendAsync("ChallengeRequest", new ChallengePlayerModel { Player = _playerManager.Get(Context.ConnectionId) });
+            await Clients.Client(model.Player.Id).SendAsync("ChallengeRequest", new ChallengePlayerModel { Player = PlayerModel.Map(CurrentPlayer) });
         }
 
         private async Task LeaveLobby()
@@ -105,9 +114,36 @@ namespace BattleShip.Hubs
         }
     }
 
+    public class GameStartedModel
+    {
+        public GameModel Game { get; set; }
+    }
+
+    public class GameModel
+    {
+        public PlayerModel Player1 { get; set; }
+        public PlayerModel Player2 { get; set; }
+        public GamePhase GamePhase { get; set; }
+
+        public static GameModel Map(Game game)
+        {
+            return new GameModel
+            {
+                GamePhase = game.Phase,
+                Player1 = PlayerModel.Map(game.Player1),
+                Player2 = PlayerModel.Map(game.Player2)
+            };
+        }
+    }
+
+    public class StartGameModel
+    {
+        public PlayerModel Player { get; set; }
+    }
+
     public class ChallengePlayerModel
     {
-        public Player Player { get; set; }
+        public PlayerModel Player { get; set; }
     }
 
     public class SetPlayerNameModel
@@ -128,12 +164,17 @@ namespace BattleShip.Hubs
 
     public class ConnectedModel
     {
-        public Player Player { get; set; }
+        public PlayerModel Player { get; set; }
     }
 
     public class PlayerModel
     {
         public string Id { get; set; }
         public string Name { get; set; }
+
+        public static PlayerModel Map(Player player)
+        {
+            return new PlayerModel { Id = player.Id, Name = player.Name };
+        }
     }
 }

@@ -1,9 +1,10 @@
-import { h, app } from "hyperapp";
-import { State, Player, EnterLobbyAnswerModel, ConnectedModel, ChallengePlayerModel } from "./models";
+import { app, h } from "hyperapp";
+import { ChallengePlayerModel, ConnectedModel, EnterLobbyAnswerModel, Event, EventType, GameStartedModel, PlayerModel, State } from "./models";
 import { SetNameComponent } from "./components/setNameComponent";
 import { PlayerList } from "./components/playerlist";
 import { makeid } from "./helper";
 import { GameHub } from "./gameHub";
+import { EventLog } from "./components/eventlog";
 
 const gamehub = GameHub.getInstance();
 
@@ -24,44 +25,52 @@ const actions = {
         return {playerName: value};
     },
     enterLobby: (value: EnterLobbyAnswerModel) => (state: State, actions: any) => {
-        actions.addEvent(`Entered lobby ${value.id}`);
+        actions.addEvent(new Event(`Entered lobby ${value.id}`));
         return {lobbyId: value.id, playersInLobby: value.players};
     },
     onCreateLobby: () => () => {
         gamehub.enterLobby("00000000-0000-0000-0000-000000000000");
     },
-    addEvent: (value: string) => (state: State) => {
+    addEvent: (value: Event) => (state: State) => {
         setTimeout(() => {
             const objDiv = document.getElementById("event-log");
             objDiv.scrollTop = objDiv.scrollHeight;
         }, 1);
 
-        state.events.push(new Date().toLocaleTimeString() + " " + value);
+        state.events.push(value);
         return {events: state.events};
     },
-    playerJoined: (value: Player) => (state: State, actions: any) => {
-        actions.addEvent(`Player ${value.name} joined the lobby`);
+    playerJoined: (value: PlayerModel) => (state: State, actions: any) => {
+        actions.addEvent(new Event(`Player ${value.name} joined the lobby`));
 
         state.playersInLobby.push(value);
         state.playersInLobby.sort((a, b) => a.name.localeCompare(b.name));
         return {playersInLobby: state.playersInLobby};
     },
-    playerLeft: (value: Player) => (state: State, actions: any) => {
-        actions.addEvent(`Player ${value.name} left the lobby`);
+    playerLeft: (value: PlayerModel) => (state: State, actions: any) => {
+        actions.addEvent(new Event(`Player ${value.name} left the lobby`));
 
-        const index = state.playersInLobby.findIndex((p: Player) => p.id === value.id);
+        const index = state.playersInLobby.findIndex((p: PlayerModel) => p.id === value.id);
         if (index > -1) {
             state.playersInLobby.splice(index, 1);
         }
+
         return {playersInLobby: state.playersInLobby};
     },
-    challengePlayer: (player: Player) => (state: State, actions: any) => {
-        actions.addEvent(`Challenged ${player.name}`);
+    challengePlayer: (player: PlayerModel) => (state: State, actions: any) => {
+        actions.addEvent(new Event(`Challenged ${player.name}`));
 
         gamehub.challengePlayer(player);
     },
     challengeRequest: (model: ChallengePlayerModel) => (state: State, actions: any) => {
-        actions.addEvent(`You got challenged by ${model.player.name}`);
+        const event = new Event(
+            `You got challenged by ${model.player.name}`,
+            EventType.Challenge,
+            {accept: () => gamehub.startGame(model.player)});
+        actions.addEvent(event);
+    },
+    gameStarted: (model: GameStartedModel) => (state: State, actions: any) => {
+        return {game: model.game}
     }
 };
 
@@ -86,6 +95,13 @@ const view = (state: State, actions: any) => (
                 </button>
             </div>
         </div>
+        <div>
+            {state.game != null &&
+            <h2>
+                {state.game.player1.name} vs. {state.game.player2.name}
+            </h2>
+            }
+        </div>
         <div style={{marginBottom: "1rem"}}>
             <span>Spieler:</span>
             <div style={{border: "1px solid black", padding: "1rem"}}>
@@ -94,8 +110,8 @@ const view = (state: State, actions: any) => (
         </div>
         <div>
             <span>Events:</span>
-            <div id="event-log" style={{overflowY: "scroll", height: "200px", border: "1px solid black", padding: "1rem"}}>
-                {state.events.map(e => <div>{e}</div>)}
+            <div>
+                <EventLog events={state.events}/>
             </div>
         </div>
     </div>
@@ -123,11 +139,11 @@ function initGameHub(s: State, a: any) {
         a.enterLobby(message);
     });
 
-    gamehub.on(GameHub.Commands.PlayerJoined, function (player: Player) {
+    gamehub.on(GameHub.Commands.PlayerJoined, function (player: PlayerModel) {
         a.playerJoined(player);
     });
 
-    gamehub.on(GameHub.Commands.PlayerLeft, function (player: Player) {
+    gamehub.on(GameHub.Commands.PlayerLeft, function (player: PlayerModel) {
         a.playerLeft(player);
     });
 
@@ -137,6 +153,10 @@ function initGameHub(s: State, a: any) {
 
     gamehub.on(GameHub.Commands.ChallengeRequest, function (model: ChallengePlayerModel) {
         a.challengeRequest(model);
+    });
+
+    gamehub.on(GameHub.Commands.GameStarted, function (model: GameStartedModel) {
+        a.gameStarted(model);
     });
 }
 

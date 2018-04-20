@@ -1,25 +1,58 @@
 export class State {
-    player: Player;
+    player: PlayerModel = null;
     playerName = "";
     lobbyId = "";
-    playersInLobby: Player[] = [];
-    events: String[] = [];
+    playersInLobby: PlayerModel[] = [];
+    events: Event[] = [];
+    game: GameModel = null;
 }
 
-export interface Player {
+export enum EventType {
+    Message,
+    Challenge
+}
+
+export class Event {
+    type: EventType;
+    message: string;
+    data: any;
+
+    constructor(message: string, type: EventType = EventType.Message, data: any = null) {
+        this.message = message;
+        this.type = type;
+        this.data = data;
+    }
+}
+
+export interface PlayerModel {
     id: string;
     name: string;
 }
 
 export interface EnterLobbyAnswerModel {
     id: string;
-    players: Player[];
+    players: PlayerModel[];
 }
 
 export interface ConnectedModel {
-    player: Player;
+    player: PlayerModel;
 }
 
 export interface ChallengePlayerModel {
-    player: Player;
+    player: PlayerModel;
+}
+
+export interface StartGameModel {
+    player: PlayerModel;
+}
+
+export interface GameModel {
+    id: string,
+    player1: PlayerModel,
+    player2: PlayerModel,
+    phase: string
+}
+
+export interface GameStartedModel {
+    game: GameModel;
 }

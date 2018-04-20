@@ -16,6 +16,9 @@ namespace BattleShip.Domain
         [JsonIgnore]
         public Lobby Lobby { get; private set; }
 
+        [JsonIgnore]
+        public Game Game { get; private set; }
+
         public string Name { get; private set; }
 
         public void ChangeName(string name)
@@ -27,6 +30,11 @@ namespace BattleShip.Domain
         {
             Lobby = lobby;
             Lobby.Join(this);
+        }
+
+        public void Join(Game game)
+        {
+            Game = game;
         }
 
         public Lobby LeaveLobby()

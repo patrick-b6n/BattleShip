@@ -1,46 +1,54 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace BattleShip.Domain
 {
     public class Game
     {
-        public Game(string player1Id)
+        public Game(Player player1, Player player2)
         {
             Id = Guid.NewGuid();
-            JoinGame(player1Id);
+            Player1 = player1;
+            Player2 = player2;
+
+            Phase = GamePhase.Placing;
+
+            Player1Board = new BoardField[10, 10];
+            Player2Board = new BoardField[10, 10];
+
+            for (var i = 0; i < 10; i++)
+            {
+                for (var j = 0; j < 10; j++)
+                {
+                    Player1Board[i,j] = BoardField.Free;
+                    Player2Board[i,j] = BoardField.Free;
+                }
+            }
         }
 
         public Guid Id { get; }
 
-        public Player Player1 { get; set; }
-        public Player Player2 { get; set; }
-        public List<Player> Spectators { get; set; }
+        public Player Player1 { get; }
 
-        public PlayerType JoinGame(string playerId)
-        {
-            var player = new Player(playerId);
+        public Player Player2 { get; }
 
-            if (Player1 == null)
-            {
-                Player1 = player;
-                return PlayerType.Player;
-            }
+        public GamePhase Phase { get; }
 
-            if (Player2 == null)
-            {
-                Player2 = player;
-                return PlayerType.Player;
-            }
+        public BoardField[,] Player1Board { get; }
 
-            Spectators.Add(player);
-            return PlayerType.Spectator;
-        }
+        public BoardField[,] Player2Board { get; }
     }
 
-    public enum PlayerType
+    public enum BoardField
     {
-        Player,
-        Spectator
+        Free,
+        Miss,
+        Ship,
+        ShipHit
+    }
+
+    public enum GamePhase
+    {
+        Placing,
+        Bombing
     }
 }

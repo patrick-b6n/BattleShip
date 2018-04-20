@@ -11,18 +11,20 @@ namespace BattleShip.Domain
         {
             _lobbies = new Dictionary<Guid, Lobby>();
 
-            Add(new Lobby(DefaultLobbyId));
+            var defaultLobby = new DefaulLobby();
+            _lobbies.Add(defaultLobby.Id, defaultLobby);
         }
 
-        public static Guid DefaultLobbyId { get; } = Guid.Parse("F93B7255-6B78-42B0-A16B-AB80B9F57DD5");
-
-        public Lobby DefaultLobby => _lobbies[DefaultLobbyId];
+        public Lobby DefaultLobby => _lobbies[Constant.DefaultLobbyId];
 
         public IEnumerable<Lobby> All => _lobbies.Values;
 
-        public void Add(Lobby lobby)
+        public Lobby CreateLobby()
         {
+            var lobby = new Lobby();
             _lobbies.Add(lobby.Id, lobby);
+
+            return lobby;
         }
 
         public Lobby Get(Guid modelId)
@@ -30,8 +32,7 @@ namespace BattleShip.Domain
             return _lobbies.TryGetValue(modelId, out var lobby) ? lobby : null;
         }
 
-
-        internal void Remove(Lobby oldLobby)
+        public void Remove(Lobby oldLobby)
         {
             if (oldLobby.IsEmpty)
             {
@@ -40,6 +41,13 @@ namespace BattleShip.Domain
             else
             {
                 throw new Exception("Cannot remove lobby with players");
+            }
+        }
+
+        private class DefaulLobby : Lobby
+        {
+            public DefaulLobby() : base(Constant.DefaultLobbyId)
+            {
             }
         }
     }

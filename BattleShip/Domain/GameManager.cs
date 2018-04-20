@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace BattleShip.Domain
 {
-    // TODO REMOVE GAMES
     public class GameManager
     {
         private readonly Dictionary<Guid, Game> _games;
@@ -15,19 +14,17 @@ namespace BattleShip.Domain
 
         public IEnumerable<Game> All => _games.Values;
 
-        public void Add(Game game)
+        public Game NewGame(Player player1, Player player2)
         {
+            var game = new Game(player1, player2);
             _games.Add(game.Id, game);
+
+            return game;
         }
 
         public Game Get(Guid gameId)
         {
-            if (_games.TryGetValue(gameId, out var game))
-            {
-                return game;
-            }
-
-            return null;
+            return _games.TryGetValue(gameId, out var game) ? game : null;
         }
     }
 }

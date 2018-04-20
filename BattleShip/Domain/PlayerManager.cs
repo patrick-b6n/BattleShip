@@ -14,9 +14,12 @@ namespace BattleShip.Domain
 
         public IEnumerable<Player> All => _players.Values;
 
-        public void Add(Player player)
+        public Player Create(string id)
         {
+            var player = new Player(id);
             _players.Add(player.Id, player);
+
+            return player;
         }
 
         public Player Get(string id)

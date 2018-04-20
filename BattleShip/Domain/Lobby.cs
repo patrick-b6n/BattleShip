@@ -7,11 +7,15 @@ namespace BattleShip.Domain
     {
         private readonly List<Player> _players;
 
-        public Lobby(Guid id)
+        public Lobby() : this(Guid.NewGuid())
         {
-            _players = new List<Player>();
+        }
 
+        protected Lobby(Guid id)
+        {
             Id = id;
+
+            _players = new List<Player>();
         }
 
         public Guid Id { get; }

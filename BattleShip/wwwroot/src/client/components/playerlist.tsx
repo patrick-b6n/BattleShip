@@ -1,5 +1,5 @@
 import { h } from "hyperapp";
-import { Player } from "../models";
+import { PlayerModel as Player } from "../models";
 
 interface PlayerListArgs {
     player: Player;
