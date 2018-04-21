@@ -13,6 +13,7 @@ export class GameHub {
         CreateLobby: "CreateLobby",
         PlayerJoined: "PlayerJoined",
         PlayerLeft: "PlayerLeft",
+        PlayerChanged: "PlayerChanged",
         ChallengePlayer: "challengePlayer",
         ChallengeRequest: "challengeRequest",
         StartGame: "StartGame",
@@ -28,6 +29,12 @@ export class GameHub {
             GameHub.instance = new GameHub();
         }
         return GameHub.instance;
+    }
+
+    public connected(name: string) {
+        this.connection.send(GameHub.Commands.Connected, {
+            name: name
+        });
     }
 
     public setPlayerName(name: string) {

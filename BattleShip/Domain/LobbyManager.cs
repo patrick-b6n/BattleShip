@@ -1,18 +1,19 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace BattleShip.Domain
 {
     public class LobbyManager
     {
-        private readonly Dictionary<Guid, Lobby> _lobbies;
+        private readonly ConcurrentDictionary<Guid, Lobby> _lobbies;
 
         public LobbyManager()
         {
-            _lobbies = new Dictionary<Guid, Lobby>();
+            _lobbies = new ConcurrentDictionary<Guid, Lobby>();
 
             var defaultLobby = new DefaulLobby();
-            _lobbies.Add(defaultLobby.Id, defaultLobby);
+            _lobbies.AddOrUpdate(defaultLobby.Id, defaultLobby, (id, l) => defaultLobby);
         }
 
         public Lobby DefaultLobby => _lobbies[Constant.DefaultLobbyId];
@@ -22,7 +23,7 @@ namespace BattleShip.Domain
         public Lobby CreateLobby()
         {
             var lobby = new Lobby();
-            _lobbies.Add(lobby.Id, lobby);
+            _lobbies.AddOrUpdate(lobby.Id, lobby, (id, l) => lobby);
 
             return lobby;
         }
@@ -36,7 +37,7 @@ namespace BattleShip.Domain
         {
             if (oldLobby.IsEmpty)
             {
-                _lobbies.Remove(oldLobby.Id);
+                _lobbies.TryRemove(oldLobby.Id, out _);
             }
             else
             {

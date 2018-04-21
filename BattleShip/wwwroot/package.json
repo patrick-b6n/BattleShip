@@ -5,10 +5,14 @@
   "license": "MIT",
   "dependencies": {
     "@aspnet/signalr": "^1.0.0-preview2-final",
+    "classnames": "^2.2.5",
     "fuse-box": "^3.2.1",
     "hyperapp": "^1.2.5",
     "typescript": "^2.8.1",
     "uglify-es": "^3.3.9",
     "uglify-js": "^3.3.21"
+  },
+  "devDependencies": {
+    "@types/classnames": "^2.2.3"
   }
 }

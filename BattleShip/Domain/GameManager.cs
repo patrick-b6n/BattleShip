@@ -1,15 +1,16 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace BattleShip.Domain
 {
     public class GameManager
     {
-        private readonly Dictionary<Guid, Game> _games;
+        private readonly ConcurrentDictionary<Guid, Game> _games;
 
         public GameManager()
         {
-            _games = new Dictionary<Guid, Game>();
+            _games = new ConcurrentDictionary<Guid, Game>();
         }
 
         public IEnumerable<Game> All => _games.Values;
@@ -17,7 +18,7 @@ namespace BattleShip.Domain
         public Game NewGame(Player player1, Player player2)
         {
             var game = new Game(player1, player2);
-            _games.Add(game.Id, game);
+            _games.AddOrUpdate(game.Id, game, (id, g) => game);
 
             return game;
         }

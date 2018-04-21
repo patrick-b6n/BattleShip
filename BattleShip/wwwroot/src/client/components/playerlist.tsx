@@ -8,9 +8,11 @@ interface PlayerListArgs {
 }
 
 export const PlayerList = (args: PlayerListArgs) => (
-    <div>{args.players.map(p => <div>{p.name}
-        {p.id !== args.player.id &&
-        <button onclick={() => args.challengePlayer(p)}>Challenge</button>
-        }
-    </div>)}</div>
+    <div style={{ border: "1px solid black", padding: "1rem" }}>
+        {args.players.map(p => <div>{p.name}
+            {p.id !== args.player.id &&
+            <button onclick={() => args.challengePlayer(p)}>Challenge</button>
+            }
+        </div>)}
+    </div>
 );

@@ -1,10 +1,29 @@
+import { createTwoDimArray, generateName } from "./helper";
+
 export class State {
-    player: PlayerModel = null;
-    playerName = "";
+    player: PlayerModel = { id: "", name: generateName() };
+    lobby: LobbyState = new LobbyState();
+    game: GameState = new GameState();
+}
+
+export class LobbyState {
+    playerNameInput = "";
     lobbyId = "";
     playersInLobby: PlayerModel[] = [];
-    events: Event[] = [];
-    game: GameModel = null;
+    events: EventEntry[] = [];
+}
+
+export class GameState {
+    isActive = false;
+    opponent: PlayerModel = null;
+    playerBoard = createTwoDimArray(10, 10, BoardField.Free);
+    opponentBoard = createTwoDimArray(10, 10, BoardField.Free);
+
+    constructor() {
+        this.playerBoard[5][1] = BoardField.Ship;
+        this.playerBoard[6][2] = BoardField.ShipHit;
+        this.playerBoard[7][3] = BoardField.Miss;
+    }
 }
 
 export enum EventType {
@@ -12,7 +31,14 @@ export enum EventType {
     Challenge
 }
 
-export class Event {
+export enum BoardField {
+    Free,
+    Miss,
+    Ship,
+    ShipHit
+}
+
+export class EventEntry {
     type: EventType;
     message: string;
     data: any;
@@ -35,7 +61,7 @@ export interface EnterLobbyAnswerModel {
 }
 
 export interface ConnectedModel {
-    player: PlayerModel;
+    id: string;
 }
 
 export interface ChallengePlayerModel {

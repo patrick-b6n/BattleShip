@@ -1,15 +1,16 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace BattleShip.Domain
 {
     public class PlayerManager
     {
-        private readonly Dictionary<string, Player> _players;
+        private readonly ConcurrentDictionary<string, Player> _players;
 
         public PlayerManager()
         {
-            _players = new Dictionary<string, Player>();
+            _players = new ConcurrentDictionary<string, Player>();
         }
 
         public IEnumerable<Player> All => _players.Values;
@@ -17,7 +18,7 @@ namespace BattleShip.Domain
         public Player Create(string id)
         {
             var player = new Player(id);
-            _players.Add(player.Id, player);
+            _players.AddOrUpdate(player.Id, player, (k, p) => player);
 
             return player;
         }
@@ -34,12 +35,12 @@ namespace BattleShip.Domain
                 throw new Exception("Player is still in lobby.");
             }
 
-            _players.Remove(player.Id);
+            _players.TryRemove(player.Id, out _);
         }
 
         public void Remove(string id)
         {
-            _players.Remove(id);
+            _players.TryRemove(id, out _);
         }
     }
 }

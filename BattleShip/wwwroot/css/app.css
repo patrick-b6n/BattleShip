@@ -1,0 +1,28 @@
+#game-screen table {
+    border-collapse: collapse;
+}
+
+#game-screen table, #game-screen th, #game-screen td {
+    border: 1px solid black;
+}
+
+#game-screen td {
+    width: 20px;
+    height: 20px;
+}
+
+#game-screen td.free {
+    background-color: lightskyblue;
+}
+
+#game-screen td.ship {
+    background-color: black;
+}
+
+#game-screen td.shiphit {
+    background-color: red;
+}
+
+#game-screen td.miss {
+    background-color: orange;
+}

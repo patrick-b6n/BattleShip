@@ -1,4 +1,5 @@
 ﻿using System;
+using Newtonsoft.Json;
 
 namespace BattleShip.Domain
 {
@@ -33,8 +34,10 @@ namespace BattleShip.Domain
 
         public GamePhase Phase { get; }
 
+        [JsonIgnore]
         public BoardField[,] Player1Board { get; }
 
+        [JsonIgnore]
         public BoardField[,] Player2Board { get; }
     }
 

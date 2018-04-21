@@ -19,7 +19,7 @@ namespace BattleShip.Hubs
         private readonly LobbyManager _lobbyManager;
 
         private Player CurrentPlayer => _playerManager.Get(Context.ConnectionId);
-
+        
         public GameHub(GameManager gameManager,
                        PlayerManager playerManager,
                        LobbyManager lobbyManager)
@@ -32,7 +32,7 @@ namespace BattleShip.Hubs
         public override async Task OnConnectedAsync()
         {
             var player = _playerManager.Create(Context.ConnectionId);
-            await Clients.Caller.SendAsync(Commands.Connected, new ConnectedModel { Player = PlayerModel.Map(player) });
+            await Clients.Caller.SendAsync(Commands.Connected, new ConnectedModel { Id = player.Id });
         }
 
         public override async Task OnDisconnectedAsync(Exception ex)
@@ -55,9 +55,9 @@ namespace BattleShip.Hubs
             // join new lobby
             CurrentPlayer.Join(lobby);
             await Groups.AddAsync(Context.ConnectionId, lobby.IdStr);
-            await Clients.OthersInGroup(lobby.IdStr).SendAsync("PlayerJoined", CurrentPlayer);
-
             await LobbyChanged(lobby);
+
+            await Clients.OthersInGroup(lobby.IdStr).SendAsync("PlayerJoined", CurrentPlayer);
         }
 
         public async Task StartGame(StartGameModel model)
@@ -96,7 +96,10 @@ namespace BattleShip.Hubs
         {
             CurrentPlayer.ChangeName(model.Name);
 
-            await LobbyChanged(CurrentPlayer.Lobby);
+            if (CurrentPlayer.Lobby != null)
+            {
+                await Clients.Group(CurrentPlayer.Lobby.IdStr).SendAsync("PlayerChanged", PlayerModel.Map(CurrentPlayer));
+            }
         }
 
         public async Task LobbyChanged(Lobby lobby)
@@ -164,7 +167,7 @@ namespace BattleShip.Hubs
 
     public class ConnectedModel
     {
-        public PlayerModel Player { get; set; }
+        public string Id { get; set; }
     }
 
     public class PlayerModel

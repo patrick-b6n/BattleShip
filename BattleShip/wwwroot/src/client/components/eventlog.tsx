@@ -1,5 +1,5 @@
 ﻿import { h } from "hyperapp";
-import { Event, EventType } from "../models"
+import { EventEntry as Event, EventType } from "../models"
 
 interface MessageEventArgs {
     event: Event
