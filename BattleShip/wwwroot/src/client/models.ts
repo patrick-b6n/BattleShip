@@ -18,12 +18,6 @@ export class GameState {
     opponent: PlayerModel = null;
     playerBoard = createTwoDimArray(10, 10, BoardField.Free);
     opponentBoard = createTwoDimArray(10, 10, BoardField.Free);
-
-    constructor() {
-        this.playerBoard[5][1] = BoardField.Ship;
-        this.playerBoard[6][2] = BoardField.ShipHit;
-        this.playerBoard[7][3] = BoardField.Miss;
-    }
 }
 
 export enum EventType {

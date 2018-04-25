@@ -1,6 +1,7 @@
 ﻿import { h } from "hyperapp";
 import * as cl from "classnames";
 import { BoardField, GameState, PlayerModel } from "../models";
+import { placeShipsRandomly } from "../helper";
 
 export interface GameArgs {
     player: PlayerModel;
@@ -13,9 +14,10 @@ export interface BoardArgs {
 }
 
 export const gameActions = {
-    gameStarted: (model: any) => () => {
+    gameStarted: (model: any) => (state: GameState) => {
         const opponent = model.model.game.player1.id === model.player.id ? model.model.game.player2 : model.model.game.player1;
-        return { isActive: true, opponent: opponent }
+        placeShipsRandomly(state.playerBoard);
+        return { isActive: true, opponent: opponent, playerBoard: state.playerBoard }
     }
 };
 
