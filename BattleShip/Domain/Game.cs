@@ -20,8 +20,8 @@ namespace BattleShip.Domain
             {
                 for (var j = 0; j < 10; j++)
                 {
-                    Player1Board[i,j] = BoardField.Free;
-                    Player2Board[i,j] = BoardField.Free;
+                    Player1Board[i, j] = BoardField.Free;
+                    Player2Board[i, j] = BoardField.Free;
                 }
             }
         }
@@ -39,6 +39,11 @@ namespace BattleShip.Domain
 
         [JsonIgnore]
         public BoardField[,] Player2Board { get; }
+
+        public Player GetOpponent(Player currentPlayer)
+        {
+            return Player1 == currentPlayer ? Player2 : Player1;
+        }
     }
 
     public enum BoardField

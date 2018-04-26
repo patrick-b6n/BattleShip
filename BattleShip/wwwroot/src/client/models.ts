@@ -20,6 +20,16 @@ export class GameState {
     opponentBoard = createTwoDimArray(10, 10, BoardField.Free);
 }
 
+export class Shot {
+    readonly x: number;
+    readonly y: number;
+
+    constructor(x: number, y: number) {
+        this.x = x;
+        this.y = y;
+    }
+}
+
 export enum EventType {
     Message,
     Challenge
@@ -67,12 +77,18 @@ export interface StartGameModel {
 }
 
 export interface GameModel {
-    id: string,
-    player1: PlayerModel,
-    player2: PlayerModel,
-    phase: string
+    id: string;
+    player1: PlayerModel;
+    player2: PlayerModel;
+    phase: string;
 }
 
 export interface GameStartedModel {
     game: GameModel;
+}
+
+export interface ShotModel {
+    x: number;
+    y: number;
+    result: BoardField;
 }

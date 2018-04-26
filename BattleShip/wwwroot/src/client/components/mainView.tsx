@@ -16,6 +16,6 @@ export const MainView = (args: CurrentViewArgs) => {
                             onPlayerNameChanged={args.actions.onPlayerNameChanged}/>
     }
     else {
-        return <GameScreen actions={args.actions} state={args.state.game} player={args.state.player}/>
+        return <GameScreen actions={args.actions.game} state={args.state.game} player={args.state.player}/>
     }
 };

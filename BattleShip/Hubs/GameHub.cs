@@ -19,7 +19,7 @@ namespace BattleShip.Hubs
         private readonly LobbyManager _lobbyManager;
 
         private Player CurrentPlayer => _playerManager.Get(Context.ConnectionId);
-        
+
         public GameHub(GameManager gameManager,
                        PlayerManager playerManager,
                        LobbyManager lobbyManager)
@@ -115,6 +115,16 @@ namespace BattleShip.Hubs
                 await Clients.Caller.SendAsync("EnterLobby", model);
             }
         }
+
+        public async Task FireShot(ShotModel model)
+        {
+            await Clients.Client(CurrentPlayer.Game.GetOpponent(CurrentPlayer).Id).SendAsync("ShotFired", model);
+        }
+
+        public async Task ShotResult(ShotModel model)
+        {
+            await Clients.Client(CurrentPlayer.Game.GetOpponent(CurrentPlayer).Id).SendAsync("ShotResult", model);
+        }
     }
 
     public class GameStartedModel
@@ -179,5 +189,12 @@ namespace BattleShip.Hubs
         {
             return new PlayerModel { Id = player.Id, Name = player.Name };
         }
+    }
+
+    public class ShotModel
+    {
+        public int X { get; set; }
+        public int Y { get; set; }
+        public BoardField Result { get; set; }
     }
 }

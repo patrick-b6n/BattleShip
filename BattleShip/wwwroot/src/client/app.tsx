@@ -5,6 +5,7 @@ import {
     EnterLobbyAnswerModel,
     GameStartedModel,
     PlayerModel,
+    ShotModel,
     State
 } from "./models";
 import { GameHub } from "./gameHub";
@@ -81,4 +82,12 @@ gamehub.on(GameHub.Commands.GameStarted, function (model: GameStartedModel) {
 
 gamehub.on(GameHub.Commands.PlayerChanged, function (model: PlayerModel) {
     happ.lobby.playerChanged(model);
+});
+
+gamehub.on(GameHub.Commands.ShotFired, function (model: ShotModel) {
+    happ.game.shotFired(model);
+});
+
+gamehub.on(GameHub.Commands.ShotResult, function (model: ShotModel) {
+    happ.game.onShotResult(model);
 });

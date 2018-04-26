@@ -1,18 +1,31 @@
+html,
+body {
+    font-family: sans-serif;
+    font-size: 16px;
+    line-height: 1.5rem;
+}
+
+.ta-center {
+    text-align: center;
+}
+
 #game-screen table {
     border-collapse: collapse;
 }
 
-#game-screen table, #game-screen th, #game-screen td {
-    border: 1px solid black;
+#game-screen td {
+    border: 1px solid #aaa;
+    width: 32px;
+    height: 32px;
+    text-align: center;
 }
 
-#game-screen td {
-    width: 20px;
-    height: 20px;
+#game-screen td.marker {
+    border: 0;
 }
 
 #game-screen td.free {
-    background-color: lightskyblue;
+    background-color: #fdfdfd;
 }
 
 #game-screen td.ship {
@@ -20,7 +33,7 @@
 }
 
 #game-screen td.shiphit {
-    background-color: red;
+    background-color: rgba(255, 0, 0, 0.75);
 }
 
 #game-screen td.miss {
