@@ -1,31 +1,57 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BattleShip.Domain
 {
     public class GameManager
     {
-        private readonly ConcurrentDictionary<Guid, Game> _games;
+        private readonly ConcurrentDictionary<Guid, IEnumerable<Player>> _gameIdToPlayers;
 
         public GameManager()
         {
-            _games = new ConcurrentDictionary<Guid, Game>();
+            _gameIdToPlayers = new ConcurrentDictionary<Guid, IEnumerable<Player>>();
         }
 
-        public IEnumerable<Game> All => _games.Values;
+        public IReadOnlyDictionary<Guid, IEnumerable<Player>> All => _gameIdToPlayers;
 
-        public Game NewGame(Player player1, Player player2)
+        public IEnumerable<Player> Get(Guid gameId)
         {
-            var game = new Game(player1, player2);
-            _games.AddOrUpdate(game.Id, game, (id, g) => game);
-
-            return game;
+            return _gameIdToPlayers.GetValueOrDefault(gameId, Enumerable.Empty<Player>());
         }
 
-        public Game Get(Guid gameId)
+        public Guid NewGame(Player player1, Player player2)
         {
-            return _games.TryGetValue(gameId, out var game) ? game : null;
+            var gameId = Guid.NewGuid();
+
+            var players = new List<Player> { player1, player2 };
+            _gameIdToPlayers.TryAdd(gameId, players);
+
+            player1.JoinGame(gameId);
+            player2.JoinGame(gameId);
+
+            return gameId;
+        }
+
+        public IEnumerable<Player> RemoveGame(Guid gameId)
+        {
+            if (_gameIdToPlayers.TryRemove(gameId, out var players))
+            {
+                return players;
+            }
+
+            return Enumerable.Empty<Player>();
+        }
+
+        public Player GetOpponent(Player player)
+        {
+            if (_gameIdToPlayers.TryGetValue(player.GameId, out var players))
+            {
+                return players.FirstOrDefault(p => p != player);
+            }
+
+            return null;
         }
     }
 }

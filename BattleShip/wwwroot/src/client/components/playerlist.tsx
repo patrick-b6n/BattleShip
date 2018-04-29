@@ -10,7 +10,7 @@ interface PlayerListArgs {
 export const PlayerList = (args: PlayerListArgs) => (
     <div style={{ border: "1px solid black", padding: "1rem" }}>
         {args.players.map(p => <div>{p.name}
-            {p.id !== args.player.id &&
+            {p.playerId !== args.player.playerId &&
             <button onclick={() => args.challengePlayer(p)}>Challenge</button>
             }
         </div>)}

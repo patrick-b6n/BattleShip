@@ -1,4 +1,3 @@
-using System.Linq;
 using BattleShip.Domain;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,8 +6,8 @@ namespace BattleShip.Controllers
     public class StatsController : Controller
     {
         private readonly GameManager _gameManager;
-        private readonly PlayerManager _playerManager;
         private readonly LobbyManager _lobbyManager;
+        private readonly PlayerManager _playerManager;
 
         public StatsController(GameManager gameManager,
                                PlayerManager playerManager,

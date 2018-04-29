@@ -1,35 +1,3 @@
-import { createTwoDimArray, generateName } from "./helper";
-
-export class State {
-    player: PlayerModel = { id: "", name: generateName() };
-    lobby: LobbyState = new LobbyState();
-    game: GameState = new GameState();
-}
-
-export class LobbyState {
-    playerNameInput = "";
-    lobbyId = "";
-    playersInLobby: PlayerModel[] = [];
-    events: EventEntry[] = [];
-}
-
-export class GameState {
-    isActive = false;
-    opponent: PlayerModel = null;
-    playerBoard = createTwoDimArray(10, 10, BoardField.Free);
-    opponentBoard = createTwoDimArray(10, 10, BoardField.Free);
-}
-
-export class Shot {
-    readonly x: number;
-    readonly y: number;
-
-    constructor(x: number, y: number) {
-        this.x = x;
-        this.y = y;
-    }
-}
-
 export enum EventType {
     Message,
     Challenge
@@ -42,53 +10,100 @@ export enum BoardField {
     ShipHit
 }
 
+export class Shot {
+    readonly x: number;
+    readonly y: number;
+
+    constructor(x: number, y: number) {
+        this.x = x;
+        this.y = y;
+    }
+}
+
+export class ShotFeedback {
+    readonly x: number;
+    readonly y: number;
+    readonly remainingShipCount: number;
+    readonly result: BoardField;
+
+    constructor(x: number, y: number, remainingShipCount: number, result: BoardField) {
+        this.x = x;
+        this.y = y;
+        this.remainingShipCount = remainingShipCount;
+        this.result = result;
+    }
+}
+
 export class EventEntry {
+    date: Date;
     type: EventType;
     message: string;
-    data: any;
+    data: any | null;
 
     constructor(message: string, type: EventType = EventType.Message, data: any = null) {
-        this.message = message;
+        this.date = new Date();
         this.type = type;
+        this.message = message;
         this.data = data;
     }
 }
 
-export interface PlayerModel {
-    id: string;
-    name: string;
+export interface ConnectedModel {
+    playerId: string;
 }
 
-export interface EnterLobbyAnswerModel {
-    id: string;
+export interface EnterLobbyModel {
+    lobbyId: string;
+}
+
+export interface LobbyEnteredModel {
+    lobbyId: string;
     players: PlayerModel[];
 }
 
-export interface ConnectedModel {
-    id: string;
+export interface PlayerModel {
+    playerId: string;
+    name: string;
 }
 
 export interface ChallengePlayerModel {
-    player: PlayerModel;
+    playerId: string;
+}
+
+export interface AcceptChallengeModel {
+    playerId: string;
 }
 
 export interface StartGameModel {
-    player: PlayerModel;
+    game: GameModel;
+    firstTurn: boolean
 }
 
 export interface GameModel {
-    id: string;
+    gameId: string;
     player1: PlayerModel;
     player2: PlayerModel;
-    phase: string;
 }
 
-export interface GameStartedModel {
-    game: GameModel;
+export interface GameStateModel {
+    gameId: string,
+    currentPlayerId: string,
+    winnerPlayerId: string | null,
+    disconnect: boolean
 }
 
-export interface ShotModel {
+export interface UpdatePlayerModel {
+    name: string;
+}
+
+export interface FireShotModel {
+    x: number;
+    y: number;
+}
+
+export interface ShotFeedbackModel {
     x: number;
     y: number;
     result: BoardField;
+    remainingShipCount: number;
 }

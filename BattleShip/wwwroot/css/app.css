@@ -13,11 +13,16 @@ body {
     border-collapse: collapse;
 }
 
+#game-screen table.disabled td{
+    cursor: default;
+}
+
 #game-screen td {
     border: 1px solid #aaa;
     width: 32px;
     height: 32px;
     text-align: center;
+    cursor: crosshair;
 }
 
 #game-screen td.marker {
@@ -37,5 +42,14 @@ body {
 }
 
 #game-screen td.miss {
-    background-color: orange;
+    background-color: lightskyblue;
+}
+
+#game-screen .turn-overlay{
+    position:  absolute;
+    top: 0;
+    left:  0;
+    right: -1px;
+    bottom:  0;
+    background-color: rgba(255,255,255,0.5);
 }

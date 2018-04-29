@@ -1,26 +1,39 @@
 import * as signalr from "@aspnet/signalr";
-import { BoardField, ChallengePlayerModel, PlayerModel as Player, Shot, ShotModel, StartGameModel } from "./models";
+import {
+    AcceptChallengeModel,
+    ChallengePlayerModel,
+    EnterLobbyModel,
+    FireShotModel,
+    GameStateModel,
+    PlayerModel,
+    Shot,
+    ShotFeedback,
+    ShotFeedbackModel,
+    UpdatePlayerModel
+} from "./models";
 
 export class GameHub {
-
     private static instance: GameHub;
     private connection: signalr.HubConnection;
 
     public static Commands = {
+        AcceptChallenge: "AcceptChallenge",
+        ChallengePlayer: "ChallengePlayer",
+        ChallengeRequest: "ChallengeRequest",
         Connected: "Connected",
-        SetPlayerName: "SetPlayerName",
-        EnterLobby: "EnterLobby",
         CreateLobby: "CreateLobby",
+        EnterLobby: "EnterLobby",
+        FireShot: "FireShot",
+        GameState: "GameState",
+        LeaveGame: "LeaveGame",
+        LobbyEntered: "LobbyEntered",
+        PlayerChanged: "PlayerChanged",
         PlayerJoined: "PlayerJoined",
         PlayerLeft: "PlayerLeft",
-        PlayerChanged: "PlayerChanged",
-        ChallengePlayer: "challengePlayer",
-        ChallengeRequest: "challengeRequest",
-        StartGame: "StartGame",
-        GameStarted: "GameStarted",
-        FireShot: "FireShot",
         ShotFired: "ShotFired",
-        ShotResult: "ShotResult"
+        ShotFeedback: "ShotFeedback",
+        StartGame: "StartGame",
+        UpdatePlayer: "UpdatePlayer"
     };
 
     private constructor() {
@@ -34,54 +47,65 @@ export class GameHub {
         return GameHub.instance;
     }
 
-    public connected(name: string) {
-        this.connection.send(GameHub.Commands.Connected, {
-            name: name
-        });
-    }
-
     public setPlayerName(name: string) {
-        this.connection.send(GameHub.Commands.SetPlayerName, {
+        const model: UpdatePlayerModel = {
             name: name
-        });
+        };
+
+        this.connection.send(GameHub.Commands.UpdatePlayer, model);
     }
 
     public enterLobby(id: string) {
-        this.connection.send(GameHub.Commands.EnterLobby, {
-            id: id
-        });
+        const model: EnterLobbyModel = {
+            lobbyId: id
+        };
+
+        this.connection.send(GameHub.Commands.EnterLobby, model);
     }
 
-    public challengePlayer(player: Player): any {
+    public challengePlayer(player: PlayerModel): any {
         const model: ChallengePlayerModel = {
-            player: player
+            playerId: player.playerId
         };
         this.connection.send(GameHub.Commands.ChallengePlayer, model);
     }
 
-    public startGame(player: Player): any {
-        const model: StartGameModel = {
-            player: player
+    public acceptChallenge(playerId: string): any {
+        const model: AcceptChallengeModel = {
+            playerId: playerId
         };
-        this.connection.send(GameHub.Commands.StartGame, model);
+        this.connection.send(GameHub.Commands.AcceptChallenge, model);
     }
 
     public fireShot(shot: Shot): any {
-        const model: ShotModel = {
+        const model: FireShotModel = {
             x: shot.x,
             y: shot.y,
-            result: BoardField.Free
         };
 
         this.connection.send(GameHub.Commands.FireShot, model);
     }
 
-    public shotResult(model: ShotModel): any {
-        this.connection.send(GameHub.Commands.ShotResult, model);
+    public shotFeedback(feedback: ShotFeedback): any {
+        const model: ShotFeedbackModel = {
+            x: feedback.x,
+            y: feedback.y,
+            remainingShipCount: feedback.remainingShipCount,
+            result: feedback.result
+        };
+        this.connection.send(GameHub.Commands.ShotFeedback, model);
     }
 
     public start(): Promise<void> {
         return this.connection.start();
+    }
+
+    public gameState(model: GameStateModel) {
+        this.connection.send(GameHub.Commands.GameState, model);
+    }
+
+    public leaveGame() {
+        this.connection.send(GameHub.Commands.LeaveGame);
     }
 
     public on(name: string, args: (...args: any[]) => void) {

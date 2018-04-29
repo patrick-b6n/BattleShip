@@ -38,10 +38,7 @@ namespace BattleShip
             app.UseStaticFiles();
             app.UseMvc(routes => { routes.MapRoute("default", "{controller=Game}/{action=Index}"); });
 
-            app.UseSignalR(routes =>
-            {
-                routes.MapHub<GameHub>("/hubs/game");
-            });
+            app.UseSignalR(routes => { routes.MapHub<GameHub>("/hubs/game"); });
         }
     }
 }

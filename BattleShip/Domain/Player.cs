@@ -17,7 +17,7 @@ namespace BattleShip.Domain
         public Lobby Lobby { get; private set; }
 
         [JsonIgnore]
-        public Game Game { get; private set; }
+        public Guid GameId { get; private set; }
 
         public string Name { get; private set; }
 
@@ -32,11 +32,11 @@ namespace BattleShip.Domain
             Lobby.Join(this);
         }
 
-        public void Join(Game game)
+        public void JoinGame(Guid gameId)
         {
-            Game = game;
+            GameId = gameId;
         }
-
+        
         public Lobby LeaveLobby()
         {
             Lobby.Leave(this);

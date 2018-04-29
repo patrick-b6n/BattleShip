@@ -1,7 +1,7 @@
 ﻿import { h } from "hyperapp";
-import { State } from "../models";
 import { GameScreen } from "./game";
 import { LobbyScreen } from "./lobby";
+import { State } from "../states";
 
 interface CurrentViewArgs {
     state: State;
@@ -9,10 +9,8 @@ interface CurrentViewArgs {
 }
 
 export const MainView = (args: CurrentViewArgs) => {
-    if (args.state.game.isActive === false) {
-        return <LobbyScreen player={args.state.player}
-                            lobby={args.state.lobby}
-                            actions={args.actions.lobby}
+    if (null === args.state.game.gameId) {
+        return <LobbyScreen player={args.state.player} lobby={args.state.lobby} actions={args.actions.lobby}
                             onPlayerNameChanged={args.actions.onPlayerNameChanged}/>
     }
     else {

@@ -2,16 +2,18 @@ import { app, h } from "hyperapp";
 import {
     ChallengePlayerModel,
     ConnectedModel,
-    EnterLobbyAnswerModel,
-    GameStartedModel,
+    FireShotModel,
+    GameStateModel,
+    LobbyEnteredModel,
     PlayerModel,
-    ShotModel,
-    State
+    ShotFeedbackModel,
+    StartGameModel
 } from "./models";
 import { GameHub } from "./gameHub";
-import { lobbyActions } from "./components/lobby";
 import { MainView } from "./components/mainView";
-import { gameActions } from "./components/game";
+import { lobbyActions } from "./components/lobby.actions";
+import { gameActions } from "./components/game.actions";
+import { State } from "./states";
 
 const gamehub = GameHub.getInstance();
 
@@ -21,15 +23,19 @@ const actions = {
     lobby: lobbyActions,
     game: gameActions,
     onConnected: (model: ConnectedModel) => (state: State) => {
-        state.player.id = model.id;
+        state.player.playerId = model.playerId;
         return { player: state.player }
     },
     onPlayerNameChanged: (model: string) => (state: State) => {
         state.player.name = model;
         return { player: state.player }
     },
-    onGameStarted: (model: GameStartedModel) => (state: State, actions: any) => {
-        actions.game.gameStarted({ player: state.player, model: model });
+    onStartGame: (model: StartGameModel) => (state: State, actions: any) => {
+        actions.game.startGame({ model: model, player: state.player });
+    },
+    onPlayerLeft: (model: PlayerModel) => (state: State, actions: any) => {
+        actions.lobby.playerLeft(model);
+        actions.game.playerLeft(model);
     }
 };
 
@@ -60,34 +66,38 @@ gamehub.on(GameHub.Commands.Connected, function (model: ConnectedModel) {
     happ.onConnected(model);
 });
 
-gamehub.on(GameHub.Commands.EnterLobby, function (message: EnterLobbyAnswerModel) {
-    happ.lobby.enterLobby(message);
+gamehub.on(GameHub.Commands.LobbyEntered, function (model: LobbyEnteredModel) {
+    happ.lobby.lobbyEntered(model);
 });
 
-gamehub.on(GameHub.Commands.PlayerJoined, function (player: PlayerModel) {
-    happ.lobby.playerJoined(player);
+gamehub.on(GameHub.Commands.PlayerJoined, function (model: PlayerModel) {
+    happ.lobby.playerJoined(model);
 });
 
-gamehub.on(GameHub.Commands.PlayerLeft, function (player: PlayerModel) {
-    happ.lobby.playerLeft(player);
+gamehub.on(GameHub.Commands.PlayerLeft, function (model: PlayerModel) {
+    happ.onPlayerLeft(model);
 });
 
 gamehub.on(GameHub.Commands.ChallengeRequest, function (model: ChallengePlayerModel) {
     happ.lobby.challengeRequest(model);
 });
 
-gamehub.on(GameHub.Commands.GameStarted, function (model: GameStartedModel) {
-    happ.onGameStarted(model);
+gamehub.on(GameHub.Commands.StartGame, function (model: StartGameModel) {
+    happ.onStartGame(model);
 });
 
 gamehub.on(GameHub.Commands.PlayerChanged, function (model: PlayerModel) {
     happ.lobby.playerChanged(model);
 });
 
-gamehub.on(GameHub.Commands.ShotFired, function (model: ShotModel) {
+gamehub.on(GameHub.Commands.ShotFired, function (model: FireShotModel) {
     happ.game.shotFired(model);
 });
 
-gamehub.on(GameHub.Commands.ShotResult, function (model: ShotModel) {
-    happ.game.onShotResult(model);
+gamehub.on(GameHub.Commands.ShotFeedback, function (model: ShotFeedbackModel) {
+    happ.game.onShotFeedback(model);
+});
+
+gamehub.on(GameHub.Commands.GameState, function (model: GameStateModel) {
+    happ.game.onGameState(model);
 });

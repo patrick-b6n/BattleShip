@@ -1,36 +1,45 @@
 ﻿import { h } from "hyperapp";
-import { EventEntry as Event, EventType } from "../models"
+import { EventEntry, EventType } from "../models"
 
-interface MessageEventArgs {
-    event: Event
+interface EventArgs {
+    event: EventEntry
 }
-
-export const MessageEvent = (args: MessageEventArgs) => (
-    <div>{args.event.message}</div>
-);
-
-export const ChallengeEvent = (args: MessageEventArgs) => (
-    <div>{args.event.message}
-        <button onclick={() => args.event.data.accept()}>Accept</button>
-    </div>
-);
 
 interface EventLogArgs {
-    events: Event[]
+    events: EventEntry[]
 }
 
-export const EventLog = (args: EventLogArgs) => (
-    <div id="event-log" style={{overflowY: "scroll", height: "200px", border: "1px solid black", padding: "1rem"}}>
-        {args.events.map(e => RenderEvent(e))}
+export const EventMessageTime = (args: any) => (
+    <span style={{ fontWeight: "bold" }}>{args.date.toLocaleTimeString()}</span>
+);
+
+export const MessageEvent = (args: EventArgs) => (
+    <div style={{ display: "flex" }}>
+        <EventMessageTime date={args.event.date}/>
+        <div style={{ paddingLeft: "1rem" }}>{args.event.message}</div>
     </div>
 );
 
-function RenderEvent(e: Event) {
-    switch (e.type) {
-        case EventType.Message:
-            return <MessageEvent event={e}/>;
-        case EventType.Challenge:
-            return <ChallengeEvent event={e}/>;
-    }
-}
+export const ChallengeEvent = (args: EventArgs) => (
+    <div style={{ display: "flex" }}>
+        <EventMessageTime date={args.event.date}/>
+        <div style={{ paddingLeft: "1rem" }}>{args.event.message}</div>
+        <div style={{ paddingLeft: "1rem" }}>
+            <button onclick={() => args.event.data.accept()}>Accept</button>
+        </div>
+    </div>
+);
+
+export const EventLog = (args: EventLogArgs) => (
+    <div id="event-log" style={{ overflowY: "scroll", height: "200px", border: "1px solid black", padding: "1rem" }}>
+        {args.events.map(e => {
+            switch (e.type) {
+                case EventType.Message:
+                    return <MessageEvent event={e}/>;
+                case EventType.Challenge:
+                    return <ChallengeEvent event={e}/>;
+            }
+        })}
+    </div>
+);
 
