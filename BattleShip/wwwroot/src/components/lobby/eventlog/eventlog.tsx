@@ -14,14 +14,14 @@ export const EventMessageTime = (args: any) => (
 );
 
 export const MessageEvent = (args: EventArgs) => (
-    <div style={{ display: "flex" }}>
+    <div style={{ display: "flex", height:"2rem" }}>
         <EventMessageTime date={args.event.date}/>
         <div style={{ paddingLeft: "1rem" }}>{args.event.message}</div>
     </div>
 );
 
 export const ChallengeEvent = (args: EventArgs) => (
-    <div style={{ display: "flex" }}>
+    <div style={{ display: "flex", height:"2rem" }}>
         <EventMessageTime date={args.event.date}/>
         <div style={{ paddingLeft: "1rem" }}>{args.event.message}</div>
         <div style={{ paddingLeft: "1rem" }}>

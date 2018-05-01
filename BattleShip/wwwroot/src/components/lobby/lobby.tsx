@@ -19,16 +19,8 @@ export const LobbyScreen = (args: LobbyArgs) => (
             <div className="hero-body">
                 <div className="container">
                     <h1 className="title">
-                        Hello {args.lobby.playerNameInput}!
-                        {/*<input className="input" type="text" value={args.lobby.playerNameInput}*/}
-                        {/*onInput={(e: Event) => args.actions.onPlayerNameInput((e.target as HTMLInputElement).value)}/>*/}
-                        {/*<button className="button" onClick={() => args.actions.sendPlayerName({ callback: args.onPlayerNameChanged })}>*/}
-                        {/*Set*/}
-                        {/*</button>*/}
+                        Hello {args.lobby.playerName}!
                     </h1>
-                    {/*<h2 class="subtitle">*/}
-                    {/*Current lobby: {args.lobby.lobbyId}*/}
-                    {/*</h2>*/}
                 </div>
             </div>
         </section>

@@ -30,9 +30,11 @@ const actions = {
         state.player.playerId = model.playerId;
         return { player: state.player }
     },
-    onPlayerNameChanged: (model: string) => (state: State) => {
+    setPlayerName: (model: string) => (state: State) => {
         state.player.name = model;
-        return { player: state.player }
+        state.lobby.playerName = model;
+        gamehub.setPlayerName(model);
+        return { player: state.player, lobby: state.lobby }
     },
     onStartGame: (model: StartGameModel) => (state: State, actions: any) => {
         actions.game.startGame({ model: model, player: state.player });
@@ -58,14 +60,15 @@ Swal({
     title: 'What is your nickname?',
     input: 'text',
     inputPlaceholder: 'Enter your nickname',
+    allowOutsideClick: false,
+    allowEscapeKey: false,
     inputValidator: (value) => {
         return !value && 'You need to write something!'
     }
 }).then((result) => {
         // bind global events
         gamehub.start().then(function () {
-            gamehub.setPlayerName(result.value);
-            happ.onPlayerNameChanged(result.value);
+            happ.setPlayerName(result.value);
 
             const params = new URLSearchParams(location.search.slice(1));
             const lobbyId = params.get("lobby");

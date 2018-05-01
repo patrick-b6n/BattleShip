@@ -8,8 +8,8 @@ export class State {
 }
 
 export class LobbyState {
-    playerNameInput = "";
     lobbyId = "";
+    playerName = "...";
     playersInLobby: PlayerModel[] = [];
     events: EventEntry[] = [];
 }

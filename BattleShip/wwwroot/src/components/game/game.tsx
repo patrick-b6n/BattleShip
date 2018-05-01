@@ -25,24 +25,36 @@ const TurnMarker = (args: TurnMarkerArgs) => {
 
 export const GameScreen = (args: GameArgs) => (
     <div id="game-screen">
-        <button onclick={() => args.actions.backToLobby()}>Quit game</button>
-        <h2 class="ta-center">
-            {args.player.name} vs. {args.state.opponent.name}
-        </h2>
 
-        <div style={{ display: "flex", justifyContent: "center" }}>
-            <TurnMarker isMyTurn={args.state.isMyTurn}/>
+        <section className="hero is-light">
+            <div className="hero-body">
+                <div className="container">
+                    <h1 className="title has-text-centered">
+                        {args.player.name} vs. {args.state.opponent.name}
+                    </h1>
+                    <h2 class="subtitle has-text-centered">
+                        <TurnMarker isMyTurn={args.state.isMyTurn}/>
+                    </h2>
+                </div>
+            </div>
+        </section>
+
+        <div class="container pt-3">
+            <div class="columns is-centered">
+                <div class="column">
+                    <Board board={args.state.playerBoard} onCellClick={args.actions.noop} isEnabled={false}/>
+                </div>
+                <div class="column" style={{ position: "relative" }}>
+                    {!args.state.isMyTurn && <div class="turn-overlay"/>}
+                    <Board board={args.state.opponentBoard} onCellClick={args.actions.fireShot} isEnabled={args.state.isMyTurn}/>
+                </div>
+            </div>
         </div>
 
-        <div style={{ display: "flex", justifyContent: "center" }}>
-            <div>
-                <Board board={args.state.playerBoard} onCellClick={args.actions.noop} isEnabled={false}/>
+        <div class="container pt-3">
+            <div class="columns is-centered">
+                <button class="button" onClick={() => args.actions.backToLobby()}>Quit game</button>
             </div>
-            <div style={{ width: "5rem" }}>
-            </div>
-            <div style={{ position: "relative" }}>
-                {!args.state.isMyTurn && <div class="turn-overlay"/>}
-                <Board board={args.state.opponentBoard} onCellClick={args.actions.fireShot} isEnabled={args.state.isMyTurn}/></div>
         </div>
     </div>
 );
