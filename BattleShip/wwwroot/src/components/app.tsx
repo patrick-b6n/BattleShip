@@ -17,6 +17,7 @@ import { MainView } from "@src/components/mainView";
 import 'bulma/css/bulma.css'
 import './app.scss'
 import { Navbar } from "@src/components/navbar/navbar";
+import Swal from 'sweetalert2'
 
 const gamehub = GameHub.getInstance();
 
@@ -53,19 +54,44 @@ const view = (state: State, actions: any) => (
 // compose hyperapp
 const happ = app(state, actions, view, document.getElementById("app"));
 
-// bind global events
-gamehub.start().then(function () {
-    gamehub.setPlayerName(state.player.name);
-
-    const params = new URLSearchParams(location.search.slice(1));
-    const lobbyId = params.get("lobby");
-
-    if (lobbyId) {
-        gamehub.enterLobby(lobbyId);
-    } else {
-        gamehub.enterLobby("F93B7255-6B78-42B0-A16B-AB80B9F57DD5");
+Swal({
+    title: 'What is your nickname?',
+    input: 'text',
+    inputPlaceholder: 'Enter your nickname',
+    inputValidator: (value) => {
+        return !value && 'You need to write something!'
     }
-});
+}).then((result) => {
+        // bind global events
+        gamehub.start().then(function () {
+            gamehub.setPlayerName(result.value);
+            happ.onPlayerNameChanged(result.value);
+
+            const params = new URLSearchParams(location.search.slice(1));
+            const lobbyId = params.get("lobby");
+
+            if (lobbyId) {
+                gamehub.enterLobby(lobbyId);
+            } else {
+                gamehub.enterLobby("F93B7255-6B78-42B0-A16B-AB80B9F57DD5");
+            }
+        });
+    }
+);
+
+// bind global events
+// gamehub.start().then(function () {
+//     gamehub.setPlayerName(state.player.name);
+//
+//     const params = new URLSearchParams(location.search.slice(1));
+//     const lobbyId = params.get("lobby");
+//
+//     if (lobbyId) {
+//         gamehub.enterLobby(lobbyId);
+//     } else {
+//         gamehub.enterLobby("F93B7255-6B78-42B0-A16B-AB80B9F57DD5");
+//     }
+// });
 
 gamehub.on(GameHub.Commands.Connected, function (model: ConnectedModel) {
     happ.onConnected(model);

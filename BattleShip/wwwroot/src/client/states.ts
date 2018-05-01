@@ -1,8 +1,8 @@
-﻿import { createTwoDimArray, generateName } from "@src/client/helper";
+﻿import { createTwoDimArray } from "@src/client/helper";
 import { BoardField, EventEntry, PlayerModel } from "@src/client/models";
 
 export class State {
-    player: PlayerModel = { playerId: "", name: generateName() };
+    player: PlayerModel = { playerId: "", name: "..." };
     lobby: LobbyState = new LobbyState();
     game: GameState = new GameState();
 }
