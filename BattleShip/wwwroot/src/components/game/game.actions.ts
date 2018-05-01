@@ -1,7 +1,7 @@
-import { placeShipsRandomly } from "../helper";
-import { BoardField, FireShotModel, GameStateModel, Shot, ShotFeedback, ShotFeedbackModel } from "../models";
-import { GameHub } from "../gameHub";
-import { GameState } from "../states";
+import { placeShipsRandomly } from "@src/client/helper";
+import { BoardField, FireShotModel, GameStateModel, Shot, ShotFeedback, ShotFeedbackModel } from "@src/client/models";
+import { GameHub } from "@src/client/gameHub";
+import { GameState } from "@src/client/states";
 import Swal from 'sweetalert2'
 
 const gamehub = GameHub.getInstance();

@@ -1,6 +1,6 @@
 import { h } from "hyperapp";
 import * as cl from "classnames";
-import { BoardField } from "../models";
+import { BoardField } from "@src/client/models";
 
 export interface BoardArgs {
     board: Array<Array<BoardField>>;

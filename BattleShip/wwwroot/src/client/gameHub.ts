@@ -10,7 +10,7 @@ import {
     ShotFeedback,
     ShotFeedbackModel,
     UpdatePlayerModel
-} from "./models";
+} from "@src/client/models";
 
 export class GameHub {
     private static instance: GameHub;

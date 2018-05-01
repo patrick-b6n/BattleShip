@@ -1,5 +1,5 @@
-﻿import { createTwoDimArray, generateName } from "./helper";
-import { BoardField, EventEntry, PlayerModel } from "./models";
+﻿import { createTwoDimArray, generateName } from "@src/client/helper";
+import { BoardField, EventEntry, PlayerModel } from "@src/client/models";
 
 export class State {
     player: PlayerModel = { playerId: "", name: generateName() };

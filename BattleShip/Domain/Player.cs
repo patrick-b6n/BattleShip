@@ -36,7 +36,7 @@ namespace BattleShip.Domain
         {
             GameId = gameId;
         }
-        
+
         public Lobby LeaveLobby()
         {
             Lobby.Leave(this);

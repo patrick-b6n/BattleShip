@@ -1,7 +1,7 @@
-import { ChallengePlayerModel, EventEntry, EventType, LobbyEnteredModel, PlayerModel } from "../models";
+import { ChallengePlayerModel, EventEntry, EventType, LobbyEnteredModel, PlayerModel } from "@src/client/models";
 import { LobbyArgs } from "./lobby";
-import { GameHub } from "../gameHub";
-import { LobbyState } from "../states";
+import { GameHub } from "@src/client/gameHub";
+import { LobbyState } from "@src/client/states";
 
 const gamehub = GameHub.getInstance();
 
@@ -58,7 +58,7 @@ export const lobbyActions = {
         },
     lobbyEntered:
         (value: LobbyEnteredModel) => (state: LobbyState, actions: any) => {
-            actions.addEvent(new EventEntry(`Lobby ${value.lobbyId} entered`));
+            actions.addEvent(new EventEntry(`You joined Lobby ${value.lobbyId}`));
             return { lobbyId: value.lobbyId, playersInLobby: value.players };
         },
     challengePlayer:

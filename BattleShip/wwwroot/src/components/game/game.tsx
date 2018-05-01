@@ -1,7 +1,8 @@
 ﻿import { h } from "hyperapp";
-import { Board } from "./board";
-import { GameState } from "../states";
-import { PlayerModel } from "../models";
+import { GameState } from "@src/client/states";
+import { PlayerModel } from "@src/client/models";
+import { Board } from "@src/components/game/board/board";
+import "./game.scss"
 
 export interface GameArgs {
     player: PlayerModel;

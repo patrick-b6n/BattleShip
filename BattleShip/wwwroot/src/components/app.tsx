@@ -1,4 +1,8 @@
 import { app, h } from "hyperapp";
+import { GameHub } from "@src/client/gameHub";
+import { State } from "@src/client/states";
+import { lobbyActions } from "@src/components/lobby/lobby.actions";
+import { gameActions } from "@src/components/game/game.actions";
 import {
     ChallengePlayerModel,
     ConnectedModel,
@@ -8,12 +12,11 @@ import {
     PlayerModel,
     ShotFeedbackModel,
     StartGameModel
-} from "./models";
-import { GameHub } from "./gameHub";
-import { MainView } from "./components/mainView";
-import { lobbyActions } from "./components/lobby.actions";
-import { gameActions } from "./components/game.actions";
-import { State } from "./states";
+} from "@src/client/models";
+import { MainView } from "@src/components/mainView";
+import 'bulma/css/bulma.css'
+import './app.scss'
+import { Navbar } from "@src/components/navbar/navbar";
 
 const gamehub = GameHub.getInstance();
 
@@ -41,6 +44,8 @@ const actions = {
 
 const view = (state: State, actions: any) => (
     <div>
+        <Navbar/>
+
         <MainView state={state} actions={actions}/>
     </div>
 );

@@ -1,4 +1,4 @@
-﻿import { BoardField } from "./models";
+﻿import { BoardField } from "@src/client/models";
 
 export function generateName() {
     const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";

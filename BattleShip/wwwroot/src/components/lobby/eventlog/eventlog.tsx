@@ -1,5 +1,5 @@
 ﻿import { h } from "hyperapp";
-import { EventEntry, EventType } from "../models"
+import { EventEntry, EventType } from "@src/client/models"
 
 interface EventArgs {
     event: EventEntry
@@ -25,13 +25,13 @@ export const ChallengeEvent = (args: EventArgs) => (
         <EventMessageTime date={args.event.date}/>
         <div style={{ paddingLeft: "1rem" }}>{args.event.message}</div>
         <div style={{ paddingLeft: "1rem" }}>
-            <button onclick={() => args.event.data.accept()}>Accept</button>
+            <button class="button is-small is-primary" onclick={() => args.event.data.accept()}>Accept</button>
         </div>
     </div>
 );
 
 export const EventLog = (args: EventLogArgs) => (
-    <div id="event-log" style={{ overflowY: "scroll", height: "200px", border: "1px solid black", padding: "1rem" }}>
+    <div id="event-log" style={{ overflowY: "auto", height: "400px", padding: "1rem" }}>
         {args.events.map(e => {
             switch (e.type) {
                 case EventType.Message:

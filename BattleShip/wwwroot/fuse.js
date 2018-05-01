@@ -1,5 +1,5 @@
-const { src, task, exec, context } = require("fuse-box/sparky");
-const { FuseBox, QuantumPlugin, BabelPlugin } = require("fuse-box");
+const { task, context } = require("fuse-box/sparky");
+const { FuseBox, QuantumPlugin, CSSPlugin, SassPlugin } = require("fuse-box");
 
 context(
     class {
@@ -8,7 +8,13 @@ context(
                 homeDir: "src",
                 target: "browser@es6",
                 output: "dist/$name.js",
-                plugins: [this.isProduction && QuantumPlugin()],
+                alias: {
+                    "@src": "~/",
+                },
+                plugins: [
+                    [SassPlugin({ outputStyle: 'compressed', importer: true }), CSSPlugin()],
+                    [CSSPlugin()],
+                    this.isProduction && QuantumPlugin()],
                 useTypescriptCompiler: true,
                 experimentalFeatures: true,
                 sourceMaps: true
