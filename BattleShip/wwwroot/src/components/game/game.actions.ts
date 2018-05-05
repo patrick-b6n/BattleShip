@@ -19,6 +19,19 @@ interface GameEnded {
 export const gameActions = {
     noop: () => () => {
     },
+    askBackToLobby: () => (state: GameState, actions: any) => {
+        Swal({
+            title: "Leave Game",
+            showCancelButton: true,
+            confirmButtonText: "Yes",
+            cancelButtonText: "No",
+            text: "Are you sure?",
+        }).then((result) => {
+            if (result) {
+                actions.backToLobby();
+            }
+        });
+    },
     backToLobby: () => (state: GameState) => {
 
         const model: GameStateModel = {
@@ -90,7 +103,7 @@ export const gameActions = {
         return { playerBoard: state.playerBoard }
     },
     playerLeft: () => (state: GameState, actions: any) => {
-        if (null === state.gameId) {
+        if (null === state.gameId || state.isOver) {
             return;
         }
 
@@ -116,7 +129,8 @@ export const gameActions = {
             return;
         }
 
-        if (model.winnerPlayerId !== null) {
+        const isOver = model.winnerPlayerId !== null;
+        if (isOver) {
             if (model.winnerPlayerId === state.opponent.playerId) {
                 actions.gameEnded({ reason: GameEndReason.Lost })
             }
@@ -124,12 +138,11 @@ export const gameActions = {
                 actions.gameEnded({ reason: GameEndReason.Won })
             }
         }
-
-        if (model.disconnect) {
+        else if (model.disconnect && !state.isOver) {
             actions.gameEnded({ reason: GameEndReason.Disconnect })
         }
 
-        return { isMyTurn: state.opponent.playerId !== model.currentPlayerId }
+        return { isMyTurn: state.opponent.playerId !== model.currentPlayerId, isOver: isOver }
     }
 };
 

@@ -39,21 +39,24 @@ export const GameScreen = (args: GameArgs) => (
             </div>
         </section>
 
-        <div class="container pt-3">
-            <div class="columns is-centered">
-                <div class="column">
+        <div class="container mt-3">
+            <div class="columns">
+                <div className="column"/>
+                <div class="column is-narrow">
                     <Board board={args.state.playerBoard} onCellClick={args.actions.noop} isEnabled={false}/>
                 </div>
-                <div class="column" style={{ position: "relative" }}>
+                <div class="column"/>
+                <div class="column is-narrow" style={{ position: "relative" }}>
                     {!args.state.isMyTurn && <div class="turn-overlay"/>}
                     <Board board={args.state.opponentBoard} onCellClick={args.actions.fireShot} isEnabled={args.state.isMyTurn}/>
                 </div>
+                <div className="column"/>
             </div>
         </div>
 
-        <div class="container pt-3">
+        <div class="container mt-3">
             <div class="columns is-centered">
-                <button class="button" onClick={() => args.actions.backToLobby()}>Quit game</button>
+                <button class="button" onclick={() => args.actions.askBackToLobby()}>Leave game</button>
             </div>
         </div>
     </div>

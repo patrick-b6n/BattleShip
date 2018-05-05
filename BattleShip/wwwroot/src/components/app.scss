@@ -3,6 +3,7 @@
 html,
 body {
   line-height: 1.5rem;
+  height: 100%
 }
 
 .ta-center {
@@ -11,4 +12,17 @@ body {
 
 .pt-3 {
   padding-top: 3rem;
+}
+
+.mt-3 {
+  margin-top: 3rem;
+}
+
+html.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown) {
+  height: 100%;
+  overflow-y: scroll !important;
+}
+
+body.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown) {
+  height: 100%;
 }

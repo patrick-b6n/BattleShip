@@ -44,8 +44,8 @@ export function placeShipsRandomly(board: Array<BoardField>[]) {
 
     resetBoard(board);
 
-    // const sizes = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1];
-    const sizes = [1];
+    const sizes = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1];
+    // const sizes = [1];
 
     for (const size of sizes) {
         let placed = false;

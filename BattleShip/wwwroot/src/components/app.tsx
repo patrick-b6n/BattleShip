@@ -56,31 +56,34 @@ const view = (state: State, actions: any) => (
 // compose hyperapp
 const happ = app(state, actions, view, document.getElementById("app"));
 
-Swal({
-    title: 'What is your nickname?',
-    input: 'text',
-    inputPlaceholder: 'Enter your nickname',
-    allowOutsideClick: false,
-    allowEscapeKey: false,
-    inputValidator: (value) => {
-        return !value && 'You need to write something!'
-    }
-}).then((result) => {
-        // bind global events
-        gamehub.start().then(function () {
-            happ.setPlayerName(result.value);
+window.addEventListener('load', () => {
+    Swal({
+        title: 'What is your nickname?',
+        input: 'text',
+        inputPlaceholder: 'Enter your nickname',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        inputValidator: (value) => {
+            return !value && 'You need to write something!'
+        }
+    }).then((result) => {
+            // bind global events
+            gamehub.start().then(function () {
+                happ.setPlayerName(result.value);
 
-            const params = new URLSearchParams(location.search.slice(1));
-            const lobbyId = params.get("lobby");
+                const params = new URLSearchParams(location.search.slice(1));
+                const lobbyId = params.get("lobby");
 
-            if (lobbyId) {
-                gamehub.enterLobby(lobbyId);
-            } else {
-                gamehub.enterLobby("F93B7255-6B78-42B0-A16B-AB80B9F57DD5");
-            }
-        });
-    }
-);
+                if (lobbyId) {
+                    gamehub.enterLobby(lobbyId);
+                } else {
+                    gamehub.enterLobby("F93B7255-6B78-42B0-A16B-AB80B9F57DD5");
+                }
+            });
+        }
+    );
+});
+
 
 // bind global events
 // gamehub.start().then(function () {
