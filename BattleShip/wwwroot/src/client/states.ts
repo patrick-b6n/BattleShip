@@ -2,9 +2,23 @@
 import { BoardField, EventEntry, PlayerModel } from "@src/client/models";
 
 export class State {
-    player: PlayerModel = { playerId: "", name: "..." };
-    lobby: LobbyState = new LobbyState();
+    view: String = "login";
+
     game: GameState = new GameState();
+    lobby: LobbyState = new LobbyState();
+    login: LoginState = new LoginState();
+
+    player: PlayerModel = { playerId: "", name: "..." };
+}
+
+export interface LoginCallups {
+    setPlayerName: (name: string) => any;
+    changeView: (view: string) => any;
+}
+
+export class LoginState implements LoginCallups {
+    setPlayerName: (name: string) => any;
+    changeView: (view: string) => any;
 }
 
 export class LobbyState {

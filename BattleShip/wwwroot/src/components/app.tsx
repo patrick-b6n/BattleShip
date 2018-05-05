@@ -13,11 +13,11 @@ import {
     ShotFeedbackModel,
     StartGameModel
 } from "@src/client/models";
-import { MainView } from "@src/components/mainView";
+import { ViewSwitcher } from "@src/components/mainView";
 import 'bulma/css/bulma.css'
 import './app.scss'
 import { Navbar } from "@src/components/navbar/navbar";
-import Swal from 'sweetalert2'
+import { loginActions } from "@src/components/login/login";
 
 const gamehub = GameHub.getInstance();
 
@@ -26,6 +26,13 @@ const state = new State();
 const actions = {
     lobby: lobbyActions,
     game: gameActions,
+    login: loginActions,
+    init: () => (state: State, actions: any) => {
+        actions.login.init({
+            setPlayerName: actions.setPlayerName,
+            changeView: actions.onChangeView
+        })
+    },
     onConnected: (model: ConnectedModel) => (state: State) => {
         state.player.playerId = model.playerId;
         return { player: state.player }
@@ -33,8 +40,12 @@ const actions = {
     setPlayerName: (model: string) => (state: State) => {
         state.player.name = model;
         state.lobby.playerName = model;
+
         gamehub.setPlayerName(model);
         return { player: state.player, lobby: state.lobby }
+    },
+    onChangeView: (view: string) => () => {
+        return { view: view }
     },
     onStartGame: (model: StartGameModel) => (state: State, actions: any) => {
         actions.game.startGame({ model: model, player: state.player });
@@ -49,39 +60,16 @@ const view = (state: State, actions: any) => (
     <div>
         <Navbar/>
 
-        <MainView state={state} actions={actions}/>
+        <ViewSwitcher state={state} actions={actions}/>
     </div>
 );
 
 // compose hyperapp
 const happ = app(state, actions, view, document.getElementById("app"));
+happ.init();
 
 window.addEventListener('load', () => {
-    Swal({
-        title: 'What is your nickname?',
-        input: 'text',
-        inputPlaceholder: 'Enter your nickname',
-        allowOutsideClick: false,
-        allowEscapeKey: false,
-        inputValidator: (value) => {
-            return !value && 'You need to write something!'
-        }
-    }).then((result) => {
-            // bind global events
-            gamehub.start().then(function () {
-                happ.setPlayerName(result.value);
 
-                const params = new URLSearchParams(location.search.slice(1));
-                const lobbyId = params.get("lobby");
-
-                if (lobbyId) {
-                    gamehub.enterLobby(lobbyId);
-                } else {
-                    gamehub.enterLobby("F93B7255-6B78-42B0-A16B-AB80B9F57DD5");
-                }
-            });
-        }
-    );
 });
 
 
