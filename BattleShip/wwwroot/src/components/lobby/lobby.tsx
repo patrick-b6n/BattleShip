@@ -15,12 +15,21 @@ export interface LobbyArgs {
 export const LobbyScreen = (args: LobbyArgs) => (
     <div id="lobby" oncreate={() => args.actions.init(args)}>
 
-        <section className="hero is-light">
+        <section className="hero  is-primary">
             <div className="hero-body">
                 <div className="container">
-                    <h1 className="title">
-                        Hello {args.lobby.playerName}!
-                    </h1>
+                    <div class="level">
+                        <div class="level-item level-left is-narrow">
+                            <h1 className="title">
+                                Hello {args.lobby.playerName}!
+                            </h1>
+                        </div>
+                        <div class="level-item level-left" style={{ paddingLeft: "1rem" }}>
+                                <span className="icon" style={{ fontSize: "1rem", cursor: "pointer" }}
+                                      onclick={() => args.actions.editName()}><i
+                                    className="fas fa-edit"/></span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -37,7 +46,8 @@ export const LobbyScreen = (args: LobbyArgs) => (
                 <div className="tile is-parent is-3">
                     <div className="tile is-child box">
                         <p className="title">Players</p>
-                        <PlayerList player={args.player} players={args.lobby.playersInLobby} challengePlayer={args.actions.challengePlayer}/>
+                        <PlayerList player={args.player} players={args.lobby.playersInLobby}
+                                    challengePlayer={args.actions.challengePlayer}/>
                     </div>
                 </div>
             </div>

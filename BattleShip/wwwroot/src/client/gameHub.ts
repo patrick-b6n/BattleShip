@@ -16,6 +16,8 @@ export class GameHub {
     private static instance: GameHub;
     private connection: signalr.HubConnection;
 
+    public static DefaultLobbyId = "F93B7255-6B78-42B0-A16B-AB80B9F57DD5";
+
     public static Commands = {
         AcceptChallenge: "AcceptChallenge",
         ChallengePlayer: "ChallengePlayer",

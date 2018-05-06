@@ -2,25 +2,25 @@
 import Swal from 'sweetalert2'
 import { GameHub } from "@src/client/gameHub";
 import { LoginCallups, LoginState } from "@src/client/states";
+import Constants from "@src/constants";
 
 const gamehub = GameHub.getInstance();
 
-
 export const loginActions = {
-    set: (callups: any) => () => {
-        return callups
-    },
     init: (callups: LoginCallups) => (state: LoginState, actions: any) => {
-        actions.set(callups)
+        actions.setCallups(callups)
+    },
+    setCallups: (callups: any) => () => {
+        return callups
     },
     onCreate: () => (state: LoginState, actions: any) => {
         function start(name: string) {
             // bind global events
             gamehub.start().then(function () {
-                localStorage.setItem("playerName", name);
+                localStorage.setItem(Constants.LS_PLAYER_NAME, name);
 
                 state.setPlayerName(name);
-                state.changeView("lobby");
+                state.changeView(Constants.V_Lobby);
 
                 const params = new URLSearchParams(location.search.slice(1));
                 const lobbyId = params.get("lobby");
@@ -28,13 +28,13 @@ export const loginActions = {
                 if (lobbyId) {
                     gamehub.enterLobby(lobbyId);
                 } else {
-                    gamehub.enterLobby("F93B7255-6B78-42B0-A16B-AB80B9F57DD5");
+                    gamehub.enterLobby(GameHub.DefaultLobbyId);
                 }
             });
         }
 
-        if (localStorage.getItem("playerName")) {
-            start(localStorage.getItem("playerName"))
+        if (localStorage.getItem(Constants.LS_PLAYER_NAME)) {
+            start(localStorage.getItem(Constants.LS_PLAYER_NAME))
         }
         else {
             Swal({

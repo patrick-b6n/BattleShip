@@ -1,12 +1,17 @@
 import { ChallengePlayerModel, EventEntry, EventType, LobbyEnteredModel, PlayerModel } from "@src/client/models";
-import { LobbyArgs } from "./lobby";
 import { GameHub } from "@src/client/gameHub";
-import { LobbyState, State } from "@src/client/states";
+import { LobbyCallups, LobbyState } from "@src/client/states";
+import Swal from 'sweetalert2'
+import Constants from "@src/constants";
 
 const gamehub = GameHub.getInstance();
 
 export const lobbyActions = {
-        init: (args: LobbyArgs) => () => {
+    init: (callups: LobbyCallups) => (state: LobbyState, actions: any) => {
+        actions.setCallups(callups)
+    },
+    setCallups: (callups: any) => () => {
+        return callups
         },
         addEvent: (value: EventEntry) => (state: LobbyState) => {
             setTimeout(() => {
@@ -18,6 +23,13 @@ export const lobbyActions = {
 
             state.events.push(value);
             return { events: state.events };
+        },
+    playerChanged:
+        (value: PlayerModel) => (state: LobbyState) => {
+            const index = state.playersInLobby.findIndex((p: PlayerModel) => p.playerId === value.playerId);
+            state.playersInLobby[index] = value;
+
+            return { playersInLobby: state.playersInLobby };
         },
         playerJoined:
             (value: PlayerModel) => (state: LobbyState, actions: any) => {
@@ -66,6 +78,22 @@ export const lobbyActions = {
         },
         setPlayerName: (value: string) => (state: LobbyState) => {
             return { playerName: value };
-        }
+        },
+    editName: () => (state: LobbyState) => {
+        Swal({
+            title: 'What is your nickname?',
+            input: 'text',
+            inputPlaceholder: 'Enter your nickname',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            inputValidator: (value) => {
+                return !value && 'You need to write something!'
+            }
+        }).then((result) => {
+                localStorage.setItem(Constants.LS_PLAYER_NAME, result.value);
+                state.setPlayerName(result.value);
+            }
+        );
+    }
     }
 ;

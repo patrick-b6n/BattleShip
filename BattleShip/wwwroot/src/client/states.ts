@@ -1,8 +1,9 @@
 ﻿import { createTwoDimArray } from "@src/client/helper";
 import { BoardField, EventEntry, PlayerModel } from "@src/client/models";
+import Constants from "@src/constants";
 
 export class State {
-    view: String = "login";
+    view: String = Constants.V_Login;
 
     game: GameState = new GameState();
     lobby: LobbyState = new LobbyState();
@@ -21,11 +22,16 @@ export class LoginState implements LoginCallups {
     changeView: (view: string) => any;
 }
 
-export class LobbyState {
+export interface LobbyCallups {
+    setPlayerName: (name: string) => any;
+}
+
+export class LobbyState implements LobbyCallups {
     lobbyId = "";
     playerName = "...";
     playersInLobby: PlayerModel[] = [];
     events: EventEntry[] = [];
+    setPlayerName: (name: string) => any;
 }
 
 export class GameState {

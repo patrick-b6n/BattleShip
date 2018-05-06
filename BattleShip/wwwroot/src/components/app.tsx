@@ -31,6 +31,9 @@ const actions = {
         actions.login.init({
             setPlayerName: actions.setPlayerName,
             changeView: actions.onChangeView
+        });
+        actions.lobby.init({
+            setPlayerName: actions.setPlayerName,
         })
     },
     onConnected: (model: ConnectedModel) => (state: State) => {
