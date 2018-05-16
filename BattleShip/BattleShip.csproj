@@ -4,7 +4,7 @@
     <TypeScriptCompileBlocked>True</TypeScriptCompileBlocked>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.0-preview2-final" />
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.0-rc1-final" />
   </ItemGroup>
   <Target Name="yarn" AfterTargets="_GenerateRestoreProjectSpec">
     <Exec Command="yarn" WorkingDirectory="wwwroot" />

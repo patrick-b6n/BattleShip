@@ -64,12 +64,13 @@ namespace BattleShip.Hubs
                 await LeaveLobby();
             }
 
+            
             // get/create new lobby
             var lobby = _lobbyManager.Get(model.LobbyId) ?? _lobbyManager.CreateLobby();
 
             // join new lobby
             CurrentPlayer.Join(lobby);
-            await Groups.AddAsync(Context.ConnectionId, lobby.IdStr);
+            await Groups.AddToGroupAsync(Context.ConnectionId, lobby.IdStr);
             await LobbyChanged(lobby);
 
             await Clients.OthersInGroup(lobby.IdStr).SendAsync(Commands.PlayerJoined, PlayerModel.Map(CurrentPlayer));
@@ -94,7 +95,7 @@ namespace BattleShip.Hubs
         private async Task LeaveLobby()
         {
             var oldLobby = CurrentPlayer.LeaveLobby();
-            await Groups.RemoveAsync(Context.ConnectionId, oldLobby.IdStr);
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, oldLobby.IdStr);
             await Clients.Group(oldLobby.IdStr).SendAsync(Commands.PlayerLeft, PlayerModel.Map(CurrentPlayer));
 
             if (oldLobby.IsEmpty && oldLobby != _lobbyManager.DefaultLobby)
