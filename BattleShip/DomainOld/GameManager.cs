@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace BattleShip.Domain
+namespace BattleShip.DomainOld
 {
     public class GameManager
     {

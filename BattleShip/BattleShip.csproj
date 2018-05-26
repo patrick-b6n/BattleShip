@@ -6,6 +6,9 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.0-rc1-final" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BattleShip.Domain\BattleShip.Domain.csproj"/>
+  </ItemGroup>
   <Target Name="yarn" AfterTargets="_GenerateRestoreProjectSpec">
     <Exec Command="yarn" WorkingDirectory="wwwroot" />
   </Target>

@@ -1,4 +1,4 @@
-﻿namespace BattleShip.Domain
+﻿namespace BattleShip.DomainOld
 {
     public enum BoardField
     {

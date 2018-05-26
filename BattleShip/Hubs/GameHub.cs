@@ -6,7 +6,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BattleShip.Domain;
+using BattleShip.DomainOld;
 using Microsoft.AspNetCore.SignalR;
+using LobbyManager = BattleShip.DomainOld.LobbyManager;
+using PlayerManager = BattleShip.DomainOld.PlayerManager;
 
 namespace BattleShip.Hubs
 {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BattleShip.Domain
+namespace BattleShip.DomainOld
 {
     public static class Constant
     {

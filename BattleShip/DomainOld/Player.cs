@@ -1,7 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 
-namespace BattleShip.Domain
+namespace BattleShip.DomainOld
 {
     public class Player
     {

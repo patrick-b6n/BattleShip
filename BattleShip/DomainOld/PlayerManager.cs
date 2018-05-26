@@ -2,7 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 
-namespace BattleShip.Domain
+namespace BattleShip.DomainOld
 {
     public class PlayerManager
     {

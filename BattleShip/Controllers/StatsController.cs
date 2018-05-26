@@ -1,5 +1,8 @@
 using BattleShip.Domain;
+using BattleShip.DomainOld;
 using Microsoft.AspNetCore.Mvc;
+using LobbyManager = BattleShip.DomainOld.LobbyManager;
+using PlayerManager = BattleShip.DomainOld.PlayerManager;
 
 namespace BattleShip.Controllers
 {
