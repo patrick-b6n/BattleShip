@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BattleShip
+namespace BattleShip.Domain
 {
     public enum ErrorType
     {

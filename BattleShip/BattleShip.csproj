@@ -4,7 +4,7 @@
     <TypeScriptCompileBlocked>True</TypeScriptCompileBlocked>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.0-rc1-final" />
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.0"/>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BattleShip.Domain\BattleShip.Domain.csproj"/>
