@@ -1,12 +1,9 @@
 ﻿using System;
 using BattleShip.Domain;
-using BattleShip.DomainOld;
 using BattleShip.Hubs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using LobbyManager = BattleShip.DomainOld.LobbyManager;
-using PlayerManager = BattleShip.DomainOld.PlayerManager;
 
 namespace BattleShip
 {
@@ -21,7 +18,6 @@ namespace BattleShip
 
         IServiceProvider IStartup.ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<GameManager>();
             services.AddSingleton<PlayerManager>();
             services.AddSingleton<LobbyManager>();
 

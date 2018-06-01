@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 
 namespace BattleShip
 {
@@ -7,13 +9,25 @@ namespace BattleShip
     {
         public static void Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
+            var hostConfig = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string> { { "urls", "http://localhost:5003" } })
+                                                       .AddCommandLine(args)
+                                                       .Build();
+
+            WebHost.CreateDefaultBuilder()
+                                .UseConfiguration(hostConfig)
+                                .ConfigureAppConfiguration(ConfigureConfiguration)
+                                .UseStartup<Startup>()
+                                .Build()
+                                .Run();
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args)
+        private static void ConfigureConfiguration(WebHostBuilderContext context, IConfigurationBuilder builder)
         {
-            return WebHost.CreateDefaultBuilder(args)
-                          .UseStartup<Startup>();
+            var env = context.HostingEnvironment;
+
+            builder.AddJsonFile("appsettings.json", true, true)
+                   .AddJsonFile($"appsettings.{env.EnvironmentName.ToLower()}.json", true, true)
+                   .AddEnvironmentVariables("battleship_");
         }
     }
 }

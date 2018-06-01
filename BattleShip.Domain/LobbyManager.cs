@@ -13,7 +13,13 @@ namespace BattleShip.Domain
         public LobbyManager()
         {
             _lobbies = new List<Lobby>();
+
+            DefaultLobby = Create();
         }
+
+        public Lobby DefaultLobby { get; }
+
+        public IReadOnlyList<Lobby> Lobbies => _lobbies;
 
         public Lobby Create()
         {

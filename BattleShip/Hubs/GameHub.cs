@@ -1,249 +1,149 @@
-﻿// ReSharper disable ClassNeverInstantiated.Global
-// ReSharper disable UnusedMember.Global
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using BattleShip.Domain;
-using BattleShip.DomainOld;
+using BattleShip.Domain.Entity;
 using Microsoft.AspNetCore.SignalR;
-using LobbyManager = BattleShip.DomainOld.LobbyManager;
-using PlayerManager = BattleShip.DomainOld.PlayerManager;
 
 namespace BattleShip.Hubs
 {
-    public class Commands
+    public static class Extensions
     {
-        public const string ChallengeRequest = "ChallengeRequest";
-        public const string Connected = "Connected";
-        public const string FireShot = "FireShot";
-        public const string LobbyEntered = "LobbyEntered";
-        public const string PlayerChanged = "PlayerChanged";
-        public const string PlayerJoined = "PlayerJoined";
-        public const string PlayerLeft = "PlayerLeft";
-        public const string ShotFeedback = "ShotFeedback";
-        public const string ShotFired = "ShotFired";
-        public const string StartGame = "StartGame";
-        public const string GameState = "GameState";
+        public static Task RemoveFromGroupAsync(this IGroupManager groupManager, string connectionId, Guid groupName, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return groupManager.RemoveFromGroupAsync(connectionId, groupName.ToString(), cancellationToken);
+        }
+
+        public static Task AddToGroupAsync(this IGroupManager groupManager, string connectionId, Guid groupName, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return groupManager.AddToGroupAsync(connectionId, groupName.ToString(), cancellationToken);
+        }
+
+        public static T OthersInGroup<T>(this IHubCallerClients<T> callerClients, Guid groupName)
+        {
+            return callerClients.OthersInGroup(groupName.ToString());
+        }
     }
 
     public class GameHub : Hub
     {
-        private readonly GameManager _gameManager;
-        private readonly LobbyManager _lobbyManager;
-        private readonly PlayerManager _playerManager;
-
-        public GameHub(GameManager gameManager,
-                       PlayerManager playerManager,
-                       LobbyManager lobbyManager)
+        private class Commands
         {
-            _gameManager = gameManager;
+            public const string Connect = nameof(GameHub.Connect);
+            public const string JoinLobby = nameof(GameHub.JoinLobby);
+
+            public const string Connected = "Connected";
+            public const string LobbyJoined = "LobbyJoined";
+            public const string PlayerJoinedLobby = "PlayerJoinedLobby";
+            public const string PlayerLeftLobby = "PlayerLeftLobby";
+        }
+
+        private readonly PlayerManager _playerManager;
+        private readonly LobbyManager _lobbyManager;
+        private Player CurrentPlayer => _playerManager.Get(Context.ConnectionId).Item2;
+
+        public GameHub(PlayerManager playerManager, LobbyManager lobbyManager)
+        {
             _playerManager = playerManager;
             _lobbyManager = lobbyManager;
         }
 
-        private Player CurrentPlayer => _playerManager.Get(Context.ConnectionId);
-
-        public override async Task OnConnectedAsync()
-        {
-            var player = _playerManager.Create(Context.ConnectionId);
-            await Clients.Caller.SendAsync(Commands.Connected, new ConnectedModel { PlayerId = player.Id });
-        }
-
         public override async Task OnDisconnectedAsync(Exception ex)
         {
-            await LeaveGame();
-            await LeaveLobby();
-
-            _playerManager.Remove(CurrentPlayer);
         }
 
-        public async Task EnterLobby(EnterLobbyModel model)
+        public async void Connect(ConnectModel model)
         {
-            // leave current lobby
+            var player = _playerManager.Create(Context.ConnectionId, model.Name);
+
+            var connectedModel = new ConnectedModel
+            {
+                Player = PlayerModel.Map(player),
+                DefaultLobbyId = _lobbyManager.DefaultLobby.Id
+            };
+            await Clients.Client(player.ConnectionId).SendAsync(Commands.Connected, connectedModel);
+        }
+
+        public async Task JoinLobby(JoinLobbyModel model)
+        {
             if (CurrentPlayer.Lobby != null)
             {
-                await LeaveLobby();
+                CurrentPlayer.LeaveLobby();
+
+                await Groups.RemoveFromGroupAsync(CurrentPlayer.ConnectionId, CurrentPlayer.Lobby.Id);
+                await Clients.OthersInGroup(CurrentPlayer.Lobby.Id).SendAsync(Commands.PlayerLeftLobby, PlayerModel.Map(CurrentPlayer));
             }
 
-            
-            // get/create new lobby
-            var lobby = _lobbyManager.Get(model.LobbyId) ?? _lobbyManager.CreateLobby();
-
-            // join new lobby
-            CurrentPlayer.Join(lobby);
-            await Groups.AddToGroupAsync(Context.ConnectionId, lobby.IdStr);
-            await LobbyChanged(lobby);
-
-            await Clients.OthersInGroup(lobby.IdStr).SendAsync(Commands.PlayerJoined, PlayerModel.Map(CurrentPlayer));
-        }
-
-        public async Task AcceptChallenge(AcceptChallengeModel model)
-        {
-            var opponent = _playerManager.Get(model.PlayerId);
-            var gameId = _gameManager.NewGame(CurrentPlayer, opponent);
-
-            var gameModel = new GameModel { GameId = gameId, Player1 = PlayerModel.Map(CurrentPlayer), Player2 = PlayerModel.Map(opponent) };
-
-            await Clients.Client(opponent.Id).SendAsync(Commands.StartGame, new StartGameModel { Game = gameModel, FirstTurn = false });
-            await Clients.Client(CurrentPlayer.Id).SendAsync(Commands.StartGame, new StartGameModel { Game = gameModel, FirstTurn = true });
-        }
-
-        public async Task ChallengePlayer(ChallengePlayerModel model)
-        {
-            await Clients.Client(model.PlayerId).SendAsync(Commands.ChallengeRequest, new ChallengePlayerModel { PlayerId = CurrentPlayer.Id });
-        }
-
-        private async Task LeaveLobby()
-        {
-            var oldLobby = CurrentPlayer.LeaveLobby();
-            await Groups.RemoveFromGroupAsync(Context.ConnectionId, oldLobby.IdStr);
-            await Clients.Group(oldLobby.IdStr).SendAsync(Commands.PlayerLeft, PlayerModel.Map(CurrentPlayer));
-
-            if (oldLobby.IsEmpty && oldLobby != _lobbyManager.DefaultLobby)
+            var (getLobbyResult, lobby) = _lobbyManager.Get(model.LobbyId);
+            if (getLobbyResult.IsError)
             {
-                _lobbyManager.Remove(oldLobby);
-            }
-        }
-
-        public async Task UpdatePlayer(UpdatePlayerModel model)
-        {
-            CurrentPlayer.ChangeName(model.Name);
-
-            if (CurrentPlayer.Lobby != null)
-            {
-                await Clients.Group(CurrentPlayer.Lobby.IdStr).SendAsync(Commands.PlayerChanged, PlayerModel.Map(CurrentPlayer));
-            }
-        }
-
-        public async Task LobbyChanged(Lobby lobby)
-        {
-            if (lobby != null)
-            {
-                var model = new LobbyEnteredModel
+                if (getLobbyResult.ErrorType == ErrorType.NotFound)
                 {
-                    LobbyId = lobby.Id,
-                    Players = lobby.Players.Select(x => new PlayerModel { PlayerId = x.Id, Name = x.Name })
-                };
-
-                await Clients.Caller.SendAsync(Commands.LobbyEntered, model);
+                    lobby = _lobbyManager.Create();
+                }
+                else
+                {
+                    throw new Exception(getLobbyResult.Message);
+                }
             }
-        }
 
-        public async Task FireShot(FireShotModel model)
-        {
-            var opponent = _gameManager.GetOpponent(CurrentPlayer);
-            if (opponent != null)
-            {
-                await Clients.Client(opponent.Id).SendAsync(Commands.ShotFired, model);
-            }
-        }
+            CurrentPlayer.Join(lobby);
 
-        public async Task ShotFeedback(ShotFeedbackModel model)
-        {
-            var opponent = _gameManager.GetOpponent(CurrentPlayer);
-            if (opponent != null)
-            {
-                await Clients.Client(opponent.Id).SendAsync(Commands.ShotFeedback, model);
-            }
+            await Groups.AddToGroupAsync(CurrentPlayer.ConnectionId, lobby.Id);
+            await Clients.Client(CurrentPlayer.ConnectionId).SendAsync(Commands.LobbyJoined, LobbyModel.Map(lobby));
+            await Clients.OthersInGroup(lobby.Id).SendAsync(Commands.PlayerJoinedLobby, PlayerModel.Map(CurrentPlayer));
         }
+    }
 
-        public async Task GameState(GameStateModel model)
-        {
-            var players = _gameManager.Get(model.GameId).ToList();
-            if (players.Count == 2)
-            {
-                await Clients.Client(players[0].Id).SendAsync(Commands.GameState, model);
-                await Clients.Client(players[1].Id).SendAsync(Commands.GameState, model);
-            }
-        }
-
-        public async Task LeaveGame()
-        {
-            _gameManager.RemoveGame(CurrentPlayer.GameId);
-        }
+    public class ConnectModel
+    {
+        public string Name { get; set; }
     }
 
     public class ConnectedModel
     {
-        public string PlayerId { get; set; }
+        public PlayerModel Player { get; set; }
+
+        public Guid DefaultLobbyId { get; set; }
     }
 
-    public class EnterLobbyModel
+    public class JoinLobbyModel
     {
         public Guid LobbyId { get; set; }
     }
 
-    public class LobbyEnteredModel
+    public class LobbyJoinedModel
     {
-        public Guid LobbyId { get; set; }
-        public IEnumerable<PlayerModel> Players { get; set; }
+        public Lobby Lobby { get; set; }
     }
 
     public class PlayerModel
     {
-        public string PlayerId { get; set; }
+        public Guid Id { get; set; }
+
         public string Name { get; set; }
 
         public static PlayerModel Map(Player player)
         {
-            return new PlayerModel { PlayerId = player.Id, Name = player.Name };
+            return new PlayerModel
+            {
+                Id = player.Id,
+                Name = player.Name
+            };
         }
     }
 
-    public class ChallengePlayerModel
+    public class LobbyModel
     {
-        public string PlayerId { get; set; }
-    }
+        public Guid Id { get; set; }
 
-    public class AcceptChallengeModel
-    {
-        public string PlayerId { get; set; }
-    }
+        public IEnumerable<PlayerModel> Players { get; set; }
 
-    public class StartGameModel
-    {
-        public GameModel Game { get; set; }
-        public bool FirstTurn { get; set; }
-    }
-
-    public class GameModel
-    {
-        public Guid GameId { get; set; }
-        public PlayerModel Player1 { get; set; }
-        public PlayerModel Player2 { get; set; }
-    }
-
-    public class UpdatePlayerModel
-    {
-        public string Name { get; set; }
-    }
-
-    public class FireShotModel
-    {
-        public int X { get; set; }
-        public int Y { get; set; }
-    }
-
-    public class ShotFeedbackModel
-    {
-        public int X { get; set; }
-        public int Y { get; set; }
-        public BoardField Result { get; set; }
-        public int RemainingShipCount { get; set; }
-    }
-
-    public class GameStateModel
-    {
-        public Guid GameId { get; set; }
-        public string CurrentPlayerId { get; set; }
-        public string WinnerPlayerId { get; set; }
-        public bool Disconnect { get; set; }
-    }
-
-    public class LeaveGameModel
-    {
-        public Guid GameId { get; set; }
+        public static LobbyModel Map(Lobby lobby)
+        {
+            return new LobbyModel { Id = lobby.Id, Players = lobby.Players.Select(PlayerModel.Map) };
+        }
     }
 }

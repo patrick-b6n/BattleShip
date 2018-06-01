@@ -1,22 +1,16 @@
 using BattleShip.Domain;
-using BattleShip.DomainOld;
 using Microsoft.AspNetCore.Mvc;
-using LobbyManager = BattleShip.DomainOld.LobbyManager;
-using PlayerManager = BattleShip.DomainOld.PlayerManager;
 
 namespace BattleShip.Controllers
 {
     public class StatsController : Controller
     {
-        private readonly GameManager _gameManager;
         private readonly LobbyManager _lobbyManager;
         private readonly PlayerManager _playerManager;
 
-        public StatsController(GameManager gameManager,
-                               PlayerManager playerManager,
+        public StatsController(PlayerManager playerManager,
                                LobbyManager lobbyManager)
         {
-            _gameManager = gameManager;
             _playerManager = playerManager;
             _lobbyManager = lobbyManager;
         }
@@ -26,9 +20,8 @@ namespace BattleShip.Controllers
         {
             return Json(new
             {
-                Lobbies = _lobbyManager.All,
-                Games = _gameManager.All,
-                Players = _playerManager.All
+                Lobbies = _lobbyManager.Lobbies,
+                Players = _playerManager.Players
             });
         }
     }

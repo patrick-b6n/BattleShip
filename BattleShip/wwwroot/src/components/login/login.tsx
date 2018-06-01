@@ -14,23 +14,12 @@ export const loginActions = {
         return callups
     },
     onCreate: () => (state: LoginState, actions: any) => {
-        function start(name: string) {
-            // bind global events
-            gamehub.start().then(function () {
-                localStorage.setItem(Constants.LS_PLAYER_NAME, name);
+        async function start(name: string) {
+            localStorage.setItem(Constants.LS_PLAYER_NAME, name);
 
-                state.setPlayerName(name);
-                state.changeView(Constants.V_Lobby);
+            await gamehub.connect({ name: name });
 
-                const params = new URLSearchParams(location.search.slice(1));
-                const lobbyId = params.get("lobby");
-
-                if (lobbyId) {
-                    gamehub.enterLobby(lobbyId);
-                } else {
-                    gamehub.enterLobby(GameHub.DefaultLobbyId);
-                }
-            });
+            state.setPlayerName(name);
         }
 
         if (localStorage.getItem(Constants.LS_PLAYER_NAME)) {

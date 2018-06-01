@@ -1,5 +1,5 @@
 ﻿import { createTwoDimArray } from "@src/client/helper";
-import { BoardField, EventEntry, PlayerModel } from "@src/client/models";
+import { BoardField, PlayerModel } from "@src/client/models";
 import Constants from "@src/constants";
 
 export class State {
@@ -9,7 +9,7 @@ export class State {
     lobby: LobbyState = new LobbyState();
     login: LoginState = new LoginState();
 
-    player: PlayerModel = { playerId: "", name: "..." };
+    player: PlayerModel = { id: "", name: "..." };
 }
 
 export interface LoginCallups {
@@ -30,7 +30,7 @@ export class LobbyState implements LobbyCallups {
     lobbyId = "";
     playerName = "...";
     playersInLobby: PlayerModel[] = [];
-    events: EventEntry[] = [];
+    events: any[] = [];
     setPlayerName: (name: string) => any;
 }
 

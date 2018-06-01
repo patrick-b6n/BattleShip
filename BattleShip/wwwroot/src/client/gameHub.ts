@@ -1,16 +1,5 @@
 import * as signalr from "@aspnet/signalr";
-import {
-    AcceptChallengeModel,
-    ChallengePlayerModel,
-    EnterLobbyModel,
-    FireShotModel,
-    GameStateModel,
-    PlayerModel,
-    Shot,
-    ShotFeedback,
-    ShotFeedbackModel,
-    UpdatePlayerModel
-} from "@src/client/models";
+import { ConnectedModel, JoinLobbyModel } from "@src/client/models";
 
 export class GameHub {
     private static instance: GameHub;
@@ -19,27 +8,17 @@ export class GameHub {
     public static DefaultLobbyId = "F93B7255-6B78-42B0-A16B-AB80B9F57DD5";
 
     public static Commands = {
-        AcceptChallenge: "AcceptChallenge",
-        ChallengePlayer: "ChallengePlayer",
-        ChallengeRequest: "ChallengeRequest",
+        Connect: "Connect",
+        JoinLobby: "JoinLobby",
+
         Connected: "Connected",
-        CreateLobby: "CreateLobby",
-        EnterLobby: "EnterLobby",
-        FireShot: "FireShot",
-        GameState: "GameState",
-        LeaveGame: "LeaveGame",
-        LobbyEntered: "LobbyEntered",
-        PlayerChanged: "PlayerChanged",
-        PlayerJoined: "PlayerJoined",
-        PlayerLeft: "PlayerLeft",
-        ShotFired: "ShotFired",
-        ShotFeedback: "ShotFeedback",
-        StartGame: "StartGame",
-        UpdatePlayer: "UpdatePlayer"
+        LobbyJoined: "LobbyJoined",
+        PlayerJoinedLobby: "PlayerJoinedLobby",
+        PlayerLeftLobby: "PlayerLeftLobby"
     };
 
     private constructor() {
-        this.connection = new signalr.HubConnection("/hubs/game");
+        this.connection = new signalr.HubConnectionBuilder().withUrl("/hubs/game").build();
     }
 
     static getInstance() {
@@ -49,68 +28,19 @@ export class GameHub {
         return GameHub.instance;
     }
 
-    public setPlayerName(name: string) {
-        const model: UpdatePlayerModel = {
-            name: name
-        };
-
-        this.connection.send(GameHub.Commands.UpdatePlayer, model);
-    }
-
-    public enterLobby(id: string) {
-        const model: EnterLobbyModel = {
-            lobbyId: id
-        };
-
-        this.connection.send(GameHub.Commands.EnterLobby, model);
-    }
-
-    public challengePlayer(player: PlayerModel): any {
-        const model: ChallengePlayerModel = {
-            playerId: player.playerId
-        };
-        this.connection.send(GameHub.Commands.ChallengePlayer, model);
-    }
-
-    public acceptChallenge(playerId: string): any {
-        const model: AcceptChallengeModel = {
-            playerId: playerId
-        };
-        this.connection.send(GameHub.Commands.AcceptChallenge, model);
-    }
-
-    public fireShot(shot: Shot): any {
-        const model: FireShotModel = {
-            x: shot.x,
-            y: shot.y,
-        };
-
-        this.connection.send(GameHub.Commands.FireShot, model);
-    }
-
-    public shotFeedback(feedback: ShotFeedback): any {
-        const model: ShotFeedbackModel = {
-            x: feedback.x,
-            y: feedback.y,
-            remainingShipCount: feedback.remainingShipCount,
-            result: feedback.result
-        };
-        this.connection.send(GameHub.Commands.ShotFeedback, model);
+    public on(name: string, args: (...args: any[]) => void) {
+        this.connection.on(name, args);
     }
 
     public start(): Promise<void> {
-        return this.connection.start();
+        return this.connection.start()
     }
 
-    public gameState(model: GameStateModel) {
-        this.connection.send(GameHub.Commands.GameState, model);
+    public connect(model: ConnectedModel): Promise<void> {
+        return this.connection.send(GameHub.Commands.Connect, model)
     }
 
-    public leaveGame() {
-        this.connection.send(GameHub.Commands.LeaveGame);
-    }
-
-    public on(name: string, args: (...args: any[]) => void) {
-        this.connection.on(name, args);
+    public joinLobby(model: JoinLobbyModel): Promise<void> {
+        return this.connection.send(GameHub.Commands.JoinLobby, model)
     }
 }
