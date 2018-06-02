@@ -46,6 +46,7 @@ const actions = {
     },
     onLobbyJoined: (model: LobbyJoinedModel) => (state: State, actions: any) => {
         actions.onChangeView(Constants.V_Lobby);
+        actions.lobby.lobbyJoined(model)
     },
     onChangeView: (view: string) => () => {
         return { view: view }
