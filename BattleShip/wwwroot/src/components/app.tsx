@@ -83,12 +83,6 @@ gamehub.start().then(() => {
     }
 );
 
-
-window.addEventListener('load', () => {
-
-});
-
-
 // bind global events
 // gamehub.start().then(function () {
 //     gamehub.setPlayerName(state.player.name);

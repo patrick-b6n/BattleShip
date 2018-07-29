@@ -50,9 +50,9 @@ export const lobbyActions = {
 
                 return { playersInLobby: state.playersInLobby };
             },
-    lobbyJoined: (value: LobbyJoinedModel) => (state: LobbyState, actions: any) => {
-        actions.addEvent(new EventEntry(`You joined Lobby ${value.lobbyId}`));
-        return { lobbyId: value.lobbyId, playersInLobby: value.players };
+    lobbyJoined: (model: LobbyJoinedModel) => (state: LobbyState, actions: any) => {
+        actions.addEvent(new EventEntry(`You joined Lobby ${model.lobby.id}`));
+        return { lobbyId: model.lobby.id, playersInLobby: model.lobby.players };
     },
     // challengePlayer:
     //     (player: PlayerModel) => (state: LobbyState, actions: any) => {

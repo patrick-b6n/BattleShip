@@ -11,12 +11,14 @@ namespace BattleShip.Hubs
 {
     public static class Extensions
     {
-        public static Task RemoveFromGroupAsync(this IGroupManager groupManager, string connectionId, Guid groupName, CancellationToken cancellationToken = default(CancellationToken))
+        public static Task RemoveFromGroupAsync(this IGroupManager groupManager, string connectionId, Guid groupName,
+                                                CancellationToken cancellationToken = default(CancellationToken))
         {
             return groupManager.RemoveFromGroupAsync(connectionId, groupName.ToString(), cancellationToken);
         }
 
-        public static Task AddToGroupAsync(this IGroupManager groupManager, string connectionId, Guid groupName, CancellationToken cancellationToken = default(CancellationToken))
+        public static Task AddToGroupAsync(this IGroupManager groupManager, string connectionId, Guid groupName,
+                                           CancellationToken cancellationToken = default(CancellationToken))
         {
             return groupManager.AddToGroupAsync(connectionId, groupName.ToString(), cancellationToken);
         }
@@ -52,6 +54,7 @@ namespace BattleShip.Hubs
 
         public override async Task OnDisconnectedAsync(Exception ex)
         {
+            CurrentPlayer.LeaveLobby();
         }
 
         public async void Connect(ConnectModel model)
@@ -73,7 +76,8 @@ namespace BattleShip.Hubs
                 CurrentPlayer.LeaveLobby();
 
                 await Groups.RemoveFromGroupAsync(CurrentPlayer.ConnectionId, CurrentPlayer.Lobby.Id);
-                await Clients.OthersInGroup(CurrentPlayer.Lobby.Id).SendAsync(Commands.PlayerLeftLobby, PlayerModel.Map(CurrentPlayer));
+                await Clients.OthersInGroup(CurrentPlayer.Lobby.Id)
+                             .SendAsync(Commands.PlayerLeftLobby, PlayerModel.Map(CurrentPlayer));
             }
 
             var (getLobbyResult, lobby) = _lobbyManager.Get(model.LobbyId);
@@ -92,7 +96,8 @@ namespace BattleShip.Hubs
             CurrentPlayer.Join(lobby);
 
             await Groups.AddToGroupAsync(CurrentPlayer.ConnectionId, lobby.Id);
-            await Clients.Client(CurrentPlayer.ConnectionId).SendAsync(Commands.LobbyJoined, LobbyModel.Map(lobby));
+            await Clients.Client(CurrentPlayer.ConnectionId)
+                         .SendAsync(Commands.LobbyJoined, new LobbyJoinedModel {Lobby = LobbyModel.Map(lobby)});
             await Clients.OthersInGroup(lobby.Id).SendAsync(Commands.PlayerJoinedLobby, PlayerModel.Map(CurrentPlayer));
         }
     }
@@ -116,7 +121,7 @@ namespace BattleShip.Hubs
 
     public class LobbyJoinedModel
     {
-        public Lobby Lobby { get; set; }
+        public LobbyModel Lobby { get; set; }
     }
 
     public class PlayerModel
@@ -143,7 +148,7 @@ namespace BattleShip.Hubs
 
         public static LobbyModel Map(Lobby lobby)
         {
-            return new LobbyModel { Id = lobby.Id, Players = lobby.Players.Select(PlayerModel.Map) };
+            return new LobbyModel {Id = lobby.Id, Players = lobby.Players.Select(PlayerModel.Map)};
         }
     }
 }

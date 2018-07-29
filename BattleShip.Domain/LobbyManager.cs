@@ -23,7 +23,9 @@ namespace BattleShip.Domain
 
         public Lobby Create()
         {
-            _lobbies.RemoveAll(l => l.Players.Count == 0 && DateTime.UtcNow - l.Created > TimeSpan.FromMinutes(1));
+            _lobbies.RemoveAll(l => l != DefaultLobby
+                                    && l.Players.Count == 0
+                                    && DateTime.UtcNow - l.Created > TimeSpan.FromMinutes(1));
 
             var lobby = new Lobby();
             _lobbies.Add(lobby);

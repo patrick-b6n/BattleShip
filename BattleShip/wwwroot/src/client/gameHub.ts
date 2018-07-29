@@ -1,5 +1,5 @@
 import * as signalr from "@aspnet/signalr";
-import { ConnectedModel, JoinLobbyModel } from "@src/client/models";
+import { ConnectModel, JoinLobbyModel } from "@src/client/models";
 
 export class GameHub {
     private static instance: GameHub;
@@ -36,7 +36,7 @@ export class GameHub {
         return this.connection.start()
     }
 
-    public connect(model: ConnectedModel): Promise<void> {
+    public connect(model: ConnectModel): Promise<void> {
         return this.connection.send(GameHub.Commands.Connect, model)
     }
 

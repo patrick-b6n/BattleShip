@@ -10,6 +10,10 @@ export enum EventType {
     Challenge
 }
 
+export interface ConnectModel {
+    name: string;
+}
+
 export interface ConnectedModel {
     player: PlayerModel;
     defaultLobbyId: string;
@@ -20,13 +24,17 @@ export interface JoinLobbyModel {
 }
 
 export interface LobbyJoinedModel {
-    lobbyId: string;
-    players: PlayerModel[];
+    lobby: LobbyModel;
 }
 
 export interface PlayerModel {
     id: string;
     name: string;
+}
+
+export interface LobbyModel {
+    id: string;
+    players: PlayerModel[];
 }
 
 export class EventEntry {
