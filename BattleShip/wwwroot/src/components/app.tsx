@@ -8,7 +8,7 @@ import 'bulma/css/bulma.css'
 import './app.scss'
 import { Navbar } from "@src/components/navbar/navbar";
 import { loginActions } from "@src/components/login/login";
-import { ConnectedModel, LobbyJoinedModel } from "@src/client/models";
+import { ConnectedModel, LobbyJoinedModel, PlayerModel } from "@src/client/models";
 import Constants from "@src/constants";
 
 const gamehub = GameHub.getInstance();
@@ -48,6 +48,12 @@ const actions = {
         actions.onChangeView(Constants.V_Lobby);
         actions.lobby.lobbyJoined(model)
     },
+    onPlayerJoinedLobby: (model: PlayerModel) => (state: State, actions: any) => {
+        actions.lobby.playerJoined(model)
+    },
+    onPlayerLeftLobby: (model: PlayerModel) => (state: State, actions: any) => {
+        actions.lobby.playerLeft(model)
+    },
     onChangeView: (view: string) => () => {
         return { view: view }
     },
@@ -80,6 +86,14 @@ gamehub.start().then(() => {
         gamehub.on(GameHub.Commands.LobbyJoined, function (model: LobbyJoinedModel) {
             happ.onLobbyJoined(model)
         });
+
+    gamehub.on(GameHub.Commands.PlayerJoinedLobby, function (model: PlayerModel) {
+        happ.onPlayerJoinedLobby(model)
+    });
+
+    gamehub.on(GameHub.Commands.PlayerLeftLobby, function (model: PlayerModel) {
+        happ.onPlayerLeftLobby(model)
+    });
     }
 );
 

@@ -31,10 +31,13 @@ namespace BattleShip.Domain.Entity
             Lobby.AddPlayer(this);
         }
 
-        public void LeaveLobby()
+        public Lobby LeaveLobby()
         {
+            var l = Lobby;
             Lobby.RemovePlayer(this);
             Lobby = null;
+
+            return l;
         }
     }
 }

@@ -54,7 +54,7 @@ namespace BattleShip.Hubs
 
         public override async Task OnDisconnectedAsync(Exception ex)
         {
-            CurrentPlayer.LeaveLobby();
+            await LeaveLobby();
         }
 
         public async void Connect(ConnectModel model)
@@ -67,6 +67,14 @@ namespace BattleShip.Hubs
                 DefaultLobbyId = _lobbyManager.DefaultLobby.Id
             };
             await Clients.Client(player.ConnectionId).SendAsync(Commands.Connected, connectedModel);
+        }
+
+        public async Task LeaveLobby()
+        {
+            var lobby = CurrentPlayer.LeaveLobby();
+
+            await Groups.RemoveFromGroupAsync(CurrentPlayer.ConnectionId, lobby.Id);
+            await Clients.OthersInGroup(lobby.Id).SendAsync(Commands.PlayerLeftLobby, PlayerModel.Map(CurrentPlayer));
         }
 
         public async Task JoinLobby(JoinLobbyModel model)
