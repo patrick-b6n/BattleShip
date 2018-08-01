@@ -40,6 +40,7 @@ namespace BattleShip.Hubs
             public const string LobbyJoined = "LobbyJoined";
             public const string PlayerJoinedLobby = "PlayerJoinedLobby";
             public const string PlayerLeftLobby = "PlayerLeftLobby";
+            public const string RequestMatch = "RequestMatch";
         }
 
         private readonly PlayerManager _playerManager;
@@ -108,6 +109,20 @@ namespace BattleShip.Hubs
                          .SendAsync(Commands.LobbyJoined, new LobbyJoinedModel {Lobby = LobbyModel.Map(lobby)});
             await Clients.OthersInGroup(lobby.Id).SendAsync(Commands.PlayerJoinedLobby, PlayerModel.Map(CurrentPlayer));
         }
+
+        public async Task RequestMatch(RequestMatchModel model)
+        {
+            var (result, player) = _playerManager.Get(model.To.Id);
+
+            if (result.IsSuccess)
+            {
+                await Clients.Clients(player.ConnectionId).SendAsync(Commands.RequestMatch, model);
+            }
+            else
+            {
+                throw new Exception();
+            }
+        }
     }
 
     public class ConnectModel
@@ -130,6 +145,13 @@ namespace BattleShip.Hubs
     public class LobbyJoinedModel
     {
         public LobbyModel Lobby { get; set; }
+    }
+
+    public class RequestMatchModel
+    {
+        public PlayerModel From { get; set; }
+
+        public PlayerModel To { get; set; }
     }
 
     public class PlayerModel

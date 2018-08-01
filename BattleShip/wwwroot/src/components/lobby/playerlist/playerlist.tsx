@@ -16,7 +16,7 @@ export const PlayerList = (args: PlayerListArgs) => (
                 </div>
 
                 <div class="level-right">
-                    {p.playerId !== args.player.playerId &&
+                    {p.id !== args.player.id &&
                     <button class="button is-small" onclick={() => args.challengePlayer(p)}>Challenge</button>
                     }
                 </div>

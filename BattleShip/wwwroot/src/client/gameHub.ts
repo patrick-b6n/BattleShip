@@ -1,5 +1,5 @@
 import * as signalr from "@aspnet/signalr";
-import { ConnectModel, JoinLobbyModel } from "@src/client/models";
+import { ConnectModel, JoinLobbyModel, RequestMatchModel } from "@src/client/models";
 
 export class GameHub {
     private static instance: GameHub;
@@ -14,7 +14,8 @@ export class GameHub {
         Connected: "Connected",
         LobbyJoined: "LobbyJoined",
         PlayerJoinedLobby: "PlayerJoinedLobby",
-        PlayerLeftLobby: "PlayerLeftLobby"
+        PlayerLeftLobby: "PlayerLeftLobby",
+        RequestMatch: "RequestMatch"
     };
 
     private constructor() {
@@ -42,5 +43,9 @@ export class GameHub {
 
     public joinLobby(model: JoinLobbyModel): Promise<void> {
         return this.connection.send(GameHub.Commands.JoinLobby, model)
+    }
+
+    public requestMatch(model: RequestMatchModel): Promise<void> {
+        return this.connection.send(GameHub.Commands.RequestMatch, model)
     }
 }

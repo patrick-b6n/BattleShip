@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using BattleShip.Domain.Entity;
 
@@ -25,6 +26,20 @@ namespace BattleShip.Domain
         public (Result, Player) Get(string connectionId)
         {
             var player = _players.FirstOrDefault(p => p.ConnectionId == connectionId);
+
+            if (player != null)
+            {
+                return (Result.Success, player);
+            }
+            else
+            {
+                return (Result.NotFound, null);
+            }
+        }
+
+        public (Result, Player) Get(Guid id)
+        {
+            var player = _players.FirstOrDefault(p => p.Id == id);
 
             if (player != null)
             {

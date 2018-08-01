@@ -23,6 +23,7 @@ namespace BattleShip.Domain
 
         public Lobby Create()
         {
+            // Remove orphan lobbies
             _lobbies.RemoveAll(l => l != DefaultLobby
                                     && l.Players.Count == 0
                                     && DateTime.UtcNow - l.Created > TimeSpan.FromMinutes(1));

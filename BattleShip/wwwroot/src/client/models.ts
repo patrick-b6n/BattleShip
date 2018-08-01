@@ -37,6 +37,11 @@ export interface LobbyModel {
     players: PlayerModel[];
 }
 
+export interface RequestMatchModel {
+    from: PlayerModel;
+    to: PlayerModel;
+}
+
 export class EventEntry {
     date: Date;
     type: EventType;
