@@ -1,4 +1,4 @@
-import { app, h } from "hyperapp";
+import { ActionsType, app, h } from "hyperapp";
 import { GameHub } from "@src/client/gameHub";
 import { State } from "@src/client/states";
 import { lobbyActions } from "@src/components/lobby/lobby.actions";
@@ -8,7 +8,7 @@ import 'bulma/css/bulma.css'
 import './app.scss'
 import { Navbar } from "@src/components/navbar/navbar";
 import { loginActions } from "@src/components/login/login";
-import { ConnectedModel, LobbyJoinedModel, PlayerModel } from "@src/client/models";
+import { ConnectedModel, LobbyJoinedModel, PlayerModel, RequestMatchModel } from "@src/client/models";
 import Constants from "@src/constants";
 
 const gamehub = GameHub.getInstance();
@@ -29,20 +29,20 @@ const actions = {
         })
     },
     setPlayerName: (model: string) => (state: State) => {
-        state.player.name = model;
+        state.currentPlayer.name = model;
         state.lobby.playerName = model;
-        return { player: state.player, lobby: state.lobby }
+        return { player: state.currentPlayer, lobby: state.lobby }
     },
     joinLobby: (lobbyId: string) => (state: State) => {
         const params = new URLSearchParams(location.search.slice(1));
         gamehub.joinLobby({ lobbyId: (params.get("lobby") || lobbyId) });
     },
     onConnected: (model: ConnectedModel) => (state: State, actions: any) => {
-        state.player = model.player;
+        state.currentPlayer = model.player;
 
         actions.joinLobby(model.defaultLobbyId);
 
-        return { player: state.player }
+        return { currentPlayer: state.currentPlayer }
     },
     onLobbyJoined: (model: LobbyJoinedModel) => (state: State, actions: any) => {
         actions.onChangeView(Constants.V_Lobby);
@@ -57,6 +57,9 @@ const actions = {
     onChangeView: (view: string) => () => {
         return { view: view }
     },
+    onMatchRequested: (model: RequestMatchModel) => (state: State, actions: any) => {
+        actions.lobby.onMatchRequested(model)
+    }
     // onStartGame: (model: StartGameModel) => (state: State, actions: any) => {
     //     actions.game.startGame({ model: model, player: state.player });
     // },
@@ -87,13 +90,17 @@ gamehub.start().then(() => {
             happ.onLobbyJoined(model)
         });
 
-    gamehub.on(GameHub.Commands.PlayerJoinedLobby, function (model: PlayerModel) {
-        happ.onPlayerJoinedLobby(model)
-    });
+        gamehub.on(GameHub.Commands.PlayerJoinedLobby, function (model: PlayerModel) {
+            happ.onPlayerJoinedLobby(model)
+        });
 
-    gamehub.on(GameHub.Commands.PlayerLeftLobby, function (model: PlayerModel) {
-        happ.onPlayerLeftLobby(model)
-    });
+        gamehub.on(GameHub.Commands.PlayerLeftLobby, function (model: PlayerModel) {
+            happ.onPlayerLeftLobby(model)
+        });
+
+        gamehub.on(GameHub.Commands.RequestMatch, function (model: RequestMatchModel) {
+            happ.onMatchRequested(model)
+        });
     }
 );
 

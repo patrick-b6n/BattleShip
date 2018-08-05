@@ -1,10 +1,11 @@
 import { h } from "hyperapp";
-import { PlayerModel as Player } from "@src/client/models";
+import { PlayerModel } from "@src/client/models";
+import { RequestMatchDto } from "@src/components/lobby/lobby.actions";
 
 interface PlayerListArgs {
-    player: Player;
-    players: Player[];
-    challengePlayer: (id: Player) => any;
+    currentPlayer: PlayerModel;
+    players: PlayerModel[];
+    requestMatch: (dto: RequestMatchDto) => any;
 }
 
 export const PlayerList = (args: PlayerListArgs) => (
@@ -16,9 +17,10 @@ export const PlayerList = (args: PlayerListArgs) => (
                 </div>
 
                 <div class="level-right">
-                    {p.id !== args.player.id &&
-                    <button class="button is-small" onclick={() => args.challengePlayer(p)}>Challenge</button>
-                    }
+                    {p.id !== args.currentPlayer.id &&
+                    <button class="button is-small"
+                            onclick={() => args.requestMatch({ fromPlayer: args.currentPlayer, toPlayer: p })}>Challenge</button>
+                    } 
                 </div>
             </div>
         ))}

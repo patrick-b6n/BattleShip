@@ -6,7 +6,7 @@ import { EventLog } from "@src/components/lobby/eventlog/eventlog";
 import "./lobby.scss"
 
 export interface LobbyArgs {
-    player: PlayerModel;
+    currentPlayer: PlayerModel;
     lobby: LobbyState;
     actions: any;
     onPlayerNameChanged: any;
@@ -46,8 +46,8 @@ export const LobbyScreen = (args: LobbyArgs) => (
                 <div className="tile is-parent is-3">
                     <div className="tile is-child box">
                         <p className="title">Players</p>
-                        <PlayerList player={args.player} players={args.lobby.playersInLobby}
-                                    challengePlayer={args.actions.challengePlayer}/>
+                        <PlayerList currentPlayer={args.currentPlayer} players={args.lobby.playersInLobby}
+                                    requestMatch={args.actions.requestMatch}/>
                     </div>
                 </div>
             </div>

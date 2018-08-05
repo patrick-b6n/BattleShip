@@ -15,7 +15,8 @@ export class GameHub {
         LobbyJoined: "LobbyJoined",
         PlayerJoinedLobby: "PlayerJoinedLobby",
         PlayerLeftLobby: "PlayerLeftLobby",
-        RequestMatch: "RequestMatch"
+        RequestMatch: "RequestMatch",
+        CancelRequestMatch: "CancelRequestMatch"
     };
 
     private constructor() {
@@ -47,5 +48,9 @@ export class GameHub {
 
     public requestMatch(model: RequestMatchModel): Promise<void> {
         return this.connection.send(GameHub.Commands.RequestMatch, model)
+    }
+
+    public cancelRequestMatch(model: RequestMatchModel): Promise<void> {
+        return this.connection.send(GameHub.Commands.CancelRequestMatch, model)
     }
 }

@@ -1,10 +1,15 @@
-import { EventEntry, LobbyJoinedModel, PlayerModel } from "@src/client/models";
+import { EventEntry, LobbyJoinedModel, PlayerModel, RequestMatchModel } from "@src/client/models";
 import { GameHub } from "@src/client/gameHub";
 import { LobbyCallups, LobbyState } from "@src/client/states";
 import Swal from 'sweetalert2'
 import Constants from "@src/constants";
 
 const gamehub = GameHub.getInstance();
+
+export interface RequestMatchDto {
+    fromPlayer: PlayerModel;
+    toPlayer: PlayerModel;
+}
 
 export const lobbyActions = {
         init: (callups: LobbyCallups) => (state: LobbyState, actions: any) => {
@@ -76,8 +81,60 @@ export const lobbyActions = {
                 }
             );
         },
-        challengePlayer: (toPlayer: PlayerModel) => (state: LobbyState, actions: any) => {
-            gamehub.requestMatch({ from: null, to: toPlayer });
+        requestMatch: (dto: RequestMatchDto) => (state: LobbyState, actions: any) => {
+            gamehub.requestMatch({ from: dto.fromPlayer, to: dto.toPlayer })
+                .then(async () => {
+                    Swal({
+                        title: `Match request sent to ${dto.toPlayer.name}`,
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        cancelButtonText: 'Cancel request',
+                        showConfirmButton: false,
+                        showCancelButton: true,
+                        text: 'Waiting for acceptence',
+                    }).then((result) => {
+                        if (result.dismiss === Swal.DismissReason.cancel) {
+                            actions.cancelMatchRequest(dto)
+                        }
+                    })
+                })
+                .catch(() => {
+                    Swal({
+                        title: `Couldn't send match request to ${dto.toPlayer.name}`,
+                        showCloseButton: true,
+                    })
+                });
+
+            setTimeout(() => actions.cancelMatchRequest(dto), 1000);
+
+            return { isMatchRequestActive: true }
+        },
+        cancelMatchRequest: (dto: RequestMatchDto) => (state: LobbyState, actions: any) => {
+            if (state.isMatchRequestActive) {
+                Swal.close()
+            }
+
+            console.info("cancel");
+
+            return { isMatchRequestActive: false }
+        },
+        onMatchRequested: (model: RequestMatchModel) => (state: LobbyState, actions: any) => {
+            Swal({
+                title: `Match request received from ${model.from.name}`,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                confirmButtonText: 'Accept',
+                cancelButtonText: 'Decline',
+                showConfirmButton: true,
+                showCancelButton: true,
+            }).then((result) => {
+                if (result.value) {
+                    actions.acceptMatchRequest(model)
+                }
+                if (result.dismiss === Swal.DismissReason.cancel) {
+                    actions.declineMatchRequest(model)
+                }
+            })
         }
     }
 ;

@@ -9,7 +9,7 @@ export class State {
     lobby: LobbyState = new LobbyState();
     login: LoginState = new LoginState();
 
-    player: PlayerModel = { id: "", name: "..." };
+    currentPlayer: PlayerModel = { id: "", name: "..." };
 }
 
 export interface LoginCallups {
@@ -32,6 +32,7 @@ export class LobbyState implements LobbyCallups {
     playersInLobby: PlayerModel[] = [];
     events: any[] = [];
     setPlayerName: (name: string) => any;
+    isMatchRequestActive: boolean = false;
 }
 
 export class GameState {

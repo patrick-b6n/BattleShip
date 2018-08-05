@@ -15,9 +15,9 @@ export const ViewSwitcher = (args: CurrentViewArgs) => {
         case Constants.V_Login:
             return <Login actions={args.actions.login} state={args.state.login}/>;
         case Constants.V_Lobby:
-            return <LobbyScreen player={args.state.player} lobby={args.state.lobby} actions={args.actions.lobby}
+            return <LobbyScreen currentPlayer={args.state.currentPlayer} lobby={args.state.lobby} actions={args.actions.lobby}
                                 onPlayerNameChanged={args.actions.onPlayerNameChanged}/>;
         case Constants.V_Game:
-            return <GameScreen actions={args.actions.game} state={args.state.game} player={args.state.player}/>;
+            return <GameScreen actions={args.actions.game} state={args.state.game} player={args.state.currentPlayer}/>;
     }
 };
