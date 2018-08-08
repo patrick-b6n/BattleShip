@@ -41,6 +41,7 @@ namespace BattleShip.Hubs
             public const string PlayerJoinedLobby = "PlayerJoinedLobby";
             public const string PlayerLeftLobby = "PlayerLeftLobby";
             public const string RequestMatch = "RequestMatch";
+            public const string CancelRequestMatch = "CancelRequestMatch";
         }
 
         private readonly PlayerManager _playerManager;
@@ -117,6 +118,20 @@ namespace BattleShip.Hubs
             if (result.IsSuccess)
             {
                 await Clients.Clients(player.ConnectionId).SendAsync(Commands.RequestMatch, model);
+            }
+            else
+            {
+                throw new Exception();
+            }
+        }
+
+        public async Task CancelRequestMatch(RequestMatchModel model)
+        {
+            var (result, player) = _playerManager.Get(model.To.Id);
+
+            if (result.IsSuccess)
+            {
+                await Clients.Clients(player.ConnectionId).SendAsync(Commands.CancelRequestMatch, model);
             }
             else
             {

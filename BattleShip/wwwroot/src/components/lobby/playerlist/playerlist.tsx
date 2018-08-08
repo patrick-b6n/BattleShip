@@ -1,12 +1,5 @@
 import { h } from "hyperapp";
-import { PlayerModel } from "@src/client/models";
-import { RequestMatchDto } from "@src/components/lobby/lobby.actions";
-
-interface PlayerListArgs {
-    currentPlayer: PlayerModel;
-    players: PlayerModel[];
-    requestMatch: (dto: RequestMatchDto) => any;
-}
+import { PlayerListArgs } from "@src/components/lobby/playerlist/playerListArgs";
 
 export const PlayerList = (args: PlayerListArgs) => (
     <div style={{ overflowY: "auto", height: "400px", padding: "1rem" }}>

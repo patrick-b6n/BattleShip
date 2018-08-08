@@ -84,16 +84,27 @@ export const lobbyActions = {
         requestMatch: (dto: RequestMatchDto) => (state: LobbyState, actions: any) => {
             gamehub.requestMatch({ from: dto.fromPlayer, to: dto.toPlayer })
                 .then(async () => {
+
+                    let timerInterval;
                     Swal({
-                        title: `Match request sent to ${dto.toPlayer.name}`,
+                        title: `Match request sent`,
                         allowOutsideClick: false,
                         allowEscapeKey: false,
                         cancelButtonText: 'Cancel request',
                         showConfirmButton: false,
                         showCancelButton: true,
-                        text: 'Waiting for acceptence',
+                        html: `Waiting for <strong>${dto.toPlayer.name}</strong> to accept the match. <br/> Time left: <span></span>s`,
+                        timer: 5000,
+                        onOpen: () => {
+                            let element = Swal.getContent().querySelector('span');
+
+                            // @ts-ignore
+                            element.textContent = (Swal.getTimerLeft() / 1000.0).toFixed(0);
+                            // @ts-ignore
+                            timerInterval = setInterval(() => element.textContent = (Swal.getTimerLeft() / 1000.0).toFixed(0), 1000)
+                        },
                     }).then((result) => {
-                        if (result.dismiss === Swal.DismissReason.cancel) {
+                        if (result.dismiss === Swal.DismissReason.cancel || result.dismiss == Swal.DismissReason.timer) {
                             actions.cancelMatchRequest(dto)
                         }
                     })
@@ -105,8 +116,6 @@ export const lobbyActions = {
                     })
                 });
 
-            setTimeout(() => actions.cancelMatchRequest(dto), 1000);
-
             return { isMatchRequestActive: true }
         },
         cancelMatchRequest: (dto: RequestMatchDto) => (state: LobbyState, actions: any) => {
@@ -114,7 +123,7 @@ export const lobbyActions = {
                 Swal.close()
             }
 
-            console.info("cancel");
+            gamehub.cancelRequestMatch({ from: dto.fromPlayer, to: dto.toPlayer });
 
             return { isMatchRequestActive: false }
         },
@@ -134,7 +143,18 @@ export const lobbyActions = {
                 if (result.dismiss === Swal.DismissReason.cancel) {
                     actions.declineMatchRequest(model)
                 }
-            })
+            });
+
+            return { isMatchRequestActive: true }
+        },
+    onCancelMatchRequested: (model: RequestMatchModel) => (state: LobbyState, actions: any) => {
+        if (state.isMatchRequestActive) {
+            Swal.close()
+        }
+
+        actions.addEvent(new EventEntry(`${model.from.name} cancelled the match request`));
+
+        return { isMatchRequestActive: false }
         }
     }
 ;

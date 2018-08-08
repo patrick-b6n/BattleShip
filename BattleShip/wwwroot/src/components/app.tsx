@@ -1,4 +1,4 @@
-import { ActionsType, app, h } from "hyperapp";
+import { app, h } from "hyperapp";
 import { GameHub } from "@src/client/gameHub";
 import { State } from "@src/client/states";
 import { lobbyActions } from "@src/components/lobby/lobby.actions";
@@ -59,6 +59,9 @@ const actions = {
     },
     onMatchRequested: (model: RequestMatchModel) => (state: State, actions: any) => {
         actions.lobby.onMatchRequested(model)
+    },
+    onCancelMatchRequested: (model: RequestMatchModel) => (state: State, actions: any) => {
+        actions.lobby.onCancelMatchRequested(model)
     }
     // onStartGame: (model: StartGameModel) => (state: State, actions: any) => {
     //     actions.game.startGame({ model: model, player: state.player });
@@ -101,6 +104,10 @@ gamehub.start().then(() => {
         gamehub.on(GameHub.Commands.RequestMatch, function (model: RequestMatchModel) {
             happ.onMatchRequested(model)
         });
+
+    gamehub.on(GameHub.Commands.CancelRequestMatch, function (model: RequestMatchModel) {
+        happ.onCancelMatchRequested(model)
+    });
     }
 );
 
