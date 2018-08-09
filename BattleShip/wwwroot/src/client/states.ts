@@ -35,16 +35,14 @@ export class LobbyState implements LobbyCallups {
     isMatchRequestActive: boolean = false;
 }
 
-export class GameState {
+export interface GameCallups {
+}
+
+export class GameState implements GameCallups {
     gameId: string | null = null;
     isMyTurn = false;
     isOver = false;
     opponent: PlayerModel | null = null;
     playerBoard = createTwoDimArray(10, 10, BoardField.Free);
     opponentBoard = createTwoDimArray(10, 10, BoardField.Free);
-
-    // constructor() {
-    //     this.gameId = "asd"
-    //     this.opponent = { playerId: "", name: "" }
-    // }
 }

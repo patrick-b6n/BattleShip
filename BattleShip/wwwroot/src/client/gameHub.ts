@@ -16,7 +16,9 @@ export class GameHub {
         PlayerJoinedLobby: "PlayerJoinedLobby",
         PlayerLeftLobby: "PlayerLeftLobby",
         RequestMatch: "RequestMatch",
-        CancelRequestMatch: "CancelRequestMatch"
+        CancelRequestMatch: "CancelRequestMatch",
+        DeclineRequestMatch: "DeclineRequestMatch",
+        AcceptRequestMatch: "AcceptRequestMatch"
     };
 
     private constructor() {
@@ -52,5 +54,13 @@ export class GameHub {
 
     public cancelRequestMatch(model: RequestMatchModel): Promise<void> {
         return this.connection.send(GameHub.Commands.CancelRequestMatch, model)
+    }
+
+    public declineMatchRequest(model: RequestMatchModel): Promise<void> {
+        return this.connection.send(GameHub.Commands.DeclineRequestMatch, model)
+    }
+
+    public acceptMatchRequest(model: RequestMatchModel): Promise<void> {
+        return this.connection.send(GameHub.Commands.AcceptRequestMatch, model)
     }
 }

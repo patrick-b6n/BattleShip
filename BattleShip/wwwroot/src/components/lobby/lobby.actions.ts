@@ -5,6 +5,7 @@ import Swal from 'sweetalert2'
 import Constants from "@src/constants";
 
 const gamehub = GameHub.getInstance();
+const matchRequestTimeout = 30 * 1000;
 
 export interface RequestMatchDto {
     fromPlayer: PlayerModel;
@@ -94,13 +95,11 @@ export const lobbyActions = {
                         showConfirmButton: false,
                         showCancelButton: true,
                         html: `Waiting for <strong>${dto.toPlayer.name}</strong> to accept the match. <br/> Time left: <span></span>s`,
-                        timer: 5000,
+                        timer: matchRequestTimeout,
                         onOpen: () => {
                             let element = Swal.getContent().querySelector('span');
 
-                            // @ts-ignore
                             element.textContent = (Swal.getTimerLeft() / 1000.0).toFixed(0);
-                            // @ts-ignore
                             timerInterval = setInterval(() => element.textContent = (Swal.getTimerLeft() / 1000.0).toFixed(0), 1000)
                         },
                     }).then((result) => {
@@ -127,6 +126,12 @@ export const lobbyActions = {
 
             return { isMatchRequestActive: false }
         },
+    declineMatchRequest: (model: RequestMatchModel) => (state: LobbyState, actions: any) => {
+        gamehub.declineMatchRequest({ from: model.from, to: model.to });
+    },
+    acceptMatchRequest: (model: RequestMatchModel) => (state: LobbyState, actions: any) => {
+        gamehub.acceptMatchRequest({ from: model.from, to: model.to });
+    },
         onMatchRequested: (model: RequestMatchModel) => (state: LobbyState, actions: any) => {
             Swal({
                 title: `Match request received from ${model.from.name}`,
@@ -153,6 +158,24 @@ export const lobbyActions = {
         }
 
         actions.addEvent(new EventEntry(`${model.from.name} cancelled the match request`));
+
+        return { isMatchRequestActive: false }
+    },
+    onDeclineRequestMatch: (model: RequestMatchModel) => (state: LobbyState, actions: any) => {
+        if (state.isMatchRequestActive) {
+            Swal.close()
+        }
+
+        actions.addEvent(new EventEntry(`${model.from.name} declined the match request`));
+
+        Swal({
+            title: `${model.from.name} declined the match request`,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            confirmButtonText: 'Ok',
+            showConfirmButton: true,
+            timer: 5000
+        });
 
         return { isMatchRequestActive: false }
         }

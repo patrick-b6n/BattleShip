@@ -42,6 +42,8 @@ namespace BattleShip.Hubs
             public const string PlayerLeftLobby = "PlayerLeftLobby";
             public const string RequestMatch = "RequestMatch";
             public const string CancelRequestMatch = "CancelRequestMatch";
+            public const string DeclineRequestMatch = "DeclineRequestMatch";
+            public const string AcceptRequestMatch = "AcceptRequestMatch";
         }
 
         private readonly PlayerManager _playerManager;
@@ -113,25 +115,37 @@ namespace BattleShip.Hubs
 
         public async Task RequestMatch(RequestMatchModel model)
         {
-            var (result, player) = _playerManager.Get(model.To.Id);
-
-            if (result.IsSuccess)
-            {
-                await Clients.Clients(player.ConnectionId).SendAsync(Commands.RequestMatch, model);
-            }
-            else
-            {
-                throw new Exception();
-            }
+            await ForwardToPlayer(model.To.Id, model, Commands.RequestMatch);
         }
 
         public async Task CancelRequestMatch(RequestMatchModel model)
         {
-            var (result, player) = _playerManager.Get(model.To.Id);
+            await ForwardToPlayer(model.To.Id, model, Commands.CancelRequestMatch);
+        }
+
+        /**
+         * Forwards denial to player who sent the request
+         */
+        public async Task DeclineRequestMatch(RequestMatchModel model)
+        {
+            await ForwardToPlayer(model.From.Id, model, Commands.DeclineRequestMatch);
+        }
+
+        /**
+         * Forwards accept to player who sent the request
+         */
+        public async Task AcceptRequestMatch(RequestMatchModel model)
+        {
+            await ForwardToPlayer(model.From.Id, model, Commands.AcceptRequestMatch);
+        }
+
+        private async Task ForwardToPlayer<T>(Guid playerId, T model, string command)
+        {
+            var (result, player) = _playerManager.Get(playerId);
 
             if (result.IsSuccess)
             {
-                await Clients.Clients(player.ConnectionId).SendAsync(Commands.CancelRequestMatch, model);
+                await Clients.Clients(player.ConnectionId).SendAsync(command, model);
             }
             else
             {

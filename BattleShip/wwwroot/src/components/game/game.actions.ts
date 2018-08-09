@@ -1,159 +1,20 @@
-import { placeShipsRandomly } from "@src/client/helper";
-import { BoardField, FireShotModel, GameStateModel, Shot, ShotFeedback, ShotFeedbackModel } from "@src/client/models";
 import { GameHub } from "@src/client/gameHub";
-import { GameState } from "@src/client/states";
-import Swal from 'sweetalert2'
+import { GameCallups, GameState } from "@src/client/states";
+import { PlayerModel } from "@src/client/models";
+import { BoardService } from "@src/components/game/board/boardService";
 
 const gamehub = GameHub.getInstance();
-
-enum GameEndReason {
-    Won,
-    Lost,
-    Disconnect
-}
-
-interface GameEnded {
-    reason: GameEndReason;
-}
+const boardService = new BoardService();
 
 export const gameActions = {
-    noop: () => () => {
+    init: (callups: GameCallups) => (state: GameState, actions: any) => {
+        actions.setCallups(callups)
     },
-    askBackToLobby: () => (state: GameState, actions: any) => {
-        Swal({
-            title: "Leave Game",
-            showCancelButton: true,
-            confirmButtonText: "Yes",
-            cancelButtonText: "No",
-            text: "Are you sure?",
-        }).then((result) => {
-            if (result) {
-                actions.backToLobby();
-            }
-        });
+    setCallups: (callups: any) => () => {
+        return callups
     },
-    backToLobby: () => (state: GameState) => {
-
-        const model: GameStateModel = {
-            gameId: state.gameId,
-            currentPlayerId: state.opponent.playerId,
-            winnerPlayerId: null,
-            disconnect: true
-        };
-
-        gamehub.gameState(model);
-        gamehub.leaveGame();
-
-        return new GameState();
-    },
-    startGame: (args: any) => (state: GameState) => {
-        const opponent = args.model.game.player1.playerId === args.player.playerId ? args.model.game.player2 : args.model.game.player1;
-        placeShipsRandomly(state.playerBoard);
-        return {
-            gameId: args.model.game.gameId,
-            isActive: true,
-            isMyTurn: args.model.firstTurn,
-            opponent: opponent,
-            playerBoard: state.playerBoard,
-        }
-    },
-    gameEnded: (model: GameEnded) => (state: GameState, actions: any) => {
-        const reason = (() => {
-            switch (model.reason) {
-                case GameEndReason.Lost:
-                    return "You lost";
-                case GameEndReason.Won:
-                    return "You won";
-                case GameEndReason.Disconnect:
-                    return "Your opponent left the game"
-            }
-        })();
-
-        Swal({
-            title: reason,
-            confirmButtonText: "Back to lobby",
-            allowOutsideClick: false
-        }).then((result) => {
-            actions.backToLobby();
-        });
-    },
-    fireShot: (shot: Shot) => (state: GameState) => {
-        if (state.isMyTurn) {
-            gamehub.fireShot(shot);
-        }
-    },
-    shotFired: (model: FireShotModel) => (state: GameState) => {
-        const cell = state.playerBoard[model.x][model.y];
-
-        const result = (() => {
-            if (cell === BoardField.Ship) {
-                return BoardField.ShipHit;
-            }
-            else if (cell === BoardField.Free) {
-                return BoardField.Miss
-            }
-        })();
-
-        state.playerBoard[model.x][model.y] = result;
-        const remainingShipCount = isGameEnd(state.playerBoard) ? 0 : 1;
-        const feedback = new ShotFeedback(model.x, model.y, remainingShipCount, result);
-
-        gamehub.shotFeedback(feedback);
-
-        return { playerBoard: state.playerBoard }
-    },
-    playerLeft: () => (state: GameState, actions: any) => {
-        if (null === state.gameId || state.isOver) {
-            return;
-        }
-
-        actions.gameEnded({ reason: GameEndReason.Disconnect })
-    },
-    onShotFeedback: (model: ShotFeedbackModel) => (state: GameState) => {
-        state.opponentBoard[model.x][model.y] = model.result;
-
-        const isEnd = 0 === model.remainingShipCount;
-
-        const gameState: GameStateModel = {
-            gameId: state.gameId,
-            currentPlayerId: state.opponent.playerId,
-            winnerPlayerId: isEnd ? state.opponent.playerId : null,
-            disconnect: false
-        };
-
-        gamehub.gameState(gameState);
-        return { opponentBoard: state.opponentBoard }
-    },
-    onGameState: (model: GameStateModel) => (state: GameState, actions: any) => {
-        if (null === state.gameId) {
-            return;
-        }
-
-        const isOver = model.winnerPlayerId !== null;
-        if (isOver) {
-            if (model.winnerPlayerId === state.opponent.playerId) {
-                actions.gameEnded({ reason: GameEndReason.Lost })
-            }
-            else {
-                actions.gameEnded({ reason: GameEndReason.Won })
-            }
-        }
-        else if (model.disconnect && !state.isOver) {
-            actions.gameEnded({ reason: GameEndReason.Disconnect })
-        }
-
-        return { isMyTurn: state.opponent.playerId !== model.currentPlayerId, isOver: isOver }
+    onStartGame: (opponent: PlayerModel) => (state: GameState, actions: any) => {
+        const playerBoard = boardService.generateBoard();
+        return { opponent: opponent, playerBoard: playerBoard }
     }
 };
-
-function isGameEnd(board: Array<BoardField>[]): boolean {
-    for (let x = 0; x < board.length; x++) {
-        for (let y = 0; y < board[x].length; y++) {
-            if (BoardField.Ship === board[x][y]) {
-                return false;
-            }
-        }
-    }
-
-    return true;
-}

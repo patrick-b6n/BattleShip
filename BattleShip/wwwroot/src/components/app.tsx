@@ -46,7 +46,10 @@ const actions = {
     },
     onLobbyJoined: (model: LobbyJoinedModel) => (state: State, actions: any) => {
         actions.onChangeView(Constants.V_Lobby);
-        actions.lobby.lobbyJoined(model)
+        actions.lobby.lobbyJoined(model);
+
+        // TODO Start Game
+        // actions.onAcceptRequestMatch({ from: state.currentPlayer, to: state.currentPlayer });
     },
     onPlayerJoinedLobby: (model: PlayerModel) => (state: State, actions: any) => {
         actions.lobby.playerJoined(model)
@@ -62,6 +65,13 @@ const actions = {
     },
     onCancelMatchRequested: (model: RequestMatchModel) => (state: State, actions: any) => {
         actions.lobby.onCancelMatchRequested(model)
+    },
+    onDeclineRequestMatch: (model: RequestMatchModel) => (state: State, actions: any) => {
+        actions.lobby.onDeclineRequestMatch(model)
+    },
+    onAcceptRequestMatch: (model: RequestMatchModel) => (state: State, actions: any) => {
+        actions.onChangeView(Constants.V_Game);
+        actions.game.onStartGame(model.to)
     }
     // onStartGame: (model: StartGameModel) => (state: State, actions: any) => {
     //     actions.game.startGame({ model: model, player: state.player });
@@ -107,6 +117,10 @@ gamehub.start().then(() => {
 
     gamehub.on(GameHub.Commands.CancelRequestMatch, function (model: RequestMatchModel) {
         happ.onCancelMatchRequested(model)
+    });
+
+    gamehub.on(GameHub.Commands.DeclineRequestMatch, function (model: RequestMatchModel) {
+        happ.onDeclineRequestMatch(model)
     });
     }
 );
