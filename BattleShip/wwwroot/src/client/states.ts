@@ -1,5 +1,5 @@
 ﻿import { createTwoDimArray } from "@src/client/helper";
-import { BoardField, PlayerModel } from "@src/client/models";
+import { BoardField, PlayerModel, RequestMatchModel } from "@src/client/models";
 import Constants from "@src/constants";
 
 export class State {
@@ -24,6 +24,7 @@ export class LoginState implements LoginCallups {
 
 export interface LobbyCallups {
     setPlayerName: (name: string) => any;
+    onAcceptRequestMatch: (model: RequestMatchModel) => any;
 }
 
 export class LobbyState implements LobbyCallups {
@@ -32,6 +33,7 @@ export class LobbyState implements LobbyCallups {
     playersInLobby: PlayerModel[] = [];
     events: any[] = [];
     setPlayerName: (name: string) => any;
+    onAcceptRequestMatch: (model: RequestMatchModel) => any;
     isMatchRequestActive: boolean = false;
 }
 

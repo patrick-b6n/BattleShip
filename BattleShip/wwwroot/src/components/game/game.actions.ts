@@ -6,6 +6,11 @@ import { BoardService } from "@src/components/game/board/boardService";
 const gamehub = GameHub.getInstance();
 const boardService = new BoardService();
 
+export interface StartGameArgs {
+    opponent: PlayerModel;
+    isFirstTurn: boolean;
+}
+
 export const gameActions = {
     init: (callups: GameCallups) => (state: GameState, actions: any) => {
         actions.setCallups(callups)
@@ -13,8 +18,10 @@ export const gameActions = {
     setCallups: (callups: any) => () => {
         return callups
     },
-    onStartGame: (opponent: PlayerModel) => (state: GameState, actions: any) => {
+    noop: () => () => {
+    },
+    onStartGame: (args: StartGameArgs) => (state: GameState, actions: any) => {
         const playerBoard = boardService.generateBoard();
-        return { opponent: opponent, playerBoard: playerBoard }
+        return { opponent: args.opponent, playerBoard: playerBoard, isMyTurn: args.isFirstTurn }
     }
 };

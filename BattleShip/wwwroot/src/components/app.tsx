@@ -26,6 +26,7 @@ const actions = {
         });
         actions.lobby.init({
             setPlayerName: actions.setPlayerName,
+            onAcceptRequestMatch: actions.onAcceptRequestMatch,
         })
     },
     setPlayerName: (model: string) => (state: State) => {
@@ -49,7 +50,7 @@ const actions = {
         actions.lobby.lobbyJoined(model);
 
         // TODO Start Game
-        actions.onAcceptRequestMatch({ from: state.currentPlayer, to: state.currentPlayer });
+        // actions.onAcceptRequestMatch({ from: state.currentPlayer, to: state.currentPlayer });
     },
     onPlayerJoinedLobby: (model: PlayerModel) => (state: State, actions: any) => {
         actions.lobby.playerJoined(model)
@@ -70,16 +71,16 @@ const actions = {
         actions.lobby.onDeclineRequestMatch(model)
     },
     onAcceptRequestMatch: (model: RequestMatchModel) => (state: State, actions: any) => {
+        actions.lobby.onAcceptRequestMatch();
         actions.onChangeView(Constants.V_Game);
-        actions.game.onStartGame(model.to)
+
+        if (state.currentPlayer.id == model.to.id) {
+            actions.game.onStartGame({ opponent: model.from, isFirstTurn: true });
+        }
+        else {
+            actions.game.onStartGame({ opponent: model.to, isFirstTurn: false });
+        }
     }
-    // onStartGame: (model: StartGameModel) => (state: State, actions: any) => {
-    //     actions.game.startGame({ model: model, player: state.player });
-    // },
-    // onPlayerLeft: (model: PlayerModel) => (state: State, actions: any) => {
-    //     actions.lobby.playerLeft(model);
-    //     actions.game.playerLeft(model);
-    // }
 };
 
 const view = (state: State, actions: any) => (
@@ -121,6 +122,10 @@ gamehub.start().then(() => {
 
     gamehub.on(GameHub.Commands.DeclineRequestMatch, function (model: RequestMatchModel) {
         happ.onDeclineRequestMatch(model)
+    });
+
+    gamehub.on(GameHub.Commands.AcceptRequestMatch, function (model: RequestMatchModel) {
+        happ.onAcceptRequestMatch(model)
     });
     }
 );
