@@ -1,6 +1,12 @@
 import { h } from "hyperapp";
 import * as cl from "classnames";
 import { BoardField } from "@src/client/models";
+import "./board.scss"
+
+export interface CellClickArgs {
+    x: number;
+    y: number;
+}
 
 export interface BoardArgs {
     board: Array<Array<BoardField>>;
@@ -9,40 +15,44 @@ export interface BoardArgs {
 }
 
 export const Board = (args: BoardArgs) => {
-    const tableClasses = cl({
-        'disabled': !args.isEnabled
+
+    const boardClasses = cl({
+        'game-board clickable': args.isEnabled,
+        'game-board': !args.isEnabled,
     });
 
-    return <table className={tableClasses}>
-        <tbody>
-        <tr>
-            <td class="marker"/>
+    return <div className={boardClasses}>
+        <div class="grid">
+            <div class="cell marker"/>
             {[...Array(args.board.length)].map((x, i) =>
-                <td class="marker">{String.fromCharCode(65 + i)}</td>
+                <div class="cell marker">{String.fromCharCode(65 + i)}</div>
             )}
-        </tr>
 
-        {args.board.map((row, i) =>
-            <tr key={i}>
-                {row.map((col, j) => {
+            {
+                args.board.map((row, i) =>
+                    row.map((col, j) => {
                         const cellClasses = cl({
-                            'free': col == BoardField.Free,
-                            'ship': col == BoardField.Ship,
-                            'shiphit': col == BoardField.ShipHit,
-                            'miss': col == BoardField.Miss
+                            'cell free': col == BoardField.Free,
+                            'cell ship': col == BoardField.Ship,
+                            'cell shiphit': col == BoardField.ShipHit,
+                            'cell miss': col == BoardField.Miss
                         });
 
                         const row = [];
                         if (j == 0) {
-                            row.push(<td class="marker">{i + 1}</td>)
+                            row.push(<div class="cell marker">{i + 1}</div>)
                         }
 
-                        row.push(<td key={j} className={cellClasses} onclick={() => args.onCellClick({ x: i, y: j })}/>);
-                        return row
-                    }
-                )}
-            </tr>
-        )}
-        </tbody>
-    </table>
+                        if (col == BoardField.Free) {
+                            row.push(<div className={cellClasses} onclick={() => args.onCellClick({ x: i, y: j })}/>);
+                        }
+                        else {
+                            row.push(<div className={cellClasses}/>);
+                        }
+                        return row;
+                    })
+                )
+            }
+        </div>
+    </div>
 };

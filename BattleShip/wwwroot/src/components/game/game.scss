@@ -1,39 +1,4 @@
-
-#game-screen table {
-  border-collapse: collapse;
-}
-
-#game-screen table.disabled td {
-  cursor: default;
-}
-
-#game-screen td {
-  border: 1px solid #aaa;
-  width: 32px;
-  height: 32px;
-  text-align: center;
-  cursor: crosshair;
-}
-
-#game-screen td.marker {
-  border: 0;
-}
-
-#game-screen td.free {
-  background-color: #fdfdfd;
-}
-
-#game-screen td.ship {
-  background-color: black;
-}
-
-#game-screen td.shiphit {
-  background-color: rgba(255, 0, 0, 0.75);
-}
-
-#game-screen td.miss {
-  background-color: lightskyblue;
-}
+@import "~bulma/bulma";
 
 #game-screen .turn-overlay {
   position: absolute;
@@ -42,4 +7,6 @@
   right: -1px;
   bottom: 0;
   background-color: rgba(255, 255, 255, 0.5);
+  text-align: center;
+  cursor: progress;
 }

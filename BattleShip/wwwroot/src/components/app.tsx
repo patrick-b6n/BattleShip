@@ -49,7 +49,7 @@ const actions = {
         actions.lobby.lobbyJoined(model);
 
         // TODO Start Game
-        // actions.onAcceptRequestMatch({ from: state.currentPlayer, to: state.currentPlayer });
+        actions.onAcceptRequestMatch({ from: state.currentPlayer, to: state.currentPlayer });
     },
     onPlayerJoinedLobby: (model: PlayerModel) => (state: State, actions: any) => {
         actions.lobby.playerJoined(model)
@@ -124,55 +124,3 @@ gamehub.start().then(() => {
     });
     }
 );
-
-// bind global events
-// gamehub.start().then(function () {
-//     gamehub.setPlayerName(state.player.name);
-//
-//     const params = new URLSearchParams(location.search.slice(1));
-//     const lobbyId = params.get("lobby");
-//
-//     if (lobbyId) {
-//         gamehub.enterLobby(lobbyId);
-//     } else {
-//         gamehub.enterLobby("F93B7255-6B78-42B0-A16B-AB80B9F57DD5");
-//     }
-// });
-//
-
-//
-// gamehub.on(GameHub.Commands.LobbyEntered, function (model: LobbyEnteredModel) {
-//     happ.lobby.lobbyEntered(model);
-// });
-//
-// gamehub.on(GameHub.Commands.PlayerJoined, function (model: PlayerModel) {
-//     happ.lobby.playerJoined(model);
-// });
-//
-// gamehub.on(GameHub.Commands.PlayerLeft, function (model: PlayerModel) {
-//     happ.onPlayerLeft(model);
-// });
-//
-// gamehub.on(GameHub.Commands.ChallengeRequest, function (model: ChallengePlayerModel) {
-//     happ.lobby.challengeRequest(model);
-// });
-//
-// gamehub.on(GameHub.Commands.StartGame, function (model: StartGameModel) {
-//     happ.onStartGame(model);
-// });
-//
-// gamehub.on(GameHub.Commands.PlayerChanged, function (model: PlayerModel) {
-//     happ.lobby.playerChanged(model);
-// });
-//
-// gamehub.on(GameHub.Commands.ShotFired, function (model: FireShotModel) {
-//     happ.game.shotFired(model);
-// });
-//
-// gamehub.on(GameHub.Commands.ShotFeedback, function (model: ShotFeedbackModel) {
-//     happ.game.onShotFeedback(model);
-// });
-//
-// gamehub.on(GameHub.Commands.GameState, function (model: GameStateModel) {
-//     happ.game.onGameState(model);
-// });

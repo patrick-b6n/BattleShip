@@ -43,12 +43,31 @@ export const GameScreen = (args: GameArgs) => (
             <div class="columns">
                 <div className="column"/>
                 <div class="column is-narrow">
-                    <Board board={args.state.playerBoard} onCellClick={args.actions.noop} isEnabled={false}/>
+                    <div class="columns">
+                        <div class="column has-text-centered">
+                            <strong>Your Board</strong>
+                        </div>
+                    </div>
+                    <div className="columns">
+                        <div className="column">
+                            <Board board={args.state.playerBoard} onCellClick={args.actions.noop} isEnabled={false}/>
+                        </div>
+                    </div>
                 </div>
                 <div class="column"/>
-                <div class="column is-narrow" style={{ position: "relative" }}>
-                    {!args.state.isMyTurn && <div class="turn-overlay"/>}
-                    <Board board={args.state.opponentBoard} onCellClick={args.actions.fireShot} isEnabled={args.state.isMyTurn}/>
+                <div class="column is-narrow">
+                    <div className="columns">
+                        <div className="column has-text-centered">
+                            <strong>Opponent Board</strong>
+                        </div>
+                    </div>
+                    <div className="columns">
+                        <div class="column" style={{ position: "relative" }}>
+                            {!args.state.isMyTurn && <div class="turn-overlay"/>}
+                            <Board board={args.state.opponentBoard} onCellClick={args.actions.fireShot}
+                                   isEnabled={args.state.isMyTurn}/>
+                        </div>
+                    </div>
                 </div>
                 <div className="column"/>
             </div>
