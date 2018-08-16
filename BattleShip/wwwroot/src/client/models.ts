@@ -42,6 +42,19 @@ export interface RequestMatchModel {
     to: PlayerModel;
 }
 
+export interface FireShotModel {
+    x: number;
+    y: number;
+    to: PlayerModel;
+}
+
+export interface FireShotResponseModel {
+    x: number;
+    y: number;
+    to: PlayerModel;
+    isHit: boolean;
+}
+
 export class EventEntry {
     date: Date;
     type: EventType;

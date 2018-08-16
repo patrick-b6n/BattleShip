@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Permissions;
 using System.Threading;
 using System.Threading.Tasks;
 using BattleShip.Domain;
@@ -44,6 +45,8 @@ namespace BattleShip.Hubs
             public const string CancelRequestMatch = "CancelRequestMatch";
             public const string DeclineRequestMatch = "DeclineRequestMatch";
             public const string AcceptRequestMatch = "AcceptRequestMatch";
+            public const string FireShot = "FireShot";
+            public const string FireShotResponse = "FireShotResponse";
         }
 
         private readonly PlayerManager _playerManager;
@@ -123,6 +126,16 @@ namespace BattleShip.Hubs
             await ForwardToPlayer(model.To.Id, model, Commands.CancelRequestMatch);
         }
 
+        public async Task FireShot(FireShotModel model)
+        {
+            await ForwardToPlayer(model.To.Id, model, Commands.FireShot);
+        }
+
+        public async Task FireShotResponse(FireShotResponseModel model)
+        {
+            await ForwardToPlayer(model.To.Id, model, Commands.FireShotResponse);
+        }
+
         /**
          * Forwards denial to player who sent the request
          */
@@ -181,6 +194,26 @@ namespace BattleShip.Hubs
         public PlayerModel From { get; set; }
 
         public PlayerModel To { get; set; }
+    }
+
+    public class FireShotModel
+    {
+        public int X { get; set; }
+        
+        public int Y { get; set; }
+
+        public PlayerModel To { get; set; }
+    }
+
+    public class FireShotResponseModel
+    {
+        public int X { get; set; }
+        
+        public int Y { get; set; }
+
+        public PlayerModel To { get; set; }
+
+        public bool IsHit { get; set; }
     }
 
     public class PlayerModel

@@ -1,5 +1,11 @@
 import * as signalr from "@aspnet/signalr";
-import { ConnectModel, JoinLobbyModel, RequestMatchModel } from "@src/client/models";
+import {
+    ConnectModel,
+    FireShotModel,
+    FireShotResponseModel,
+    JoinLobbyModel,
+    RequestMatchModel
+} from "@src/client/models";
 
 export class GameHub {
     private static instance: GameHub;
@@ -18,7 +24,9 @@ export class GameHub {
         RequestMatch: "RequestMatch",
         CancelRequestMatch: "CancelRequestMatch",
         DeclineRequestMatch: "DeclineRequestMatch",
-        AcceptRequestMatch: "AcceptRequestMatch"
+        AcceptRequestMatch: "AcceptRequestMatch",
+        FireShot: "FireShot",
+        FireShotResponse: "FireShotResponse"
     };
 
     private constructor() {
@@ -62,5 +70,13 @@ export class GameHub {
 
     public acceptMatchRequest(model: RequestMatchModel): Promise<void> {
         return this.connection.send(GameHub.Commands.AcceptRequestMatch, model)
+    }
+
+    public fireShot(model: FireShotModel): Promise<void> {
+        return this.connection.send(GameHub.Commands.FireShot, model)
+    }
+
+    public fireShotResponse(model: FireShotResponseModel): Promise<void> {
+        return this.connection.send(GameHub.Commands.FireShotResponse, model)
     }
 }

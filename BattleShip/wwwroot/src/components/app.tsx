@@ -8,7 +8,14 @@ import 'bulma/css/bulma.css'
 import './app.scss'
 import { Navbar } from "@src/components/navbar/navbar";
 import { loginActions } from "@src/components/login/login";
-import { ConnectedModel, LobbyJoinedModel, PlayerModel, RequestMatchModel } from "@src/client/models";
+import {
+    ConnectedModel,
+    FireShotModel,
+    FireShotResponseModel,
+    LobbyJoinedModel,
+    PlayerModel,
+    RequestMatchModel
+} from "@src/client/models";
 import Constants from "@src/constants";
 
 const gamehub = GameHub.getInstance();
@@ -70,6 +77,12 @@ const actions = {
     onDeclineRequestMatch: (model: RequestMatchModel) => (state: State, actions: any) => {
         actions.lobby.onDeclineRequestMatch(model)
     },
+    onFireShot: (model: FireShotModel) => (state: State, actions: any) => {
+        actions.game.onFireShot(model)
+    },
+    onFireShotResponse: (model: FireShotResponseModel) => (state: State, actions: any) => {
+        actions.game.onFireShotResponse(model)
+    },
     onAcceptRequestMatch: (model: RequestMatchModel) => (state: State, actions: any) => {
         actions.lobby.onAcceptRequestMatch();
         actions.onChangeView(Constants.V_Game);
@@ -126,6 +139,14 @@ gamehub.start().then(() => {
 
     gamehub.on(GameHub.Commands.AcceptRequestMatch, function (model: RequestMatchModel) {
         happ.onAcceptRequestMatch(model)
+    });
+
+    gamehub.on(GameHub.Commands.FireShot, function (model: FireShotModel) {
+        happ.onFireShot(model)
+    });
+
+    gamehub.on(GameHub.Commands.FireShotResponse, function (model: FireShotResponseModel) {
+        happ.onFireShotResponse(model)
     });
     }
 );

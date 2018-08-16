@@ -2,6 +2,7 @@ import { h } from "hyperapp";
 import * as cl from "classnames";
 import { BoardField } from "@src/client/models";
 import "./board.scss"
+import { ShotArgs } from "@src/components/game/game.actions";
 
 export interface CellClickArgs {
     x: number;
@@ -10,7 +11,7 @@ export interface CellClickArgs {
 
 export interface BoardArgs {
     board: Array<Array<BoardField>>;
-    onCellClick: (model: any) => any;
+    onCellClick: (model: ShotArgs) => any;
     isEnabled: boolean;
 }
 
