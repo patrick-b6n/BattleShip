@@ -39,7 +39,7 @@ export const lobbyActions = {
         },
     playerJoined:
         (value: PlayerModel) => (state: LobbyState, actions: any) => {
-            actions.addEvent(new EventEntry(`Player ${value.name} joined the lobby`));
+            actions.addEvent(new EventEntry(`${value.name} joined the lobby`));
 
             state.playersInLobby.push(value);
             state.playersInLobby.sort((a, b) => a.name.localeCompare(b.name));
@@ -47,7 +47,7 @@ export const lobbyActions = {
         },
     playerLeft:
         (value: PlayerModel) => (state: LobbyState, actions: any) => {
-            actions.addEvent(new EventEntry(`Player ${value.name} left the lobby`));
+            actions.addEvent(new EventEntry(`${value.name} left the lobby`));
 
             const index = state.playersInLobby.findIndex((p: PlayerModel) => p.id === value.id);
             if (index > -1) {

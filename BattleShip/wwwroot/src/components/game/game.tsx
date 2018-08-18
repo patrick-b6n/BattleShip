@@ -32,9 +32,6 @@ export const GameScreen = (args: GameArgs) => (
                     <h1 className="title has-text-centered">
                         {args.player.name} vs. {args.state.opponent.name}
                     </h1>
-                    <h2 class="subtitle has-text-centered">
-                        <TurnMarker isMyTurn={args.state.isMyTurn}/>
-                    </h2>
                 </div>
             </div>
         </section>
@@ -63,7 +60,9 @@ export const GameScreen = (args: GameArgs) => (
                     </div>
                     <div className="columns">
                         <div class="column" style={{ position: "relative" }}>
-                            {!args.state.isMyTurn && <div class="turn-overlay"/>}
+                            {!args.state.isMyTurn && <div class="turn-overlay">
+                                <div>Wait for your opponent</div>
+                            </div>}
                             <Board board={args.state.opponentBoard} onCellClick={args.actions.fireShot}
                                    isEnabled={args.state.isMyTurn}/>
                         </div>

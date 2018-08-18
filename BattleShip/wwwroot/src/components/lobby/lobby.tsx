@@ -15,7 +15,7 @@ export interface LobbyArgs {
 export const LobbyScreen = (args: LobbyArgs) => (
     <div id="lobby" oncreate={() => args.actions.init(args)}>
 
-        <section className="hero  is-primary">
+        <section className="hero is-primary">
             <div className="hero-body">
                 <div className="container">
                     <div class="level">
@@ -36,14 +36,14 @@ export const LobbyScreen = (args: LobbyArgs) => (
 
         <div class="container pt-3">
 
-            <div className="tile is-ancestor">
-                <div className="tile is-parent is-9 ">
+            <div className="tile">
+                <div className="tile is-parent is-8 ">
                     <div className="tile is-child box">
                         <p className="title">Messages</p>
                         <EventLog events={args.lobby.events}/>
                     </div>
                 </div>
-                <div className="tile is-parent is-3">
+                <div className="tile is-parent is-4">
                     <div className="tile is-child box">
                         <p className="title">Players</p>
                         <PlayerList currentPlayer={args.currentPlayer} players={args.lobby.playersInLobby}
@@ -53,29 +53,9 @@ export const LobbyScreen = (args: LobbyArgs) => (
             </div>
 
         </div>
-
-        {/*<div style={{ marginBottom: "1rem" }}>*/}
-        {/*<div>*/}
-        {/*<span>Share your lobby: </span>{" "} <a href={buildLobbyUrl(args.lobby.lobbyId)}> {buildLobbyUrl(args.lobby.lobbyId)} </a>*/}
-        {/*</div>*/}
-        {/*<div>*/}
-        {/*<button class="button" onClick={() => args.actions.createLobby()}>*/}
-        {/*Create custom lobby*/}
-        {/*</button>*/}
-        {/*</div>*/}
-        {/*</div>*/}
     </div>
 );
 
 function buildLobbyUrl(id: string): string {
     return window.location.host + "?lobby=" + id;
 }
-
-// export interface LobbyActions {
-//     addEvent: (value: Event) => (state: LobbyState) => any;
-//     playerJoined: (value: PlayerModel) => (state: LobbyState, actions: any) => any;
-//     playerLeft: (value: PlayerModel) => (state: LobbyState, actions: any) => any;
-//     connected: (model: ConnectedModel) => () => any;
-//     playerNameInput: (value: string) => () => any;
-//     enterLobby: (value: EnterLobbyAnswerModel) => (state: State, actions: any) => any;
-// }
