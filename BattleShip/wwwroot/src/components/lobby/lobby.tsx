@@ -1,9 +1,9 @@
 ﻿import { h } from "hyperapp";
-import { PlayerModel } from "@src/client/models";
 import { LobbyState } from "@src/client/states";
 import { PlayerList } from "@src/components/lobby/playerlist/playerlist";
 import { EventLog } from "@src/components/lobby/eventlog/eventlog";
 import "./lobby.scss"
+import { PlayerModel } from "@src/client/communicationModels";
 
 export interface LobbyArgs {
     currentPlayer: PlayerModel;

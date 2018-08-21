@@ -1,5 +1,5 @@
 ﻿import { h } from "hyperapp";
-import { EventEntry, EventType } from "@src/client/models"
+import { EventEntry, EventType } from "@src/components/lobby/eventlog/models";
 
 interface EventArgs {
     event: EventEntry

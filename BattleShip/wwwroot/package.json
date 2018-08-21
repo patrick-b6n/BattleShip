@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "@aspnet/signalr": "^1.0.2",
+    "@aspnet/signalr": "^1.0.3",
     "bulma": "^0.7.1",
     "classnames": "^2.2.6",
     "fuse-box": "^3.4.0",

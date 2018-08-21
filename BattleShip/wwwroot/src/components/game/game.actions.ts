@@ -1,7 +1,8 @@
 import { GameHub } from "@src/client/gameHub";
 import { GameCallups, GameState } from "@src/client/states";
-import { BoardField, FireShotModel, FireShotResponseModel, PlayerModel } from "@src/client/models";
+import { FireShotModel, FireShotResponseModel, PlayerModel } from "@src/client/communicationModels";
 import { BoardService } from "@src/components/game/board/boardService";
+import { BoardField } from "@src/components/game/models";
 
 const gamehub = GameHub.getInstance();
 const boardService = new BoardService();
@@ -26,8 +27,8 @@ export const gameActions = {
     noop: () => () => {
     },
     onStartGame: (args: StartGameArgs) => (state: GameState, actions: any) => {
-        const playerBoard = boardService.generateBoard();
-        return { opponent: args.opponent, playerBoard: playerBoard, isMyTurn: args.isFirstTurn }
+        const { ships, board } = boardService.generateBoard();
+        return { opponent: args.opponent, playerBoard: board, ships: ships, isMyTurn: args.isFirstTurn }
     },
     fireShot: (args: ShotArgs) => (state: GameState, actions: any) => {
         gamehub.fireShot({ x: args.x, y: args.y, to: state.opponent })

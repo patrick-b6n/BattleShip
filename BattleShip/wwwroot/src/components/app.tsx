@@ -15,7 +15,7 @@ import {
     LobbyJoinedModel,
     PlayerModel,
     RequestMatchModel
-} from "@src/client/models";
+} from "@src/client/communicationModels";
 import Constants from "@src/constants";
 
 const gamehub = GameHub.getInstance();

@@ -1,8 +1,40 @@
-import { BoardField } from "@src/client/models";
+import { IDictionary } from "@src/client/models";
 import { createTwoDimArray } from "@src/client/helper";
+import { BoardField, Coordinates } from "@src/components/game/models";
+
+export interface GeneratedBoard {
+    ships: Array<Ship>;
+    board: Array<Array<BoardField>>;
+}
+
+export class Ship {
+    private coordinateToIsHit: IDictionary<boolean>;
+
+    constructor(coordinates: Coordinates[]) {
+        coordinates.forEach(c => this.coordinateToIsHit[Ship.stringify(c)] = false)
+    }
+
+    get isSunk(): boolean {
+        for (let key in this.coordinateToIsHit) {
+            if (!this.coordinateToIsHit[key]) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    get length(): number {
+        return Object.keys(this.coordinateToIsHit).length;
+    }
+
+    private static stringify(coordinate: Coordinates) {
+        return `${coordinate.x}_${coordinate.y}`
+    }
+}
 
 export class BoardService {
-    private static resetBoard(board: Array<BoardField>[]) {
+    private static resetBoard(board: Array<Array<BoardField>>) {
         for (let x = 0; x < board.length; x++) {
             for (let y = 0; y < board[x].length; y++) {
                 board[x][y] = BoardField.Free;
@@ -10,8 +42,8 @@ export class BoardService {
         }
     }
 
-    public generateBoard(): Array<BoardField>[] {
-        function checkIsFieldFree(board: Array<BoardField>[], x: number, y: number): boolean {
+    public generateBoard(): GeneratedBoard {
+        function checkIsFieldFree(board: Array<Array<BoardField>>, x: number, y: number): boolean {
             if (x < 0 || x >= board.length || y >= board.length || y < 0) {
                 return true;
             }
@@ -23,10 +55,10 @@ export class BoardService {
         BoardService.resetBoard(board);
 
         const sizes = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1];
+        const ships: Array<Ship> = [];
 
         for (const size of sizes) {
-            let placed = false;
-            while (!placed) {
+            while (true) {
                 const xStart = Math.round(Math.random() * 9);
                 const yStart = Math.round(Math.random() * 9);
                 const dir = Math.round(Math.random());
@@ -54,17 +86,21 @@ export class BoardService {
                 }
 
                 if (free) {
+                    const coordinates: Array<Coordinates> = [];
                     for (let i = 0; i < size; i++) {
                         const x = dir === 1 ? xStart : xStart + i;
                         const y = dir === 0 ? yStart : yStart + i;
-                        board[x][y] = BoardField.Ship
+                        board[x][y] = BoardField.Ship;
+
+                        coordinates.push(new Coordinates(x, y))
                     }
 
-                    placed = true;
+                    ships.push(new Ship(coordinates));
+                    break;
                 }
             }
         }
 
-        return board;
+        return { ships, board };
     }
 }

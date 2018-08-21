@@ -5,7 +5,7 @@ import {
     FireShotResponseModel,
     JoinLobbyModel,
     RequestMatchModel
-} from "@src/client/models";
+} from "@src/client/communicationModels";
 
 export class GameHub {
     private static instance: GameHub;

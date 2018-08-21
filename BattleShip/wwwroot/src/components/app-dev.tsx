@@ -7,7 +7,10 @@ import { BoardService } from "@src/components/game/board/boardService";
 const boardService = new BoardService();
 
 const state = new State();
-state.game.playerBoard = boardService.generateBoard();
+
+const { ships, board } = boardService.generateBoard();
+state.game.ships = ships;
+state.game.playerBoard = board;
 
 const actions = {
     game: gameActions,

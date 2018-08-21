@@ -1,8 +1,8 @@
 import { h } from "hyperapp";
 import * as cl from "classnames";
-import { BoardField } from "@src/client/models";
 import "./board.scss"
 import { ShotArgs } from "@src/components/game/game.actions";
+import { BoardField } from "@src/components/game/models";
 
 export interface CellClickArgs {
     x: number;

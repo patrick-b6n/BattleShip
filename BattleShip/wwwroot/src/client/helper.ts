@@ -9,8 +9,8 @@
     return text;
 }
 
-export function createTwoDimArray<T>(l1: number, l2: number, defaultValue: T): Array<T>[] {
-    const arr: Array<T>[] = [];
+export function createTwoDimArray<T>(l1: number, l2: number, defaultValue: T): Array<Array<T>> {
+    const arr: Array<Array<T>> = [];
 
     for (let i = 0; i < l1; i++) {
         const inner: T[] = [];

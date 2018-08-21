@@ -1,8 +1,9 @@
-import { EventEntry, LobbyJoinedModel, PlayerModel, RequestMatchModel } from "@src/client/models";
 import { GameHub } from "@src/client/gameHub";
 import { LobbyCallups, LobbyState } from "@src/client/states";
 import Swal from 'sweetalert2'
 import Constants from "@src/constants";
+import { LobbyJoinedModel, PlayerModel, RequestMatchModel } from "@src/client/communicationModels";
+import { EventEntry } from "@src/components/lobby/eventlog/models";
 
 const gamehub = GameHub.getInstance();
 const matchRequestTimeout = 30 * 1000;
@@ -63,7 +64,7 @@ export const lobbyActions = {
     createLobby: () => () => {
         gamehub.joinLobby({ lobbyId: "00000000-0000-0000-0000-000000000000" });
     },
-    setPlayerName: (value: string) => (state: LobbyState) => {
+    setPlayerName: (value: string) => () => {
         return { playerName: value };
     },
     editName: () => (state: LobbyState) => {
@@ -117,7 +118,7 @@ export const lobbyActions = {
 
         return { isMatchRequestActive: true }
     },
-    cancelMatchRequest: (dto: RequestMatchDto) => (state: LobbyState, actions: any) => {
+    cancelMatchRequest: (dto: RequestMatchDto) => (state: LobbyState) => {
         if (state.isMatchRequestActive) {
             Swal.close()
         }
@@ -126,10 +127,10 @@ export const lobbyActions = {
 
         return { isMatchRequestActive: false }
     },
-    declineMatchRequest: (model: RequestMatchModel) => (state: LobbyState, actions: any) => {
+    declineMatchRequest: (model: RequestMatchModel) => () => {
         gamehub.declineMatchRequest({ from: model.from, to: model.to });
     },
-    acceptMatchRequest: (model: RequestMatchModel) => (state: LobbyState, actions: any) => {
+    acceptMatchRequest: (model: RequestMatchModel) => (state: LobbyState) => {
         gamehub.acceptMatchRequest({ from: model.from, to: model.to });
         state.onAcceptRequestMatch(model);
     },
@@ -180,7 +181,7 @@ export const lobbyActions = {
 
         return { isMatchRequestActive: false }
     },
-    onAcceptRequestMatch: () => (state: LobbyState, actions: any) => {
+    onAcceptRequestMatch: () => (state: LobbyState) => {
         if (state.isMatchRequestActive) {
             Swal.close()
         }

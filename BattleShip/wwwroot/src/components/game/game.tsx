@@ -1,6 +1,6 @@
 ﻿import { h } from "hyperapp";
 import { GameState } from "@src/client/states";
-import { PlayerModel } from "@src/client/models";
+import { PlayerModel } from "@src/client/communicationModels";
 import { Board } from "@src/components/game/board/board";
 import "./game.scss"
 

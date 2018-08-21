@@ -1,6 +1,8 @@
 ﻿import { createTwoDimArray } from "@src/client/helper";
-import { BoardField, PlayerModel, RequestMatchModel } from "@src/client/models";
+import { PlayerModel, RequestMatchModel } from "@src/client/communicationModels";
 import Constants from "@src/constants";
+import { Ship } from "@src/components/game/board/boardService";
+import { BoardField } from "@src/components/game/models";
 
 export class State {
     view: String = Constants.V_Login;
@@ -46,5 +48,6 @@ export class GameState implements GameCallups {
     isOver = false;
     opponent: PlayerModel | null = null;
     playerBoard = createTwoDimArray(10, 10, BoardField.Free);
+    ships: Array<Ship> = [];
     opponentBoard = createTwoDimArray(10, 10, BoardField.Free);
 }

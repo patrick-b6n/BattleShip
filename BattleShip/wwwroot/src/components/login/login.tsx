@@ -13,7 +13,7 @@ export const loginActions = {
     setCallups: (callups: any) => () => {
         return callups
     },
-    onCreate: () => (state: LoginState, actions: any) => {
+    onCreate: () => (state: LoginState) => {
         async function start(name: string) {
             localStorage.setItem(Constants.LS_PLAYER_NAME, name);
 
