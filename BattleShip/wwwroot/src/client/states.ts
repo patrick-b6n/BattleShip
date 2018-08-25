@@ -1,5 +1,5 @@
 ﻿import { createTwoDimArray } from "@src/client/helper";
-import { PlayerModel, RequestMatchModel } from "@src/client/communicationModels";
+import { IShip, PlayerModel, RequestMatchModel } from "@src/client/communicationModels";
 import Constants from "@src/constants";
 import { Ship } from "@src/components/game/board/boardService";
 import { BoardField } from "@src/components/game/models";
@@ -50,4 +50,5 @@ export class GameState implements GameCallups {
     playerBoard = createTwoDimArray(10, 10, BoardField.Free);
     ships: Array<Ship> = [];
     opponentBoard = createTwoDimArray(10, 10, BoardField.Free);
+    opponentShips: Array<IShip> = [];
 }

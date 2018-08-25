@@ -14,3 +14,21 @@
   align-items: center;
   justify-content: center;
 }
+
+.remaining-ships {
+
+  .columns {
+    justify-content: space-around;
+  }
+
+  .ship-cell {
+    width: 1rem;
+    height: 1rem;
+    background-color: $black;
+    margin-bottom: 1px;
+
+    &.sunk {
+      background-color: $red;
+    }
+  }
+}

@@ -1,8 +1,9 @@
 import { GameHub } from "@src/client/gameHub";
 import { GameCallups, GameState } from "@src/client/states";
-import { FireShotModel, FireShotResponseModel, PlayerModel } from "@src/client/communicationModels";
+import { FireShotModel, FireShotResponseModel, IShip, PlayerModel } from "@src/client/communicationModels";
 import { BoardService } from "@src/components/game/board/boardService";
-import { BoardField } from "@src/components/game/models";
+import { BoardField, Coordinates } from "@src/components/game/models";
+import { createTwoDimArray } from "@src/client/helper";
 
 const gamehub = GameHub.getInstance();
 const boardService = new BoardService();
@@ -26,26 +27,42 @@ export const gameActions = {
     },
     noop: () => () => {
     },
-    onStartGame: (args: StartGameArgs) => (state: GameState, actions: any) => {
+    onStartGame: (args: StartGameArgs) => () => {
         const { ships, board } = boardService.generateBoard();
-        return { opponent: args.opponent, playerBoard: board, ships: ships, isMyTurn: args.isFirstTurn }
+        return {
+            opponent: args.opponent,
+            playerBoard: board,
+            opponentBoard: createTwoDimArray(10, 10, BoardField.Free),
+            ships: ships,
+            opponentShips: ships,
+            isMyTurn: args.isFirstTurn
+        }
     },
-    fireShot: (args: ShotArgs) => (state: GameState, actions: any) => {
+    fireShot: (args: ShotArgs) => (state: GameState) => {
         gamehub.fireShot({ x: args.x, y: args.y, to: state.opponent })
     },
-    onFireShot: (args: FireShotModel) => (state: GameState, actions: any) => {
-        let board = state.playerBoard;
-        let isHit = board[args.x][args.y] === BoardField.Ship;
+    onFireShot: (args: FireShotModel) => (state: GameState) => {
+        const board = state.playerBoard;
+        const isHit = board[args.x][args.y] === BoardField.Ship;
         board[args.x][args.y] = isHit ? BoardField.ShipHit : BoardField.Miss;
 
-        gamehub.fireShotResponse({ x: args.x, y: args.y, to: state.opponent, isHit: isHit });
+        state.ships.forEach(s => s.shoot(new Coordinates(args.x, args.y)));
+        const shipModels = state.ships.map(s => <IShip>{ length: s.length, isSunk: s.isSunk });
 
-        return { playerBoard: board, isMyTurn: !state.isMyTurn }
+        gamehub.fireShotResponse({
+            x: args.x,
+            y: args.y,
+            to: state.opponent,
+            isHit: isHit,
+            remainingShips: shipModels
+        });
+
+        return { playerBoard: board, isMyTurn: !state.isMyTurn, ships: state.ships }
     },
-    onFireShotResponse: (args: FireShotResponseModel) => (state: GameState, actions: any) => {
+    onFireShotResponse: (args: FireShotResponseModel) => (state: GameState) => {
         let board = state.opponentBoard;
         board[args.x][args.y] = args.isHit ? BoardField.ShipHit : BoardField.Miss;
 
-        return { opponentBoard: board, isMyTurn: !state.isMyTurn }
+        return { opponentBoard: board, opponentShips: args.remainingShips, isMyTurn: !state.isMyTurn }
     }
 };

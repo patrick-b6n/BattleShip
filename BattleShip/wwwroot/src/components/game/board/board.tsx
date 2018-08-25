@@ -4,11 +4,6 @@ import "./board.scss"
 import { ShotArgs } from "@src/components/game/game.actions";
 import { BoardField } from "@src/components/game/models";
 
-export interface CellClickArgs {
-    x: number;
-    y: number;
-}
-
 export interface BoardArgs {
     board: Array<Array<BoardField>>;
     onCellClick: (model: ShotArgs) => any;

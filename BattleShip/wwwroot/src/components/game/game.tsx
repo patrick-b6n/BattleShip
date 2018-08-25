@@ -1,8 +1,9 @@
 ﻿import { h } from "hyperapp";
 import { GameState } from "@src/client/states";
-import { PlayerModel } from "@src/client/communicationModels";
+import { IShip, PlayerModel } from "@src/client/communicationModels";
 import { Board } from "@src/components/game/board/board";
 import "./game.scss"
+import * as cl from "classnames";
 
 export interface GameArgs {
     player: PlayerModel;
@@ -14,6 +15,14 @@ interface TurnMarkerArgs {
     isMyTurn: boolean
 }
 
+interface RemainingShipsArgs {
+    ships: Array<IShip>
+}
+
+interface RemainingShipsArg {
+    ship: IShip
+}
+
 const TurnMarker = (args: TurnMarkerArgs) => {
     if (args.isMyTurn) {
         return <div>Your Turn</div>
@@ -21,6 +30,31 @@ const TurnMarker = (args: TurnMarkerArgs) => {
     else {
         return <div>Waiting for Opponent</div>
     }
+};
+
+const RemainingShips = (args: RemainingShipsArgs) => {
+    return (
+        <div class="remaining-ships">
+            <div style={{ "marginBottom": ".25rem", "fontWeight": 500 }}>Remaining Ships</div>
+            <div class="columns is-gapless">
+                {args.ships.map(s => <div><RemainingShip ship={s}/></div>)}
+            </div>
+        </div>
+    )
+};
+
+const RemainingShip = (args: RemainingShipsArg) => {
+
+    const cellClasses = cl({
+        'ship-cell sunk': args.ship.isSunk,
+        'ship-cell': !args.ship.isSunk,
+    });
+
+    const cells = [];
+    for (let i = 0; i < args.ship.length; i++) {
+        cells.push(<div className={cellClasses}/>);
+    }
+    return cells;
 };
 
 export const GameScreen = (args: GameArgs) => (
@@ -42,20 +76,26 @@ export const GameScreen = (args: GameArgs) => (
                 <div class="column is-narrow">
                     <div class="columns">
                         <div class="column has-text-centered">
-                            <strong>Your Board</strong>
+                            <div class="title is-4">
+                                Your Board
+                            </div>
                         </div>
                     </div>
                     <div className="columns">
                         <div className="column">
-                            <Board board={args.state.playerBoard} onCellClick={args.actions.noop} isEnabled={false}/>
+                            <Board board={args.state.playerBoard} onCellClick={args.actions.noop}
+                                   isEnabled={false}/>
                         </div>
                     </div>
+                    <RemainingShips ships={args.state.ships}/>
                 </div>
                 <div class="column"/>
                 <div class="column is-narrow">
                     <div className="columns">
                         <div className="column has-text-centered">
-                            <strong>Opponent Board</strong>
+                            <div class="title is-4">
+                                Opponent Board
+                            </div>
                         </div>
                     </div>
                     <div className="columns">
@@ -67,6 +107,7 @@ export const GameScreen = (args: GameArgs) => (
                                    isEnabled={args.state.isMyTurn}/>
                         </div>
                     </div>
+                    <RemainingShips ships={args.state.opponentShips}/>
                 </div>
                 <div className="column"/>
             </div>

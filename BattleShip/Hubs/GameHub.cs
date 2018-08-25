@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Security.Permissions;
-using System.Threading;
 using System.Threading.Tasks;
 using BattleShip.Domain;
 using BattleShip.Domain.Entity;
@@ -10,43 +9,24 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace BattleShip.Hubs
 {
-    public static class Extensions
-    {
-        public static Task RemoveFromGroupAsync(this IGroupManager groupManager, string connectionId, Guid groupName,
-                                                CancellationToken cancellationToken = default(CancellationToken))
-        {
-            return groupManager.RemoveFromGroupAsync(connectionId, groupName.ToString(), cancellationToken);
-        }
-
-        public static Task AddToGroupAsync(this IGroupManager groupManager, string connectionId, Guid groupName,
-                                           CancellationToken cancellationToken = default(CancellationToken))
-        {
-            return groupManager.AddToGroupAsync(connectionId, groupName.ToString(), cancellationToken);
-        }
-
-        public static T OthersInGroup<T>(this IHubCallerClients<T> callerClients, Guid groupName)
-        {
-            return callerClients.OthersInGroup(groupName.ToString());
-        }
-    }
-
+    [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
     public class GameHub : Hub
     {
-        private class Commands
+        private static class Commands
         {
             public const string Connect = nameof(GameHub.Connect);
             public const string JoinLobby = nameof(GameHub.JoinLobby);
+            public const string RequestMatch = nameof(GameHub.RequestMatch);
+            public const string CancelRequestMatch = nameof(GameHub.CancelRequestMatch);
+            public const string DeclineRequestMatch = nameof(GameHub.DeclineRequestMatch);
+            public const string AcceptRequestMatch = nameof(GameHub.AcceptRequestMatch);
+            public const string FireShot = nameof(GameHub.FireShot);
+            public const string FireShotResponse = nameof(GameHub.FireShotResponse);
 
             public const string Connected = "Connected";
             public const string LobbyJoined = "LobbyJoined";
             public const string PlayerJoinedLobby = "PlayerJoinedLobby";
             public const string PlayerLeftLobby = "PlayerLeftLobby";
-            public const string RequestMatch = "RequestMatch";
-            public const string CancelRequestMatch = "CancelRequestMatch";
-            public const string DeclineRequestMatch = "DeclineRequestMatch";
-            public const string AcceptRequestMatch = "AcceptRequestMatch";
-            public const string FireShot = "FireShot";
-            public const string FireShotResponse = "FireShotResponse";
         }
 
         private readonly PlayerManager _playerManager;
@@ -199,7 +179,7 @@ namespace BattleShip.Hubs
     public class FireShotModel
     {
         public int X { get; set; }
-        
+
         public int Y { get; set; }
 
         public PlayerModel To { get; set; }
@@ -208,12 +188,21 @@ namespace BattleShip.Hubs
     public class FireShotResponseModel
     {
         public int X { get; set; }
-        
+
         public int Y { get; set; }
 
         public PlayerModel To { get; set; }
 
         public bool IsHit { get; set; }
+
+        public List<ShipModel> RemainingShips { get; set; }
+    }
+
+    public class ShipModel
+    {
+        public int Length { get; set; }
+
+        public bool IsSunk { get; set; }
     }
 
     public class PlayerModel

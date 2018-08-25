@@ -1,14 +1,15 @@
 import { IDictionary } from "@src/client/models";
 import { createTwoDimArray } from "@src/client/helper";
 import { BoardField, Coordinates } from "@src/components/game/models";
+import { IShip } from "@src/client/communicationModels";
 
 export interface GeneratedBoard {
     ships: Array<Ship>;
     board: Array<Array<BoardField>>;
 }
 
-export class Ship {
-    private coordinateToIsHit: IDictionary<boolean>;
+export class Ship implements IShip {
+    private coordinateToIsHit: IDictionary<boolean> = {};
 
     constructor(coordinates: Coordinates[]) {
         coordinates.forEach(c => this.coordinateToIsHit[Ship.stringify(c)] = false)
@@ -26,6 +27,17 @@ export class Ship {
 
     get length(): number {
         return Object.keys(this.coordinateToIsHit).length;
+    }
+
+    public shoot(shot: Coordinates): boolean {
+        let coords = Ship.stringify(shot);
+
+        if (this.coordinateToIsHit.hasOwnProperty(coords)) {
+            this.coordinateToIsHit[coords] = true;
+            return true;
+        }
+
+        return false;
     }
 
     private static stringify(coordinate: Coordinates) {
