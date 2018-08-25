@@ -19,23 +19,10 @@ interface RemainingShipsArgs {
     ships: Array<IShip>
 }
 
-interface RemainingShipsArg {
-    ship: IShip
-}
-
-const TurnMarker = (args: TurnMarkerArgs) => {
-    if (args.isMyTurn) {
-        return <div>Your Turn</div>
-    }
-    else {
-        return <div>Waiting for Opponent</div>
-    }
-};
-
 const RemainingShips = (args: RemainingShipsArgs) => {
     return (
         <div class="remaining-ships">
-            <div style={{ "marginBottom": ".25rem", "fontWeight": 500 }}>Remaining Ships</div>
+            <div class="desc">Remaining Ships</div>
             <div class="columns is-gapless">
                 {args.ships.map(s => <div><RemainingShip ship={s}/></div>)}
             </div>
@@ -43,8 +30,11 @@ const RemainingShips = (args: RemainingShipsArgs) => {
     )
 };
 
-const RemainingShip = (args: RemainingShipsArg) => {
+interface RemainingShipsArg {
+    ship: IShip
+}
 
+const RemainingShip = (args: RemainingShipsArg) => {
     const cellClasses = cl({
         'ship-cell sunk': args.ship.isSunk,
         'ship-cell': !args.ship.isSunk,
@@ -55,6 +45,20 @@ const RemainingShip = (args: RemainingShipsArg) => {
         cells.push(<div className={cellClasses}/>);
     }
     return cells;
+};
+
+interface TurnOverlayArgs {
+    isMyTurn: boolean
+}
+
+const TurnOverlay = (args: TurnOverlayArgs) => {
+    if (!args.isMyTurn) {
+        return (
+            <div className="turn-overlay">
+                <div>Wait for your opponent</div>
+            </div>
+        )
+    }
 };
 
 export const GameScreen = (args: GameArgs) => (
@@ -83,8 +87,7 @@ export const GameScreen = (args: GameArgs) => (
                     </div>
                     <div className="columns">
                         <div className="column">
-                            <Board board={args.state.playerBoard} onCellClick={args.actions.noop}
-                                   isEnabled={false}/>
+                            <Board board={args.state.playerBoard} onCellClick={args.actions.noop} isEnabled={false}/>
                         </div>
                     </div>
                     <RemainingShips ships={args.state.ships}/>
@@ -100,11 +103,8 @@ export const GameScreen = (args: GameArgs) => (
                     </div>
                     <div className="columns">
                         <div class="column" style={{ position: "relative" }}>
-                            {!args.state.isMyTurn && <div class="turn-overlay">
-                                <div>Wait for your opponent</div>
-                            </div>}
-                            <Board board={args.state.opponentBoard} onCellClick={args.actions.fireShot}
-                                   isEnabled={args.state.isMyTurn}/>
+                            <TurnOverlay isMyTurn={args.state.isMyTurn}/>
+                            <Board board={args.state.opponentBoard} onCellClick={args.actions.fireShot} isEnabled={args.state.isMyTurn}/>
                         </div>
                     </div>
                     <RemainingShips ships={args.state.opponentShips}/>

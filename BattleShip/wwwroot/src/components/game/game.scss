@@ -17,6 +17,11 @@
 
 .remaining-ships {
 
+  .desc {
+    margin-bottom: .25rem;
+    font-weight: 500;
+  }
+
   .columns {
     justify-content: space-around;
   }
@@ -31,4 +36,5 @@
       background-color: $red;
     }
   }
+
 }
