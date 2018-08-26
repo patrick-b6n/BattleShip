@@ -34,6 +34,9 @@ const actions = {
         actions.lobby.init({
             setPlayerName: actions.setPlayerName,
             onAcceptRequestMatch: actions.onAcceptRequestMatch,
+        });
+        actions.game.init({
+            changeView: actions.onChangeView
         })
     },
     setPlayerName: (model: string) => (state: State) => {

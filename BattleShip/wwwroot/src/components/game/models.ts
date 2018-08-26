@@ -5,7 +5,7 @@ export enum BoardField {
     ShipHit
 }
 
-export class Coordinates {
+export class GridPoint {
     readonly x: number;
     readonly y: number;
 

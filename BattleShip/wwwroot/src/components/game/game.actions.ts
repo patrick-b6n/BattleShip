@@ -2,8 +2,10 @@ import { GameHub } from "@src/client/gameHub";
 import { GameCallups, GameState } from "@src/client/states";
 import { FireShotModel, FireShotResponseModel, IShip, PlayerModel } from "@src/client/communicationModels";
 import { BoardService } from "@src/components/game/board/boardService";
-import { BoardField, Coordinates } from "@src/components/game/models";
+import { BoardField, GridPoint } from "@src/components/game/models";
 import { createTwoDimArray } from "@src/client/helper";
+import Swal from "sweetalert2";
+import Constants from "@src/constants";
 
 const gamehub = GameHub.getInstance();
 const boardService = new BoardService();
@@ -29,12 +31,14 @@ export const gameActions = {
     },
     onStartGame: (args: StartGameArgs) => () => {
         const { ships, board } = boardService.generateBoard();
+        const opponentShips = boardService.generateOpponentShips();
+
         return {
             opponent: args.opponent,
             playerBoard: board,
             opponentBoard: createTwoDimArray(10, 10, BoardField.Free),
             ships: ships,
-            opponentShips: ships,
+            opponentShips: opponentShips,
             isMyTurn: args.isFirstTurn
         }
     },
@@ -46,7 +50,14 @@ export const gameActions = {
         const isHit = board[args.x][args.y] === BoardField.Ship;
         board[args.x][args.y] = isHit ? BoardField.ShipHit : BoardField.Miss;
 
-        state.ships.forEach(s => s.shoot(new Coordinates(args.x, args.y)));
+        let isSunk = false;
+        for (const s of state.ships) {
+            if (s.shoot(new GridPoint(args.x, args.y))) {
+                isSunk = s.isSunk;
+                break;
+            }
+        }
+
         const shipModels = state.ships.map(s => <IShip>{ length: s.length, isSunk: s.isSunk });
 
         gamehub.fireShotResponse({
@@ -54,14 +65,35 @@ export const gameActions = {
             y: args.y,
             to: state.opponent,
             isHit: isHit,
+            isSunk: isSunk,
             remainingShips: shipModels
         });
+
+        if (state.ships.every(s => s.isSunk)) {
+            Swal({
+                title: `You lost`,
+                confirmButtonText: 'Back to Lobby',
+                showConfirmButton: true,
+            }).then(() => {
+                state.changeView(Constants.V_Lobby)
+            });
+        }
 
         return { playerBoard: board, isMyTurn: !state.isMyTurn, ships: state.ships }
     },
     onFireShotResponse: (args: FireShotResponseModel) => (state: GameState) => {
         let board = state.opponentBoard;
         board[args.x][args.y] = args.isHit ? BoardField.ShipHit : BoardField.Miss;
+
+        if (args.remainingShips.every(s => s.isSunk)) {
+            Swal({
+                title: `You won`,
+                confirmButtonText: 'Back to Lobby',
+                showConfirmButton: true,
+            }).then(() => {
+                state.changeView(Constants.V_Lobby)
+            });
+        }
 
         return { opponentBoard: board, opponentShips: args.remainingShips, isMyTurn: !state.isMyTurn }
     }

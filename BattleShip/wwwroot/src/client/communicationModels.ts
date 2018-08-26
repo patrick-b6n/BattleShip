@@ -40,6 +40,7 @@ export interface FireShotResponseModel {
     x: number;
     y: number;
     to: PlayerModel;
+    isSunk: boolean;
     isHit: boolean;
     remainingShips: Array<IShip>;
 }

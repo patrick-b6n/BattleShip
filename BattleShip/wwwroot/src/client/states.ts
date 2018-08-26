@@ -40,9 +40,11 @@ export class LobbyState implements LobbyCallups {
 }
 
 export interface GameCallups {
+    changeView: (view: string) => any;
 }
 
 export class GameState implements GameCallups {
+    changeView: (view: string) => any;
     gameId: string | null = null;
     isMyTurn = false;
     isOver = false;

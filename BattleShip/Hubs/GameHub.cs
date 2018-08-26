@@ -193,6 +193,8 @@ namespace BattleShip.Hubs
 
         public PlayerModel To { get; set; }
 
+        public bool IsSunk { get; set; }
+
         public bool IsHit { get; set; }
 
         public List<ShipModel> RemainingShips { get; set; }
