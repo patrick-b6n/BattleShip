@@ -1,7 +1,24 @@
+@import "../../styles.scss";
+
 #lobby {
   .player-entry {
     .column {
       padding: 0.1rem;
     }
+  }
+
+  .change-name {
+    font-size: 1rem;
+    cursor: pointer;
+  }
+
+  .hero {
+    background-color: $dark-accent;
+    color: $light-shade;
+  }
+
+  .overlap {
+    position: relative;
+    top: -2rem;
   }
 }

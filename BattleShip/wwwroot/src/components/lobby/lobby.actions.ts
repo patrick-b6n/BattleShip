@@ -71,6 +71,7 @@ export const lobbyActions = {
         Swal({
             title: 'What is your nickname?',
             input: 'text',
+            inputValue: state.playerName,
             inputPlaceholder: 'Enter your nickname',
             allowOutsideClick: false,
             allowEscapeKey: false,

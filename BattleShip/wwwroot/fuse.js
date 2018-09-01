@@ -1,5 +1,5 @@
-const { task, context } = require("fuse-box/sparky");
-const { FuseBox, QuantumPlugin, CSSPlugin, SassPlugin } = require("fuse-box");
+const {task, context} = require("fuse-box/sparky");
+const {FuseBox, QuantumPlugin, CSSPlugin, SassPlugin} = require("fuse-box");
 
 context(
     class {
@@ -12,7 +12,7 @@ context(
                     "@src": "~/",
                 },
                 plugins: [
-                    [SassPlugin({ outputStyle: 'compressed', importer: true }), CSSPlugin()],
+                    [SassPlugin({outputStyle: 'compressed', importer: true}), CSSPlugin()],
                     [CSSPlugin()],
                     this.isProduction && QuantumPlugin()],
                 useTypescriptCompiler: true,
@@ -25,8 +25,8 @@ context(
 
 task("default", async context => {
     const fuse = context.getConfig();
-    fuse
-        .bundle("app")
+    
+    fuse.bundle("app")
         .instructions("> index.ts")
         .watch();
 
@@ -35,7 +35,9 @@ task("default", async context => {
 
 task("dev", async context => {
     const fuse = context.getConfig();
-    fuse.bundle("app").instructions("> index.ts");
+    
+    fuse.bundle("app")
+        .instructions("> index.ts");
 
     await fuse.run();
 });
@@ -43,7 +45,9 @@ task("dev", async context => {
 task("prod", async context => {
     context.isProduction = true;
     const fuse = context.getConfig();
-    fuse.bundle("app").instructions("> index.ts");
+    
+    fuse.bundle("app")
+        .instructions("> index.ts");
 
     await fuse.run();
 });

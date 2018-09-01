@@ -4,10 +4,10 @@
     <TypeScriptCompileBlocked>True</TypeScriptCompileBlocked>
   </PropertyGroup>
   <ItemGroup>
-      <PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.2"/>
+      <PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.3" />
   </ItemGroup>
   <ItemGroup>
-      <ProjectReference Include="..\BattleShip.Domain\BattleShip.Domain.csproj"/>
+      <ProjectReference Include="..\BattleShip.Domain\BattleShip.Domain.csproj" />
   </ItemGroup>
   <Target Name="yarn" AfterTargets="_GenerateRestoreProjectSpec">
     <Exec Command="yarn" WorkingDirectory="wwwroot" />

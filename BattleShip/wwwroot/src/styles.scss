@@ -1,0 +1,24 @@
+$light-shade: #f6f5f4;
+$light-accent: #80bbe1;
+$main-color: #2393e9;
+$dark-accent: #58abe5;
+$dark-shade: #1c356a;
+$dark-shade-light: #284a95;
+
+$primary: $dark-accent;
+
+$navbar-background-color: $light-shade;
+$box-background-color: $light-shade;
+
+$radius-large: 2px;
+$swal2-border-radius: $radius-large;
+$swal2-confirm-button-background-color: $primary;
+
+
+@import "~bulma/bulma";
+@import "~sweetalert2/src/sweetalert2";
+
+
+.swal2-popup .swal2-styled:focus{
+  box-shadow: none;
+}

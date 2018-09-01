@@ -16,7 +16,7 @@ export const LobbyScreen = (args: LobbyArgs) => (
     <div id="lobby" oncreate={() => args.actions.init(args)}>
 
         <section className="hero is-primary">
-            <div className="hero-body">
+            <div className="hero-body mb-2">
                 <div className="container">
                     <div class="level">
                         <div class="level-item level-left is-narrow">
@@ -25,33 +25,39 @@ export const LobbyScreen = (args: LobbyArgs) => (
                             </h1>
                         </div>
                         <div class="level-item level-left" style={{ paddingLeft: "1rem" }}>
-                                <span className="icon" style={{ fontSize: "1rem", cursor: "pointer" }}
-                                      onclick={() => args.actions.editName()}><i
-                                    className="fas fa-edit"/></span>
+                                <span className="icon change-name" onclick={() => args.actions.editName()} title="Change your name">
+                                    <i className="fas fa-edit"/>
+                                </span>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <div class="container pt-3">
+        <div class="container overlap">
+            <div class="columns ">
 
-            <div className="tile">
-                <div className="tile is-parent is-8 ">
-                    <div className="tile is-child box">
-                        <p className="title">Messages</p>
+                <div className="column is-8">
+                    <div class="box">
+                        <div>
+                            <p className="title">Messages</p>
+                        </div>
                         <EventLog events={args.lobby.events}/>
                     </div>
                 </div>
-                <div className="tile is-parent is-4">
-                    <div className="tile is-child box">
-                        <p className="title">Players</p>
+
+                <div class="column is-4">
+                    <div className="box">
+
+                        <div>
+                            <p className="title">Players</p>
+                        </div>
                         <PlayerList currentPlayer={args.currentPlayer} players={args.lobby.playersInLobby}
                                     requestMatch={args.actions.requestMatch}/>
                     </div>
                 </div>
-            </div>
 
+            </div>
         </div>
     </div>
 );
