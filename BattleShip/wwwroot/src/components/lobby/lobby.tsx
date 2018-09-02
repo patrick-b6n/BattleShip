@@ -15,21 +15,14 @@ export interface LobbyArgs {
 export const LobbyScreen = (args: LobbyArgs) => (
     <div id="lobby" oncreate={() => args.actions.init(args)}>
 
-        <section className="hero is-primary">
+        <section className="hero">
             <div className="hero-body mb-2">
-                <div className="container">
-                    <div class="level">
-                        <div class="level-item level-left is-narrow">
-                            <h1 className="title">
-                                Hello {args.lobby.playerName}!
-                            </h1>
-                        </div>
-                        <div class="level-item level-left" style={{ paddingLeft: "1rem" }}>
-                                <span className="icon change-name" onclick={() => args.actions.editName()} title="Change your name">
-                                    <i className="fas fa-edit"/>
-                                </span>
-                        </div>
-                    </div>
+                <div className="container has-text-centered">
+
+                    <h1 className="title">
+                        🚀 BattleShip 🚢
+                    </h1>
+                    
                 </div>
             </div>
         </section>

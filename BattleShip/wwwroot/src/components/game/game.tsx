@@ -4,6 +4,7 @@ import { IShip, PlayerModel } from "@src/client/communicationModels";
 import { Board } from "@src/components/game/board/board";
 import "./game.scss"
 import * as cl from "classnames";
+import { Navbar } from "@src/components/navbar/navbar";
 
 export interface GameArgs {
     player: PlayerModel;
@@ -62,60 +63,60 @@ const TurnOverlay = (args: TurnOverlayArgs) => {
 };
 
 export const GameScreen = (args: GameArgs) => (
-    <div id="game-screen">
+    <div>
+        <Navbar/>
+        
+        <div id="game-screen">
 
-        <section className="hero is-light">
-            <div className="hero-body">
-                <div className="container">
-                    <h1 className="title has-text-centered">
-                        {args.player.name} vs. {args.state.opponent.name}
-                    </h1>
+            <section className="hero">
+                <div className="hero-body mb-2">
+                    <div className="container has-text-centered">
+
+                        <h1 className="title">
+                            {args.player.name} vs. {args.state.opponent.name}
+                        </h1>
+
+                    </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <div class="container mt-3">
-            <div class="columns">
-                <div className="column"/>
-                <div class="column is-narrow">
-                    <div class="columns">
-                        <div class="column has-text-centered">
-                            <div class="title is-4">
-                                Your Board
+            <div class="container overlap box">
+                <div class="columns">
+                    <div className="column"/>
+                    <div class="column is-narrow">
+                        <div class="columns">
+                            <div class="column has-text-centered">
+                                <div class="title is-4">
+                                    Your Board
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div className="columns">
-                        <div className="column">
-                            <Board board={args.state.playerBoard} onCellClick={args.actions.noop} isEnabled={false}/>
-                        </div>
-                    </div>
-                    <RemainingShips ships={args.state.ships}/>
-                </div>
-                <div class="column"/>
-                <div class="column is-narrow">
-                    <div className="columns">
-                        <div className="column has-text-centered">
-                            <div class="title is-4">
-                                Opponent Board
+                        <div className="columns">
+                            <div className="column">
+                                <Board board={args.state.playerBoard} onCellClick={args.actions.noop} isEnabled={false}/>
                             </div>
                         </div>
+                        <RemainingShips ships={args.state.ships}/>
                     </div>
-                    <div className="columns">
-                        <div class="column" style={{ position: "relative" }}>
-                            <TurnOverlay isMyTurn={args.state.isMyTurn}/>
-                            <Board board={args.state.opponentBoard} onCellClick={args.actions.fireShot} isEnabled={args.state.isMyTurn}/>
+                    <div class="column"/>
+                    <div class="column is-narrow">
+                        <div className="columns">
+                            <div className="column has-text-centered">
+                                <div class="title is-4">
+                                    Opponent Board
+                                </div>
+                            </div>
                         </div>
+                        <div className="columns">
+                            <div class="column" style={{ position: "relative" }}>
+                                <TurnOverlay isMyTurn={args.state.isMyTurn}/>
+                                <Board board={args.state.opponentBoard} onCellClick={args.actions.fireShot} isEnabled={args.state.isMyTurn}/>
+                            </div>
+                        </div>
+                        <RemainingShips ships={args.state.opponentShips}/>
                     </div>
-                    <RemainingShips ships={args.state.opponentShips}/>
+                    <div className="column"/>
                 </div>
-                <div className="column"/>
-            </div>
-        </div>
-
-        <div class="container mt-3">
-            <div class="columns is-centered">
-                <button class="button" onclick={() => args.actions.askBackToLobby()}>Leave game</button>
             </div>
         </div>
     </div>

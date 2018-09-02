@@ -5,9 +5,14 @@ $dark-accent: #58abe5;
 $dark-shade: #1c356a;
 $dark-shade-light: #284a95;
 
+// bulma overrides
 $primary: $dark-accent;
 
+$body-color: $light-shade;
+
 $navbar-background-color: $light-shade;
+$navbar-color: $light-shade;
+
 $box-background-color: $light-shade;
 
 $radius-large: 2px;

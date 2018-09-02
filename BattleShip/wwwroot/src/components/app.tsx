@@ -101,7 +101,7 @@ const actions = {
 
 const view = (state: State, actions: any) => (
     <div>
-        <Navbar/>
+        {/*<Navbar/>*/}
 
         <ViewSwitcher state={state} actions={actions}/>
     </div>
