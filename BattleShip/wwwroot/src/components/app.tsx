@@ -6,7 +6,6 @@ import { gameActions } from "@src/components/game/game.actions";
 import { ViewSwitcher } from "@src/components/mainView";
 import 'bulma/css/bulma.css'
 import './app.scss'
-import { Navbar } from "@src/components/navbar/navbar";
 import { loginActions } from "@src/components/login/login";
 import {
     ConnectedModel,
@@ -66,7 +65,8 @@ const actions = {
         actions.lobby.playerJoined(model)
     },
     onPlayerLeftLobby: (model: PlayerModel) => (state: State, actions: any) => {
-        actions.lobby.playerLeft(model)
+        actions.lobby.onPlayerLeft(model);
+        actions.game.onPlayerLeft(model);
     },
     onChangeView: (view: string) => () => {
         return { view: view }

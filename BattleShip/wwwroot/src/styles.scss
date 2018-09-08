@@ -15,15 +15,16 @@ $navbar-color: $light-shade;
 
 $box-background-color: $light-shade;
 
+$hr-background-color: $light-accent;
+$table-background-color: $light-shade;
+
 $radius-large: 2px;
 $swal2-border-radius: $radius-large;
 $swal2-confirm-button-background-color: $primary;
 
-
 @import "~bulma/bulma";
 @import "~sweetalert2/src/sweetalert2";
 
-
-.swal2-popup .swal2-styled:focus{
+.swal2-popup .swal2-styled:focus {
   box-shadow: none;
 }

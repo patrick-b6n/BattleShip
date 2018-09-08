@@ -6,7 +6,7 @@ import { LobbyJoinedModel, PlayerModel, RequestMatchModel } from "@src/client/co
 import { EventEntry } from "@src/components/lobby/eventlog/models";
 
 const gamehub = GameHub.getInstance();
-const matchRequestTimeout = 30 * 1000;
+const matchRequestTimeout = 5 * 1000;
 
 export interface RequestMatchDto {
     fromPlayer: PlayerModel;
@@ -31,32 +31,33 @@ export const lobbyActions = {
         state.events.push(value);
         return { events: state.events };
     },
-    playerChanged:
-        (value: PlayerModel) => (state: LobbyState) => {
-            const index = state.playersInLobby.findIndex((p: PlayerModel) => p.id === value.id);
-            state.playersInLobby[index] = value;
+    playerChanged: (value: PlayerModel) => (state: LobbyState) => {
+        const index = state.playersInLobby.findIndex((p: PlayerModel) => p.id === value.id);
+        state.playersInLobby[index] = value;
 
-            return { playersInLobby: state.playersInLobby };
-        },
-    playerJoined:
-        (value: PlayerModel) => (state: LobbyState, actions: any) => {
-            actions.addEvent(new EventEntry(`${value.name} joined the lobby`));
+        return { playersInLobby: state.playersInLobby };
+    },
+    playerJoined: (value: PlayerModel) => (state: LobbyState, actions: any) => {
+        actions.addEvent(new EventEntry(`${value.name} joined the lobby`));
 
-            state.playersInLobby.push(value);
-            state.playersInLobby.sort((a, b) => a.name.localeCompare(b.name));
-            return { playersInLobby: state.playersInLobby };
-        },
-    playerLeft:
-        (value: PlayerModel) => (state: LobbyState, actions: any) => {
-            actions.addEvent(new EventEntry(`${value.name} left the lobby`));
+        state.playersInLobby.push(value);
+        state.playersInLobby.sort((a, b) => a.name.localeCompare(b.name));
+        return { playersInLobby: state.playersInLobby };
+    },
+    onPlayerLeft: (value: PlayerModel) => (state: LobbyState, actions: any) => {
+        actions.addEvent(new EventEntry(`${value.name} left the lobby`));
 
-            const index = state.playersInLobby.findIndex((p: PlayerModel) => p.id === value.id);
-            if (index > -1) {
-                state.playersInLobby.splice(index, 1);
-            }
+        const index = state.playersInLobby.findIndex((p: PlayerModel) => p.id === value.id);
+        if (index > -1) {
+            state.playersInLobby.splice(index, 1);
+        }
 
-            return { playersInLobby: state.playersInLobby };
-        },
+        if (state.isMatchRequestActive) {
+            Swal.close()
+        }
+
+        return { playersInLobby: state.playersInLobby };
+    },
     lobbyJoined: (model: LobbyJoinedModel) => (state: LobbyState, actions: any) => {
         actions.addEvent(new EventEntry(`You joined Lobby ${model.lobby.id}`));
         return { lobbyId: model.lobby.id, playersInLobby: model.lobby.players };
@@ -121,10 +122,9 @@ export const lobbyActions = {
     },
     cancelMatchRequest: (dto: RequestMatchDto) => (state: LobbyState) => {
         if (state.isMatchRequestActive) {
-            Swal.close()
+            Swal.close();
+            gamehub.cancelRequestMatch({ from: dto.fromPlayer, to: dto.toPlayer });
         }
-
-        gamehub.cancelRequestMatch({ from: dto.fromPlayer, to: dto.toPlayer });
 
         return { isMatchRequestActive: false }
     },

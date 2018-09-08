@@ -4,7 +4,6 @@ import { IShip, PlayerModel } from "@src/client/communicationModels";
 import { Board } from "@src/components/game/board/board";
 import "./game.scss"
 import * as cl from "classnames";
-import { Navbar } from "@src/components/navbar/navbar";
 
 export interface GameArgs {
     player: PlayerModel;
@@ -43,7 +42,7 @@ const RemainingShip = (args: RemainingShipsArg) => {
 
     const cells = [];
     for (let i = 0; i < args.ship.length; i++) {
-        cells.push(<div className={cellClasses}/>);
+        cells.push(<div class={cellClasses}/>);
     }
     return cells;
 };
@@ -55,7 +54,7 @@ interface TurnOverlayArgs {
 const TurnOverlay = (args: TurnOverlayArgs) => {
     if (!args.isMyTurn) {
         return (
-            <div className="turn-overlay">
+            <div class="turn-overlay">
                 <div>Wait for your opponent</div>
             </div>
         )
@@ -64,15 +63,15 @@ const TurnOverlay = (args: TurnOverlayArgs) => {
 
 export const GameScreen = (args: GameArgs) => (
     <div>
-        <Navbar/>
-        
+        {/*<Navbar/>*/}
+
         <div id="game-screen">
 
-            <section className="hero">
-                <div className="hero-body mb-2">
-                    <div className="container has-text-centered">
+            <section class="hero">
+                <div class="hero-body mb-2">
+                    <div class="container has-text-centered">
 
-                        <h1 className="title">
+                        <h1 class="title">
                             {args.player.name} vs. {args.state.opponent.name}
                         </h1>
 
@@ -82,7 +81,7 @@ export const GameScreen = (args: GameArgs) => (
 
             <div class="container overlap box">
                 <div class="columns">
-                    <div className="column"/>
+                    <div class="column"/>
                     <div class="column is-narrow">
                         <div class="columns">
                             <div class="column has-text-centered">
@@ -91,8 +90,8 @@ export const GameScreen = (args: GameArgs) => (
                                 </div>
                             </div>
                         </div>
-                        <div className="columns">
-                            <div className="column">
+                        <div class="columns">
+                            <div class="column">
                                 <Board board={args.state.playerBoard} onCellClick={args.actions.noop} isEnabled={false}/>
                             </div>
                         </div>
@@ -100,14 +99,14 @@ export const GameScreen = (args: GameArgs) => (
                     </div>
                     <div class="column"/>
                     <div class="column is-narrow">
-                        <div className="columns">
-                            <div className="column has-text-centered">
+                        <div class="columns">
+                            <div class="column has-text-centered">
                                 <div class="title is-4">
                                     Opponent Board
                                 </div>
                             </div>
                         </div>
-                        <div className="columns">
+                        <div class="columns">
                             <div class="column" style={{ position: "relative" }}>
                                 <TurnOverlay isMyTurn={args.state.isMyTurn}/>
                                 <Board board={args.state.opponentBoard} onCellClick={args.actions.fireShot} isEnabled={args.state.isMyTurn}/>
@@ -115,7 +114,20 @@ export const GameScreen = (args: GameArgs) => (
                         </div>
                         <RemainingShips ships={args.state.opponentShips}/>
                     </div>
-                    <div className="column"/>
+                    <div class="column"/>
+                </div>
+                <hr/>
+                <div class="columns">
+                    <div class="column">
+                        <div class="level">
+                            <div class="level-item has-text-centered">
+                                <button class="button is-danger" onClick={() => {
+                                } /*args.actions.askBackToLobby() */}>
+                                    <i class="fas fa-sign-out-alt"/> &nbsp; Back to Lobby
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

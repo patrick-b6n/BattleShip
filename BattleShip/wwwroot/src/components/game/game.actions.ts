@@ -42,6 +42,18 @@ export const gameActions = {
             isMyTurn: args.isFirstTurn
         }
     },
+    onPlayerLeft: (value: PlayerModel) => (state: GameState, actions: any) => {
+        if (state.opponent && value.id === state.opponent.id) {
+            Swal({
+                title: `You won`,
+                text: `Your opponent left the game`,
+                confirmButtonText: 'Back to Lobby',
+                showConfirmButton: true,
+            }).then(() => {
+                state.changeView(Constants.V_Lobby)
+            });
+        }
+    },
     fireShot: (args: ShotArgs) => (state: GameState) => {
         gamehub.fireShot({ x: args.x, y: args.y, to: state.opponent })
     },

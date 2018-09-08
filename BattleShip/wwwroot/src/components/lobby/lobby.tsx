@@ -22,32 +22,27 @@ export const LobbyScreen = (args: LobbyArgs) => (
                     <h1 className="title">
                         🚀 BattleShip 🚢
                     </h1>
-                    
+
                 </div>
             </div>
         </section>
 
-        <div class="container overlap">
+        <div class="container overlap box">
             <div class="columns ">
 
                 <div className="column is-8">
-                    <div class="box">
-                        <div>
-                            <p className="title">Messages</p>
-                        </div>
-                        <EventLog events={args.lobby.events}/>
+                    <div>
+                        <p className="title">Messages</p>
                     </div>
+                    <EventLog events={args.lobby.events}/>
                 </div>
 
                 <div class="column is-4">
-                    <div className="box">
-
-                        <div>
-                            <p className="title">Players</p>
-                        </div>
-                        <PlayerList currentPlayer={args.currentPlayer} players={args.lobby.playersInLobby}
-                                    requestMatch={args.actions.requestMatch}/>
+                    <div class="columns">
+                        <p className="title">Players</p>
                     </div>
+                    <PlayerList currentPlayer={args.currentPlayer} players={args.lobby.playersInLobby}
+                                requestMatch={args.actions.requestMatch}/>
                 </div>
 
             </div>
