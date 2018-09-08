@@ -31,16 +31,14 @@ export const LobbyScreen = (args: LobbyArgs) => (
             <div class="columns ">
 
                 <div className="column is-8">
-                    <div>
-                        <p className="title">Messages</p>
-                    </div>
+                    <p className="title">Messages</p>
                     <EventLog events={args.lobby.events}/>
                 </div>
 
+                <div class="column is-narrow separator"/>
+
                 <div class="column is-4">
-                    <div class="columns">
-                        <p className="title">Players</p>
-                    </div>
+                    <p className="title">Players</p>
                     <PlayerList currentPlayer={args.currentPlayer} players={args.lobby.playersInLobby}
                                 requestMatch={args.actions.requestMatch}/>
                 </div>

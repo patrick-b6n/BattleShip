@@ -31,7 +31,7 @@ export const ChallengeEvent = (args: EventArgs) => (
 );
 
 export const EventLog = (args: EventLogArgs) => (
-    <div id="event-log" style={{ overflowY: "auto", height: "400px", padding: "1rem" }}>
+    <div id="event-log" style={{ overflowY: "auto", height: "400px" }}>
         {args.events.map(e => {
             switch (e.type) {
                 case EventType.Message:

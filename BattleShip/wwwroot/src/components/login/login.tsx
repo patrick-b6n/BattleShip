@@ -44,5 +44,17 @@ export const loginActions = {
 };
 
 export const Login = (args: any) => (
-    <div oncreate={() => args.actions.onCreate()}/>
+    <div oncreate={() => args.actions.onCreate()}>
+        <section className="hero">
+            <div className="hero-body mb-2">
+                <div className="container has-text-centered">
+
+                    <h1 className="title">
+                        🚀 BattleShip 🚢
+                    </h1>
+
+                </div>
+            </div>
+        </section>
+    </div>
 );
