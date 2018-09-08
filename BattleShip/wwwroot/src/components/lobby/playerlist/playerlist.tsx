@@ -19,7 +19,7 @@ const ChallengeButton = (args: ChallengeButtonArgs) => {
     if (args.otherPlayer.id !== args.currentPlayer.id) {
         return (
             <button class="button is-small"
-                    onClick={() => {
+                    onclick={() => {
                         args.requestMatch({ fromPlayer: args.currentPlayer, toPlayer: args.otherPlayer })
                     }}>
                 ⚔️Challenge
