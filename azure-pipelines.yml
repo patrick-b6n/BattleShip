@@ -10,5 +10,7 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
+- script: choco install yarn
+  displayName: 'choco install yarn'
 - script: dotnet build --configuration $(buildConfiguration)
   displayName: 'dotnet build $(buildConfiguration)'
