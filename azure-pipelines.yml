@@ -10,7 +10,7 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-- script: sudo npm install -g yarn
+- script: sudo npm install -g yarn && sudo chown -R $USER:$GROUP ~/.npm && sudo chown -R $USER:$GROUP ~/.config
   displayName: 'install yarn'
 - script: dotnet build --configuration $(buildConfiguration)
   displayName: 'dotnet build $(buildConfiguration)'
