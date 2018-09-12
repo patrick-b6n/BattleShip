@@ -10,7 +10,7 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-- script: npm install yarn
-  displayName: 'npm install yarn'
+- script: npm install -g yarn
+  displayName: 'npm install -g yarn'
 - script: dotnet build --configuration $(buildConfiguration)
   displayName: 'dotnet build $(buildConfiguration)'
