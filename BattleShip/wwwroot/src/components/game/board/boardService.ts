@@ -52,7 +52,7 @@ interface IShipStartPosition {
 
 export class BoardService {
     // private readonly _availableShipLengths = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1];
-    private readonly _availableShipLengths = [1];
+    private readonly _availableShipLengths = [1, 1, 1];
 
     public isInsideBoundaries(board: Array<Array<BoardField>>, coords: GridPoint): boolean {
         if (coords.x < 0 || coords.x >= board.length) {

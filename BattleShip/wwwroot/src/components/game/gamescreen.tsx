@@ -1,9 +1,10 @@
 ﻿import { h } from "hyperapp";
-import { GameState } from "@src/client/states";
-import { IShip, PlayerModel } from "@src/client/communicationModels";
+import { PlayerModel } from "@src/client/communicationModels";
 import { Board } from "@src/components/game/board/board";
-import "./game.scss"
-import * as cl from "classnames";
+import "./style.scss"
+import { RemainingShips } from "@src/components/game/remainingShips";
+import { TurnOverlay } from "@src/components/game/turnOverlay";
+import { GameState } from "@src/components/game/models";
 
 export interface GameArgs {
     player: PlayerModel;
@@ -11,60 +12,17 @@ export interface GameArgs {
     actions: any
 }
 
-interface TurnMarkerArgs {
-    isMyTurn: boolean
-}
-
-interface RemainingShipsArgs {
-    ships: Array<IShip>
-}
-
-const RemainingShips = (args: RemainingShipsArgs) => {
-    return (
-        <div class="remaining-ships">
-            <div class="desc">Remaining Ships</div>
-            <div class="columns is-gapless">
-                {args.ships.map(s => <div><RemainingShip ship={s}/></div>)}
-            </div>
-        </div>
-    )
-};
-
-interface RemainingShipsArg {
-    ship: IShip
-}
-
-const RemainingShip = (args: RemainingShipsArg) => {
-    const cellClasses = cl({
-        'ship-cell sunk': args.ship.isSunk,
-        'ship-cell': !args.ship.isSunk,
-    });
-
-    const cells = [];
-    for (let i = 0; i < args.ship.length; i++) {
-        cells.push(<div class={cellClasses}/>);
-    }
-    return cells;
-};
-
-interface TurnOverlayArgs {
-    isMyTurn: boolean
-}
-
-const TurnOverlay = (args: TurnOverlayArgs) => {
-    if (!args.isMyTurn) {
+export const RecentSunkShip = (args: any) => {
+    if (args.ship) {        
         return (
-            <div class="turn-overlay">
-                <div>Wait for your opponent</div>
+            <div class="notify-sunk">
+                ✔️&nbsp; Ship sunk
             </div>
         )
     }
 };
 
 export const GameScreen = (args: GameArgs) => (
-    <div>
-        {/*<Navbar/>*/}
-
         <div id="game-screen">
 
             <section class="hero">
@@ -112,11 +70,16 @@ export const GameScreen = (args: GameArgs) => (
                                 <Board board={args.state.opponentBoard} onCellClick={args.actions.fireShot} isEnabled={args.state.isMyTurn}/>
                             </div>
                         </div>
-                        <RemainingShips ships={args.state.opponentShips}/>
+                        <div style={{ "position": "relative" }}>
+                            <RecentSunkShip ship={args.state.recentSunkShip}/>
+                            <RemainingShips ships={args.state.opponentShips}/>
+                        </div>
                     </div>
                     <div class="column"/>
                 </div>
+
                 <hr/>
+
                 <div class="columns">
                     <div class="column">
                         <div class="level">
@@ -131,5 +94,5 @@ export const GameScreen = (args: GameArgs) => (
                 </div>
             </div>
         </div>
-    </div>
-);
+    )
+;

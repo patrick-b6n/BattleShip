@@ -9,6 +9,9 @@
   <ItemGroup>
       <ProjectReference Include="..\BattleShip.Domain\BattleShip.Domain.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="wwwroot\src\components\navbar\navbar.tsx" />
+  </ItemGroup>
   <Target Name="yarn" AfterTargets="_GenerateRestoreProjectSpec">
     <Exec Command="yarn" WorkingDirectory="wwwroot" />
   </Target>

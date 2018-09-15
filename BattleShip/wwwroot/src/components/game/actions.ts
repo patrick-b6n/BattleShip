@@ -1,8 +1,7 @@
 import { GameHub } from "@src/client/gameHub";
-import { GameCallups, GameState } from "@src/client/states";
 import { FireShotModel, FireShotResponseModel, IShip, PlayerModel } from "@src/client/communicationModels";
 import { BoardService } from "@src/components/game/board/boardService";
-import { BoardField, GridPoint } from "@src/components/game/models";
+import { BoardField, GameCallups, GameState, GridPoint, ShotArgs } from "@src/components/game/models";
 import { createTwoDimArray } from "@src/client/helper";
 import Swal from "sweetalert2";
 import Constants from "@src/constants";
@@ -13,11 +12,6 @@ const boardService = new BoardService();
 export interface StartGameArgs {
     opponent: PlayerModel;
     isFirstTurn: boolean;
-}
-
-export interface ShotArgs {
-    x: number;
-    y: number;
 }
 
 export const gameActions = {
@@ -57,7 +51,7 @@ export const gameActions = {
     fireShot: (args: ShotArgs) => (state: GameState) => {
         gamehub.fireShot({ x: args.x, y: args.y, to: state.opponent })
     },
-    onFireShot: (args: FireShotModel) => (state: GameState) => {
+    onFireShot: (args: FireShotModel) => (state: GameState, actions: any) => {
         const board = state.playerBoard;
         const isHit = board[args.x][args.y] === BoardField.Ship;
         board[args.x][args.y] = isHit ? BoardField.ShipHit : BoardField.Miss;
@@ -69,6 +63,7 @@ export const gameActions = {
                 break;
             }
         }
+       
 
         const shipModels = state.ships.map(s => <IShip>{ length: s.length, isSunk: s.isSunk });
 
@@ -91,9 +86,11 @@ export const gameActions = {
             });
         }
 
+        actions.clearRecentSunkShip();
+
         return { playerBoard: board, isMyTurn: !state.isMyTurn, ships: state.ships }
     },
-    onFireShotResponse: (args: FireShotResponseModel) => (state: GameState) => {
+    onFireShotResponse: (args: FireShotResponseModel) => (state: GameState, actions: any) => {
         let board = state.opponentBoard;
         board[args.x][args.y] = args.isHit ? BoardField.ShipHit : BoardField.Miss;
 
@@ -107,6 +104,16 @@ export const gameActions = {
             });
         }
 
-        return { opponentBoard: board, opponentShips: args.remainingShips, isMyTurn: !state.isMyTurn }
+        let recentSunk = false;
+        if (state.opponentShips.filter(x => x.isSunk) < args.remainingShips.filter(x => x.isSunk)) {
+            recentSunk = true;
+        }
+
+        setTimeout(actions.clearRecentSunkShip, 2000);
+
+        return { opponentBoard: board, opponentShips: args.remainingShips, isMyTurn: !state.isMyTurn, recentSunkShip: recentSunk }
+    },
+    clearRecentSunkShip: () => () => {
+        return { recentSunkShip: false }
     }
 };

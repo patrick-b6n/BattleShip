@@ -1,9 +1,9 @@
 ﻿import { h } from "hyperapp";
 import { State } from "@src/client/states";
 import { LobbyScreen } from "@src/components/lobby/lobby";
-import { GameScreen } from "@src/components/game/game";
 import { Login } from "@src/components/login/login";
 import Constants from "@src/constants";
+import { GameScreen } from "@src/components/game/gamescreen";
 
 interface CurrentViewArgs {
     state: State;

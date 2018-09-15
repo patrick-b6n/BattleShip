@@ -20,7 +20,7 @@ export const LobbyScreen = (args: LobbyArgs) => (
                 <div className="container has-text-centered">
 
                     <h1 className="title">
-                        🚀 BattleShip 🚢
+                        ⚔️BattleShip 🚢
                     </h1>
 
                 </div>

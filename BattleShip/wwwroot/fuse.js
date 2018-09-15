@@ -25,9 +25,12 @@ context(
 
 task("default", async context => {
     const fuse = context.getConfig();
+
+    fuse.dev();
     
     fuse.bundle("app")
         .instructions("> index.ts")
+        .hmr({reload: true})
         .watch();
 
     await fuse.run();
@@ -35,7 +38,7 @@ task("default", async context => {
 
 task("dev", async context => {
     const fuse = context.getConfig();
-    
+
     fuse.bundle("app")
         .instructions("> index.ts");
 
@@ -45,7 +48,7 @@ task("dev", async context => {
 task("prod", async context => {
     context.isProduction = true;
     const fuse = context.getConfig();
-    
+
     fuse.bundle("app")
         .instructions("> index.ts");
 

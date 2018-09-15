@@ -1,4 +1,4 @@
-@import "~bulma/bulma";
+@import "../../styles";
 
 #game-screen {
   .overlap {
@@ -22,6 +22,9 @@
   }
 
   .remaining-ships {
+    background-color: $light-shade;
+    position: relative;
+    z-index: 2;
 
     .desc {
       margin-bottom: .25rem;
@@ -42,6 +45,29 @@
         background-color: $red;
       }
     }
+  }
 
+  .notify-sunk {
+    background-color: transparentize($success, 0.25);
+    box-shadow: $box-shadow;
+    border-radius: $radius-large;
+    font-weight: 500;
+    width: 95%;
+    padding: 0.25rem;
+    position: absolute;
+    top: -36px;
+    left:2.5%;
+    z-index: 1;
+    animation: slide-in 0.25s ease-out;
+    overflow: hidden;
+
+    @keyframes slide-in {
+      from {
+        top: 0;
+      }
+      to {
+        top: -36px;
+      }
+    }
   }
 }

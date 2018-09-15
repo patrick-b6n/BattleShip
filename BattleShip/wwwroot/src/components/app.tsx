@@ -2,7 +2,6 @@ import { app, h } from "hyperapp";
 import { GameHub } from "@src/client/gameHub";
 import { State } from "@src/client/states";
 import { lobbyActions } from "@src/components/lobby/lobby.actions";
-import { gameActions } from "@src/components/game/game.actions";
 import { ViewSwitcher } from "@src/components/mainView";
 import 'bulma/css/bulma.css'
 import './app.scss'
@@ -16,6 +15,7 @@ import {
     RequestMatchModel
 } from "@src/client/communicationModels";
 import Constants from "@src/constants";
+import { gameActions } from "@src/components/game/actions";
 
 const gamehub = GameHub.getInstance();
 
