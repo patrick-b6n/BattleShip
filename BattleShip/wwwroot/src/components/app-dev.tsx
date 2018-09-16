@@ -1,8 +1,8 @@
 import { app, h } from "hyperapp";
 import { State } from "@src/client/states";
-import { BoardService } from "@src/components/game/board/boardService";
 import { gameActions } from "@src/components/game/actions";
 import { GameScreen } from "@src/components/game/gamescreen";
+import { BoardService } from "@src/components/game/boardService";
 
 const boardService = new BoardService();
 
@@ -12,14 +12,14 @@ const { ships, board } = boardService.generateBoard();
 state.game.ships = ships;
 state.game.playerBoard = board;
 state.game.opponent = { id: "", name: "..." };
-state.game.recentSunkShip = ships[0];
+state.game.recentSunkShip = true;
 
 const actions = {
     game: gameActions,
     noop: () => () => {
     },
     clearRecentSunkShip: () => (state: State) => {
-        state.game.recentSunkShip = null;
+        state.game.recentSunkShip = false;
         return { game: state.game }
     }
 };

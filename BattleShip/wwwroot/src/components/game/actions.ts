@@ -1,10 +1,10 @@
 import { GameHub } from "@src/client/gameHub";
 import { FireShotModel, FireShotResponseModel, IShip, PlayerModel } from "@src/client/communicationModels";
-import { BoardService } from "@src/components/game/board/boardService";
 import { BoardField, GameCallups, GameState, GridPoint, ShotArgs } from "@src/components/game/models";
 import { createTwoDimArray } from "@src/client/helper";
 import Swal from "sweetalert2";
 import Constants from "@src/constants";
+import { BoardService } from "@src/components/game/boardService";
 
 const gamehub = GameHub.getInstance();
 const boardService = new BoardService();

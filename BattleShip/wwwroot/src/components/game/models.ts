@@ -1,6 +1,6 @@
 import { IShip, PlayerModel } from "@src/client/communicationModels";
 import { createTwoDimArray } from "@src/client/helper";
-import { Ship } from "@src/components/game/board/boardService";
+import { Ship } from "@src/components/game/boardService";
 
 export interface GameCallups {
     changeView: (view: string) => any;
