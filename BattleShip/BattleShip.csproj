@@ -11,6 +11,7 @@
   </ItemGroup>
   <ItemGroup>
     <_ContentIncludedByDefault Remove="wwwroot\src\components\navbar\navbar.tsx" />
+    <_ContentIncludedByDefault Remove="wwwroot\src\components\game\board\styles.scss" />
   </ItemGroup>
   <Target Name="yarn" AfterTargets="_GenerateRestoreProjectSpec">
     <Exec Command="yarn" WorkingDirectory="wwwroot" />

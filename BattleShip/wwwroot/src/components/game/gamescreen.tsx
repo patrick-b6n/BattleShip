@@ -1,10 +1,10 @@
 ﻿import { h } from "hyperapp";
 import { PlayerModel } from "@src/client/communicationModels";
-import { Board } from "@src/components/game/board/board";
 import "./style.scss"
 import { RemainingShips } from "@src/components/game/remainingShips";
 import { TurnOverlay } from "@src/components/game/turnOverlay";
 import { GameState } from "@src/components/game/models";
+import { Board } from "@src/components/game/board";
 
 export interface GameArgs {
     player: PlayerModel;
