@@ -3,6 +3,9 @@
 # Add steps that run tests, create a NuGet package, deploy, and more:
 # https://docs.microsoft.com/vsts/pipelines/languages/dotnet-core
 
+trigger:
+- *
+
 pool:
   vmImage: 'Ubuntu 16.04'
 
