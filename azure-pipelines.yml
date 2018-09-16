@@ -4,7 +4,8 @@
 # https://docs.microsoft.com/vsts/pipelines/languages/dotnet-core
 
 trigger:
-- *
+- master
+- feature/*
 
 pool:
   vmImage: 'Ubuntu 16.04'
