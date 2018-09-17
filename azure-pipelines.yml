@@ -1,8 +1,10 @@
 pool:
   vmImage: 'Ubuntu 16.04'
- variables:
+
+variables:
   buildConfiguration: 'Release'
- steps:
+
+steps:
 - script: sudo npm install -g yarn && sudo chown -R $USER:$GROUP ~/.npm && sudo chown -R $USER:$GROUP ~/.config
   displayName: 'install yarn'
 - script: dotnet build --configuration $(buildConfiguration)
