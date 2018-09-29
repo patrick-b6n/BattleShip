@@ -10,8 +10,8 @@
     "fuse-box": "^3.5.0",
     "hyperapp": "^1.2.9",
     "node-sass": "^4.9.3",
-    "sweetalert2": "^7.26.28",
-    "typescript": "^3.0.3",
+    "sweetalert2": "^7.28.4",
+    "typescript": "^3.1.1",
     "uglify-es": "^3.3.9",
     "uglify-js": "^3.4.9"
   },

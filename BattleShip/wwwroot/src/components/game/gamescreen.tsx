@@ -1,6 +1,6 @@
 ﻿import { h } from "hyperapp";
 import { PlayerModel } from "@src/client/communicationModels";
-import "./style.scss"
+import "./styles.scss"
 import { RemainingShips } from "@src/components/game/remainingShips";
 import { TurnOverlay } from "@src/components/game/turnOverlay";
 import { GameState } from "@src/components/game/models";

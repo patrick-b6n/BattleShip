@@ -1,6 +1,5 @@
 import { h } from "hyperapp";
 import * as cl from "classnames";
-import "./board.scss"
 import { BoardField, ShotArgs } from "@src/components/game/models";
 
 export interface BoardArgs {

@@ -1,12 +1,11 @@
 import { GameHub } from "@src/client/gameHub";
-import { LobbyCallups, LobbyState } from "@src/client/states";
 import Swal from 'sweetalert2'
 import Constants from "@src/constants";
 import { LobbyJoinedModel, PlayerModel, RequestMatchModel } from "@src/client/communicationModels";
-import { EventEntry } from "@src/components/lobby/eventlog/models";
+import { EventEntry, LobbyCallups, LobbyState } from "@src/components/lobby/models";
 
 const gamehub = GameHub.getInstance();
-const matchRequestTimeout = 5 * 1000;
+const matchRequestTimeout = 30 * 1000;
 
 export interface RequestMatchDto {
     fromPlayer: PlayerModel;

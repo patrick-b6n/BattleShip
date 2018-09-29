@@ -36,7 +36,7 @@ export const gameActions = {
             isMyTurn: args.isFirstTurn
         }
     },
-    onPlayerLeft: (value: PlayerModel) => (state: GameState, actions: any) => {
+    onPlayerLeft: (value: PlayerModel) => (state: GameState) => {
         if (state.opponent && value.id === state.opponent.id) {
             Swal({
                 title: `You won`,

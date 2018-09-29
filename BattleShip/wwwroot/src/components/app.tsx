@@ -1,7 +1,6 @@
 import { app, h } from "hyperapp";
 import { GameHub } from "@src/client/gameHub";
 import { State } from "@src/client/states";
-import { lobbyActions } from "@src/components/lobby/lobby.actions";
 import { ViewSwitcher } from "@src/components/mainView";
 import 'bulma/css/bulma.css'
 import './app.scss'
@@ -16,6 +15,7 @@ import {
 } from "@src/client/communicationModels";
 import Constants from "@src/constants";
 import { gameActions } from "@src/components/game/actions";
+import { lobbyActions } from "@src/components/lobby/actions";
 
 const gamehub = GameHub.getInstance();
 
@@ -43,7 +43,7 @@ const actions = {
         state.lobby.playerName = model;
         return { player: state.currentPlayer, lobby: state.lobby }
     },
-    joinLobby: (lobbyId: string) => (state: State) => {
+    joinLobby: (lobbyId: string) => () => {
         const params = new URLSearchParams(location.search.slice(1));
         gamehub.joinLobby({ lobbyId: (params.get("lobby") || lobbyId) });
     },

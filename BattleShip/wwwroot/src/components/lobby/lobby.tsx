@@ -1,9 +1,9 @@
 ﻿import { h } from "hyperapp";
-import { LobbyState } from "@src/client/states";
-import { PlayerList } from "@src/components/lobby/playerlist/playerlist";
-import { EventLog } from "@src/components/lobby/eventlog/eventlog";
-import "./lobby.scss"
+import "./styles.scss"
 import { PlayerModel } from "@src/client/communicationModels";
+import { PlayerList } from "@src/components/lobby/playerlist";
+import { EventLog } from "@src/components/lobby/eventlog";
+import { LobbyState } from "@src/components/lobby/models";
 
 export interface LobbyArgs {
     currentPlayer: PlayerModel;
@@ -47,7 +47,3 @@ export const LobbyScreen = (args: LobbyArgs) => (
         </div>
     </div>
 );
-
-function buildLobbyUrl(id: string): string {
-    return window.location.host + "?lobby=" + id;
-}

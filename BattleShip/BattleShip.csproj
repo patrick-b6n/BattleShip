@@ -4,14 +4,10 @@
     <TypeScriptCompileBlocked>True</TypeScriptCompileBlocked>
   </PropertyGroup>
   <ItemGroup>
-      <PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.3" />
+      <PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.4"/>
   </ItemGroup>
   <ItemGroup>
       <ProjectReference Include="..\BattleShip.Domain\BattleShip.Domain.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <_ContentIncludedByDefault Remove="wwwroot\src\components\navbar\navbar.tsx" />
-    <_ContentIncludedByDefault Remove="wwwroot\src\components\game\board\styles.scss" />
   </ItemGroup>
   <Target Name="yarn" AfterTargets="_GenerateRestoreProjectSpec">
     <Exec Command="yarn" WorkingDirectory="wwwroot" />

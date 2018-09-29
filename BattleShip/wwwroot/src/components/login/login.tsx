@@ -1,8 +1,8 @@
 ﻿import { h } from "hyperapp";
 import Swal from 'sweetalert2'
 import { GameHub } from "@src/client/gameHub";
-import { LoginCallups, LoginState } from "@src/client/states";
 import Constants from "@src/constants";
+import { LoginCallups, LoginState } from "@src/components/login/models";
 
 const gamehub = GameHub.getInstance();
 

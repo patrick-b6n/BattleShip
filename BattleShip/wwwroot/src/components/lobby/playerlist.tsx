@@ -1,7 +1,7 @@
 import { h } from "hyperapp";
-import "./playerList.scss"
+import "./styles.scss"
 import { PlayerModel } from "@src/client/communicationModels";
-import { RequestMatchDto } from "@src/components/lobby/lobby.actions";
+import { RequestMatchDto } from "@src/components/lobby/actions";
 
 export interface PlayerListArgs {
     currentPlayer: PlayerModel;
